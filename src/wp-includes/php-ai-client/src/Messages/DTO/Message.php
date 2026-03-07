@@ -1,11 +1,13 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Messages\DTO;
 
 use WordPress\AiClient\Common\AbstractDataTransferObject;
 use WordPress\AiClient\Common\Exception\InvalidArgumentException;
 use WordPress\AiClient\Messages\Enums\MessageRoleEnum;
+
 /**
  * Represents a message in an AI conversation.
  *

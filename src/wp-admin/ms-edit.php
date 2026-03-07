@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Action handler for Multisite administration panels.
  *
@@ -9,5 +11,5 @@
 
 require_once __DIR__ . '/admin.php';
 
-wp_redirect( network_admin_url() );
+wp_redirect(network_admin_url());
 exit;

@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Messages\DTO;
 
 use WordPress\AiClient\Messages\Enums\MessageRoleEnum;
+
 /**
  * Represents a message from a user.
  *

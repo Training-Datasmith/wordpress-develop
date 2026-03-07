@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Test case for WP_Font_Face::generate_and_print().
  *
@@ -12,29 +14,32 @@
  *
  * @covers WP_Font_Face::generate_and_print
  */
-class Tests_Fonts_WPFontFace_GenerateAndPrint extends WP_UnitTestCase {
-	use WP_Font_Face_Tests_Datasets;
+class Tests_Fonts_WPFontFace_GenerateAndPrint extends WP_UnitTestCase
+{
+    use WP_Font_Face_Tests_Datasets;
 
-	public function test_should_not_generate_and_print_when_no_fonts() {
-		$font_face = new WP_Font_Face();
-		$fonts     = array();
+    public function test_should_not_generate_and_print_when_no_fonts()
+    {
+        $font_face = new WP_Font_Face();
+        $fonts     = [];
 
-		$this->expectOutputString( '' );
-		$font_face->generate_and_print( $fonts );
-	}
+        $this->expectOutputString('');
+        $font_face->generate_and_print($fonts);
+    }
 
-	/**
-	 * @dataProvider data_should_print_given_fonts
-	 *
-	 * @param array  $fonts Prepared fonts.
-	 * @param string $expected Expected CSS.
-	 */
-	public function test_should_generate_and_print_given_fonts( array $fonts, $expected ) {
-		$font_face       = new WP_Font_Face();
-		$style_element   = "<style class='wp-fonts-local'>\n%s\n</style>\n";
-		$expected_output = sprintf( $style_element, $expected );
+    /**
+     * @dataProvider data_should_print_given_fonts
+     *
+     * @param array  $fonts Prepared fonts.
+     * @param string $expected Expected CSS.
+     */
+    public function test_should_generate_and_print_given_fonts(array $fonts, $expected)
+    {
+        $font_face       = new WP_Font_Face();
+        $style_element   = "<style class='wp-fonts-local'>\n%s\n</style>\n";
+        $expected_output = sprintf($style_element, $expected);
 
-		$output = get_echo( array( $font_face, 'generate_and_print' ), array( $fonts ) );
-		$this->assertEqualHTML( $expected_output, $output );
-	}
+        $output = get_echo([ $font_face, 'generate_and_print' ], [ $fonts ]);
+        $this->assertEqualHTML($expected_output, $output);
+    }
 }

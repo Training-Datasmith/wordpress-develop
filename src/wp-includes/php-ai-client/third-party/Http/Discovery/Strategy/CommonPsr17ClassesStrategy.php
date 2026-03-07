@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Http\Discovery\Strategy;
 
 use WordPress\AiClientDependencies\Psr\Http\Message\RequestFactoryInterface;
@@ -8,6 +10,7 @@ use WordPress\AiClientDependencies\Psr\Http\Message\ServerRequestFactoryInterfac
 use WordPress\AiClientDependencies\Psr\Http\Message\StreamFactoryInterface;
 use WordPress\AiClientDependencies\Psr\Http\Message\UploadedFileFactoryInterface;
 use WordPress\AiClientDependencies\Psr\Http\Message\UriFactoryInterface;
+
 /**
  * @internal
  *

@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Http\Discovery;
 
 use WordPress\AiClientDependencies\Http\Discovery\Exception\DiscoveryFailedException;
 use WordPress\AiClientDependencies\Http\Discovery\Exception\NotFoundException as RealNotFoundException;
 use WordPress\AiClientDependencies\Psr\Http\Client\ClientInterface;
+
 /**
  * Finds a PSR-18 HTTP Client.
  *

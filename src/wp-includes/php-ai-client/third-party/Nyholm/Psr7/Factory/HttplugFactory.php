@@ -1,6 +1,7 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClientDependencies\Nyholm\Psr7\Factory;
 
 use WordPress\AiClientDependencies\Http\Message\MessageFactory;
@@ -14,6 +15,7 @@ use WordPress\AiClientDependencies\Psr\Http\Message\RequestInterface;
 use WordPress\AiClientDependencies\Psr\Http\Message\ResponseInterface;
 use WordPress\AiClientDependencies\Psr\Http\Message\StreamInterface;
 use WordPress\AiClientDependencies\Psr\Http\Message\UriInterface;
+
 if (!\interface_exists(MessageFactory::class)) {
     throw new \LogicException('You cannot use "Nyholm\Psr7\Factory\HttplugFactory" as the "php-http/message-factory" package is not installed. Try running "composer require php-http/message-factory". Note that this package is deprecated, use "psr/http-factory" instead');
 }

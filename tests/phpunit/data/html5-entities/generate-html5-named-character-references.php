@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../../../../src/wp-includes/class-wp-token-map.php';
 
 /**
@@ -17,8 +19,8 @@ require_once __DIR__ . '/../../../../src/wp-includes/class-wp-token-map.php';
  * @var array.
  */
 $entities = json_decode(
-	file_get_contents( __DIR__ . '/entities.json' ),
-	JSON_OBJECT_AS_ARRAY
+    file_get_contents(__DIR__ . '/entities.json'),
+    JSON_OBJECT_AS_ARRAY
 );
 
 /**
@@ -30,13 +32,13 @@ $entities = json_decode(
  *
  * @var array.
  */
-$character_references = array();
-foreach ( $entities as $reference => $metadata ) {
-	$reference_without_ampersand_prefix                          = substr( $reference, 1 );
-	$character_references[ $reference_without_ampersand_prefix ] = $metadata['characters'];
+$character_references = [];
+foreach ($entities as $reference => $metadata) {
+    $reference_without_ampersand_prefix                          = substr($reference, 1);
+    $character_references[ $reference_without_ampersand_prefix ] = $metadata['characters'];
 }
 
-$html5_map = WP_Token_Map::from_array( $character_references );
+$html5_map = WP_Token_Map::from_array($character_references);
 
 /**
  * Contains the new contents for the auto-generated module.
@@ -90,12 +92,12 @@ global \$html5_named_character_references;
 EOF;
 
 file_put_contents(
-	__DIR__ . '/../../../../src/wp-includes/html-api/html5-named-character-references.php',
-	$module_contents
+    __DIR__ . '/../../../../src/wp-includes/html-api/html5-named-character-references.php',
+    $module_contents
 );
 
-if ( posix_isatty( STDOUT ) ) {
-	echo "\e[1;32mOK\e[0;90m: \e[mSuccessfully generated optimized lookup class.\n";
+if (posix_isatty(STDOUT)) {
+    echo "\e[1;32mOK\e[0;90m: \e[mSuccessfully generated optimized lookup class.\n";
 } else {
-	echo "OK: Successfully generated optimized lookup class.\n";
+    echo "OK: Successfully generated optimized lookup class.\n";
 }

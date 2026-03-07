@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Http\Discovery\Strategy;
 
 use WordPress\AiClientDependencies\Http\Discovery\Exception\StrategyUnavailableException;
+
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */

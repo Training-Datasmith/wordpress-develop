@@ -48,10 +48,8 @@ class Rating
 
     /**
      * String-ified version
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         // There is no $this->data here
         return md5(serialize($this));
@@ -86,4 +84,4 @@ class Rating
     }
 }
 
-class_alias('SimplePie\Rating', 'SimplePie_Rating');
+class_alias(\SimplePie\Rating::class, 'SimplePie_Rating');

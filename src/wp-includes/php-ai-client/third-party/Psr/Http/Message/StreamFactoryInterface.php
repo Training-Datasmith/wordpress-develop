@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Psr\Http\Message;
 
 interface StreamFactoryInterface

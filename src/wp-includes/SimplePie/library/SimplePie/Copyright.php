@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Copyright;
 
-class_exists('SimplePie\Copyright');
+class_exists(\SimplePie\Copyright::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Copyright" class is deprecated since SimplePie 1.7.0, use "SimplePie\Copyright" instead.'), \E_USER_DEPRECATED);
 

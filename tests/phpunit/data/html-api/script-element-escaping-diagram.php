@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This is the original Graphviz source for the SCRIPT tag
  * parsing behavior, used in the documentation for the HTML API.
@@ -8,6 +10,7 @@
  *
  * @return string
  */
-function wp_html_api_script_element_escaping_diagram_source() {
-	return file_get_contents( __DIR__ . '/script-element-escaping-diagram.dot' );
+function wp_html_api_script_element_escaping_diagram_source()
+{
+    return file_get_contents(__DIR__ . '/script-element-escaping-diagram.dot');
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * IXR_Error
  *
@@ -8,28 +10,32 @@
  */
 class IXR_Error
 {
-    var $code;
-    var $message;
+    public $code;
+    /**
+     * @var string
+     */
+    public $message;
 
-	/**
-	 * PHP5 constructor.
-	 */
-    function __construct( $code, $message )
+    /**
+     * PHP5 constructor.
+     */
+    public function __construct($code, $message)
     {
         $this->code = $code;
         $this->message = htmlspecialchars($message);
     }
 
-	/**
-	 * PHP4 constructor.
-	 */
-	public function IXR_Error( $code, $message ) {
-		self::__construct( $code, $message );
-	}
-
-    function getXml()
+    /**
+     * PHP4 constructor.
+     */
+    public function IXR_Error($code, $message): void
     {
-        $xml = <<<EOD
+        self::__construct($code, $message);
+    }
+
+    public function getXml(): string
+    {
+        return <<<EOD
 <methodResponse>
   <fault>
     <value>
@@ -48,6 +54,5 @@ class IXR_Error
 </methodResponse>
 
 EOD;
-        return $xml;
     }
 }

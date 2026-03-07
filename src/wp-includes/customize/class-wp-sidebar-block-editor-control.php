@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Customize API: WP_Sidebar_Block_Editor_Control class.
  *
@@ -15,23 +17,25 @@
  *
  * @see WP_Customize_Control
  */
-class WP_Sidebar_Block_Editor_Control extends WP_Customize_Control {
-	/**
-	 * The control type.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @var string
-	 */
-	public $type = 'sidebar_block_editor';
+class WP_Sidebar_Block_Editor_Control extends WP_Customize_Control
+{
+    /**
+     * The control type.
+     *
+     * @since 5.8.0
+     *
+     * @var string
+     */
+    public $type = 'sidebar_block_editor';
 
-	/**
-	 * Render the widgets block editor container.
-	 *
-	 * @since 5.8.0
-	 */
-	public function render_content() {
-		// Render an empty control. The JavaScript in
-		// @wordpress/customize-widgets will do the rest.
-	}
+    /**
+     * Render the widgets block editor container.
+     *
+     * @since 5.8.0
+     */
+    public function render_content()
+    {
+        // Render an empty control. The JavaScript in
+        // @wordpress/customize-widgets will do the rest.
+    }
 }

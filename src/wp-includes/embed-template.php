@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Back-compat placeholder for the base embed template
  *
@@ -8,6 +10,6 @@
  * @deprecated 4.5.0 Moved to wp-includes/theme-compat/embed.php
  */
 
-_deprecated_file( basename( __FILE__ ), '4.5.0', WPINC . '/theme-compat/embed.php' );
+_deprecated_file(basename(__FILE__), '4.5.0', WPINC . '/theme-compat/embed.php');
 
 require ABSPATH . WPINC . '/theme-compat/embed.php';

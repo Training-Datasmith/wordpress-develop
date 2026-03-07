@@ -60,10 +60,8 @@ class Restriction
 
     /**
      * String-ified version
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         // There is no $this->data here
         return md5(serialize($this));
@@ -112,4 +110,4 @@ class Restriction
     }
 }
 
-class_alias('SimplePie\Restriction', 'SimplePie_Restriction');
+class_alias(\SimplePie\Restriction::class, 'SimplePie_Restriction');

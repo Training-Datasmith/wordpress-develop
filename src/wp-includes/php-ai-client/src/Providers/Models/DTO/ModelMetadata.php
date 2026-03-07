@@ -1,11 +1,13 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Models\DTO;
 
 use WordPress\AiClient\Common\AbstractDataTransferObject;
 use WordPress\AiClient\Common\Exception\InvalidArgumentException;
 use WordPress\AiClient\Providers\Models\Enums\CapabilityEnum;
+
 /**
  * Represents metadata about an AI model.
  *
@@ -134,7 +136,7 @@ class ModelMetadata extends AbstractDataTransferObject
      */
     public function toArray(): array
     {
-        return [self::KEY_ID => $this->id, self::KEY_NAME => $this->name, self::KEY_SUPPORTED_CAPABILITIES => array_map(static fn(CapabilityEnum $capability): string => $capability->value, $this->supportedCapabilities), self::KEY_SUPPORTED_OPTIONS => array_map(static fn(\WordPress\AiClient\Providers\Models\DTO\SupportedOption $option): array => $option->toArray(), $this->supportedOptions)];
+        return [self::KEY_ID => $this->id, self::KEY_NAME => $this->name, self::KEY_SUPPORTED_CAPABILITIES => array_map(static fn (CapabilityEnum $capability): string => $capability->value, $this->supportedCapabilities), self::KEY_SUPPORTED_OPTIONS => array_map(static fn (\WordPress\AiClient\Providers\Models\DTO\SupportedOption $option): array => $option->toArray(), $this->supportedOptions)];
     }
     /**
      * {@inheritDoc}
@@ -144,7 +146,7 @@ class ModelMetadata extends AbstractDataTransferObject
     public static function fromArray(array $array): self
     {
         static::validateFromArrayData($array, [self::KEY_ID, self::KEY_NAME, self::KEY_SUPPORTED_CAPABILITIES, self::KEY_SUPPORTED_OPTIONS]);
-        return new self($array[self::KEY_ID], $array[self::KEY_NAME], array_map(static fn(string $capability): CapabilityEnum => CapabilityEnum::from($capability), $array[self::KEY_SUPPORTED_CAPABILITIES]), array_map(static fn(array $optionData): \WordPress\AiClient\Providers\Models\DTO\SupportedOption => \WordPress\AiClient\Providers\Models\DTO\SupportedOption::fromArray($optionData), $array[self::KEY_SUPPORTED_OPTIONS]));
+        return new self($array[self::KEY_ID], $array[self::KEY_NAME], array_map(static fn (string $capability): CapabilityEnum => CapabilityEnum::from($capability), $array[self::KEY_SUPPORTED_CAPABILITIES]), array_map(static fn (array $optionData): \WordPress\AiClient\Providers\Models\DTO\SupportedOption => \WordPress\AiClient\Providers\Models\DTO\SupportedOption::fromArray($optionData), $array[self::KEY_SUPPORTED_OPTIONS]));
     }
     /**
      * Performs a deep clone of the model metadata.

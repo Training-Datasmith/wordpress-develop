@@ -164,8 +164,6 @@ interface Response
 
     /**
      * get the body as string
-     *
-     * @return string
      */
     public function get_body_content(): string;
 }

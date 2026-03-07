@@ -394,7 +394,7 @@ class SimplePie
      * @var string|string[]|null Error string (or array when multiple feeds are initialized)
      * @access private
      */
-    public $error = null;
+    public $error;
 
     /**
      * @var int HTTP status code
@@ -429,7 +429,7 @@ class SimplePie
      * @see SimplePie::subscribe_url()
      * @access private
      */
-    public $permanent_url = null;
+    public $permanent_url;
 
     /**
      * @var File Instance of File class to use as a feed
@@ -479,19 +479,18 @@ class SimplePie
      * @see SimplePie::enable_cache()
      * @access private
      */
-    private $enable_cache = true;
+    private bool $enable_cache = true;
 
     /**
      * @var DataCache|null
      * @see SimplePie::set_cache()
      */
-    private $cache = null;
+    private ?\SimplePie\Cache\Psr16 $cache = null;
 
     /**
-     * @var NameFilter
      * @see SimplePie::set_cache_namefilter()
      */
-    private $cache_namefilter;
+    private \SimplePie\Cache\NameFilter $cache_namefilter;
 
     /**
      * @var bool Force SimplePie to fallback to expired cache, if enabled,
@@ -597,7 +596,7 @@ class SimplePie
      * @see SimplePie::set_feed_url()
      * @access private
      */
-    public $config_settings = null;
+    public $config_settings;
 
     /**
      * @var int Stores the number of items to return per-feed with multifeeds.
@@ -649,10 +648,10 @@ class SimplePie
     /**
      * @var Client|null
      */
-    private $http_client = null;
+    private $http_client;
 
     /** @var bool Whether HTTP client has been injected */
-    private $http_client_injected = false;
+    private bool $http_client_injected = false;
 
     /**
      * The SimplePie class contains feed level data and options
@@ -670,10 +669,6 @@ class SimplePie
      */
     public function __construct()
     {
-        if (version_compare(PHP_VERSION, '7.2', '<')) {
-            exit('Please upgrade to PHP 7.2 or newer.');
-        }
-
         $this->set_useragent();
 
         $this->set_cache_namefilter(new CallableNameFilter($this->cache_name_function));
@@ -702,16 +697,14 @@ class SimplePie
 
     /**
      * Used for converting object to a string
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return md5(serialize($this->data));
     }
 
     /**
      * Remove items that link back to this before destroying this object
-     * @return void
      */
     public function __destruct()
     {
@@ -739,9 +732,8 @@ class SimplePie
      *
      * @since 1.1
      * @param bool $enable Force the given data/URL to be treated as a feed
-     * @return void
      */
-    public function force_feed(bool $enable = false)
+    public function force_feed(bool $enable = false): void
     {
         $this->force_feed = $enable;
     }
@@ -760,9 +752,8 @@ class SimplePie
      * @since 1.0 Preview Release
      * @see set_raw_data()
      * @param string|string[] $url This is the URL (or (deprecated) array of URLs) that you want to parse.
-     * @return void
      */
-    public function set_feed_url($url)
+    public function set_feed_url($url): void
     {
         $this->multifeed_url = [];
         if (is_array($url)) {
@@ -781,10 +772,9 @@ class SimplePie
      *
      * @deprecated since SimplePie 1.9.0, use \SimplePie\SimplePie::set_http_client() or \SimplePie\SimplePie::set_raw_data() instead.
      *
-     * @param File &$file
      * @return bool True on success, false on failure
      */
-    public function set_file(File &$file)
+    public function set_file(File &$file): bool
     {
         // trigger_error(sprintf('SimplePie\SimplePie::set_file() is deprecated since SimplePie 1.9.0, please use "SimplePie\SimplePie::set_http_client()" or "SimplePie\SimplePie::set_raw_data()" instead.'), \E_USER_DEPRECATED);
 
@@ -807,9 +797,8 @@ class SimplePie
      * @since 1.0 Beta 3
      * @param string $data RSS or Atom data as a string.
      * @see set_feed_url()
-     * @return void
      */
-    public function set_raw_data(string $data)
+    public function set_raw_data(string $data): void
     {
         $this->raw_data = $data;
     }
@@ -836,9 +825,8 @@ class SimplePie
      *
      * @since 1.0 Beta 3
      * @param int $timeout The maximum number of seconds to spend waiting to retrieve a feed.
-     * @return void
      */
-    public function set_timeout(int $timeout = 10)
+    public function set_timeout(int $timeout = 10): void
     {
         if ($this->http_client_injected) {
             throw new SimplePieException(sprintf(
@@ -848,7 +836,7 @@ class SimplePie
             ));
         }
 
-        $this->timeout = (int) $timeout;
+        $this->timeout = $timeout;
 
         // Reset a possible existing FileClient,
         // so a new client with the changed value will be created
@@ -871,9 +859,8 @@ class SimplePie
      *
      * @since 1.0 Beta 3
      * @param array<int, mixed> $curl_options Curl options to add to default settings
-     * @return void
      */
-    public function set_curl_options(array $curl_options = [])
+    public function set_curl_options(array $curl_options = []): void
     {
         if ($this->http_client_injected) {
             throw new SimplePieException(sprintf(
@@ -904,9 +891,8 @@ class SimplePie
      *
      * @since 1.0 Beta 3
      * @param bool $enable Force fsockopen() to be used
-     * @return void
      */
-    public function force_fsockopen(bool $enable = false)
+    public function force_fsockopen(bool $enable = false): void
     {
         if ($this->http_client_injected) {
             throw new SimplePieException(sprintf(
@@ -940,9 +926,8 @@ class SimplePie
      *
      * @since 1.0 Preview Release
      * @param bool $enable Enable caching
-     * @return void
      */
-    public function enable_cache(bool $enable = true)
+    public function enable_cache(bool $enable = true): void
     {
         $this->enable_cache = $enable;
     }
@@ -951,10 +936,8 @@ class SimplePie
      * Set a PSR-16 implementation as cache
      *
      * @param CacheInterface $cache The PSR-16 cache implementation
-     *
-     * @return void
      */
-    public function set_cache(CacheInterface $cache)
+    public function set_cache(CacheInterface $cache): void
     {
         $this->cache = new Psr16($cache);
     }
@@ -970,9 +953,8 @@ class SimplePie
      * @deprecated since SimplePie 1.8.0, expired cache will not be used anymore.
      *
      * @param bool $enable Force use of cache on fail.
-     * @return void
      */
-    public function force_cache_fallback(bool $enable = false)
+    public function force_cache_fallback(bool $enable = false): void
     {
         // @trigger_error(sprintf('SimplePie\SimplePie::force_cache_fallback() is deprecated since SimplePie 1.8.0, expired cache will not be used anymore.'), \E_USER_DEPRECATED);
         $this->force_cache_fallback = $enable;
@@ -983,9 +965,8 @@ class SimplePie
      * cached
      *
      * @param int $seconds The feed content cache duration
-     * @return void
      */
-    public function set_cache_duration(int $seconds = 3600)
+    public function set_cache_duration(int $seconds = 3600): void
     {
         $this->cache_duration = $seconds;
     }
@@ -995,9 +976,8 @@ class SimplePie
      * be cached
      *
      * @param int $seconds The autodiscovered feed URL cache duration.
-     * @return void
      */
-    public function set_autodiscovery_cache_duration(int $seconds = 604800)
+    public function set_autodiscovery_cache_duration(int $seconds = 604800): void
     {
         $this->autodiscovery_cache_duration = $seconds;
     }
@@ -1008,9 +988,8 @@ class SimplePie
      * @deprecated since SimplePie 1.8.0, use SimplePie::set_cache() instead.
      *
      * @param string $location The file system location.
-     * @return void
      */
-    public function set_cache_location(string $location = './cache')
+    public function set_cache_location(string $location = './cache'): void
     {
         // @trigger_error(sprintf('SimplePie\SimplePie::set_cache_location() is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()" instead.'), \E_USER_DEPRECATED);
         $this->cache_location = $location;
@@ -1022,7 +1001,7 @@ class SimplePie
      * @param string $url The URL of the feed to be cached.
      * @return string A filename (i.e. hash, without path and without extension).
      */
-    public function get_cache_filename(string $url)
+    public function get_cache_filename(string $url): string
     {
         // Append custom parameters to the URL to avoid cache pollution in case of multiple calls with different parameters.
         $url .= $this->force_feed ? '#force_feed' : '';
@@ -1033,10 +1012,8 @@ class SimplePie
         if ($this->useragent !== Misc::get_default_useragent()) {
             $options[CURLOPT_USERAGENT] = $this->useragent;
         }
-        if (!empty($this->curl_options)) {
-            foreach ($this->curl_options as $k => $v) {
-                $options[$k] = $v;
-            }
+        foreach ($this->curl_options as $k => $v) {
+            $options[$k] = $v;
         }
         if (!empty($options)) {
             ksort($options);
@@ -1050,9 +1027,8 @@ class SimplePie
      * Set whether feed items should be sorted into reverse chronological order
      *
      * @param bool $enable Sort as reverse chronological order.
-     * @return void
      */
-    public function enable_order_by_date(bool $enable = true)
+    public function enable_order_by_date(bool $enable = true): void
     {
         $this->order_by_date = $enable;
     }
@@ -1064,9 +1040,8 @@ class SimplePie
      * back to the normal encoding detection if the override fails
      *
      * @param string|false $encoding Character encoding
-     * @return void
      */
-    public function set_input_encoding($encoding = false)
+    public function set_input_encoding($encoding = false): void
     {
         if ($encoding) {
             $this->input_encoding = (string) $encoding;
@@ -1086,9 +1061,8 @@ class SimplePie
      * @see self::LOCATOR_REMOTE_BODY
      * @see self::LOCATOR_ALL
      * @param self::LOCATOR_* $level Feed Autodiscovery Level (level can be a combination of the above constants, see bitwise OR operator)
-     * @return void
      */
-    public function set_autodiscovery_level(int $level = self::LOCATOR_ALL)
+    public function set_autodiscovery_level(int $level = self::LOCATOR_ALL): void
     {
         $this->autodiscovery = $level;
     }
@@ -1365,9 +1339,8 @@ class SimplePie
      * Set the user agent string
      *
      * @param string $ua New user agent string.
-     * @return void
      */
-    public function set_useragent(?string $ua = null)
+    public function set_useragent(?string $ua = null): void
     {
         if ($this->http_client_injected) {
             throw new SimplePieException(sprintf(
@@ -1400,9 +1373,7 @@ class SimplePie
     /**
      * Set a namefilter to modify the cache filename with
      *
-     * @param NameFilter $filter
      *
-     * @return void
      */
     public function set_cache_namefilter(NameFilter $filter): void
     {
@@ -1415,9 +1386,8 @@ class SimplePie
      * @deprecated since SimplePie 1.8.0, use {@see set_cache_namefilter()} instead
      *
      * @param (string&(callable(string): string))|null $function Callback function
-     * @return void
      */
-    public function set_cache_name_function(?string $function = null)
+    public function set_cache_name_function(?string $function = null): void
     {
         // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache_namefilter()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
@@ -1437,9 +1407,8 @@ class SimplePie
      * turns SimplePie into a dumb parser of feeds.
      *
      * @param bool $set Whether to set them or not
-     * @return void
      */
-    public function set_stupidly_fast(bool $set = false)
+    public function set_stupidly_fast(bool $set = false): void
     {
         if ($set) {
             $this->enable_order_by_date(false);
@@ -1457,26 +1426,21 @@ class SimplePie
      * Set maximum number of feeds to check with autodiscovery
      *
      * @param int $max Maximum number of feeds to check
-     * @return void
      */
-    public function set_max_checked_feeds(int $max = 10)
+    public function set_max_checked_feeds(int $max = 10): void
     {
         $this->max_checked_feeds = $max;
     }
 
-    /**
-     * @return void
-     */
-    public function remove_div(bool $enable = true)
+    public function remove_div(bool $enable = true): void
     {
         $this->sanitize->remove_div($enable);
     }
 
     /**
      * @param string[]|string|false $tags Set a list of tags to strip, or set empty string to use default tags, or false to strip nothing.
-     * @return void
      */
-    public function strip_htmltags($tags = '', ?bool $encode = null)
+    public function strip_htmltags($tags = '', ?bool $encode = null): void
     {
         if ($tags === '') {
             $tags = $this->strip_htmltags;
@@ -1487,19 +1451,15 @@ class SimplePie
         }
     }
 
-    /**
-     * @return void
-     */
-    public function encode_instead_of_strip(bool $enable = true)
+    public function encode_instead_of_strip(bool $enable = true): void
     {
         $this->sanitize->encode_instead_of_strip($enable);
     }
 
     /**
      * @param string[]|string $attribs
-     * @return void
      */
-    public function rename_attributes($attribs = '')
+    public function rename_attributes($attribs = ''): void
     {
         if ($attribs === '') {
             $attribs = $this->rename_attributes;
@@ -1509,9 +1469,8 @@ class SimplePie
 
     /**
      * @param string[]|string $attribs
-     * @return void
      */
-    public function strip_attributes($attribs = '')
+    public function strip_attributes($attribs = ''): void
     {
         if ($attribs === '') {
             $attribs = $this->strip_attributes;
@@ -1521,9 +1480,8 @@ class SimplePie
 
     /**
      * @param array<string, array<string, string>>|'' $attribs
-     * @return void
      */
-    public function add_attributes($attribs = '')
+    public function add_attributes($attribs = ''): void
     {
         if ($attribs === '') {
             $attribs = $this->add_attributes;
@@ -1550,19 +1508,13 @@ class SimplePie
      * {@link http://php.net/iconv iconv}, or both. See
      * {@link http://simplepie.org/wiki/faq/Supported_Character_Encodings} for
      * more information.
-     *
-     * @param string $encoding
-     * @return void
      */
-    public function set_output_encoding(string $encoding = 'UTF-8')
+    public function set_output_encoding(string $encoding = 'UTF-8'): void
     {
         $this->sanitize->set_output_encoding($encoding);
     }
 
-    /**
-     * @return void
-     */
-    public function strip_comments(bool $strip = false)
+    public function strip_comments(bool $strip = false): void
     {
         $this->sanitize->strip_comments($strip);
     }
@@ -1577,9 +1529,8 @@ class SimplePie
      *
      * @since 1.0
      * @param array<string, string|string[]>|null $element_attribute Element/attribute key/value pairs, null for default
-     * @return void
      */
-    public function set_url_replacements(?array $element_attribute = null)
+    public function set_url_replacements(?array $element_attribute = null): void
     {
         $this->sanitize->set_url_replacements($element_attribute);
     }
@@ -1588,9 +1539,8 @@ class SimplePie
      * Set the list of domains for which to force HTTPS.
      * @see Sanitize::set_https_domains()
      * @param array<string> $domains List of HTTPS domains. Example array('biz', 'example.com', 'example.org', 'www.example.net').
-     * @return void
      */
-    public function set_https_domains(array $domains = [])
+    public function set_https_domains(array $domains = []): void
     {
         $this->sanitize->set_https_domains($domains);
     }
@@ -1600,9 +1550,8 @@ class SimplePie
      *
      * @param string|false $page Web-accessible path to the handler_image.php file.
      * @param string $qs The query string that the value should be passed to.
-     * @return void
      */
-    public function set_image_handler($page = false, string $qs = 'i')
+    public function set_image_handler($page = false, string $qs = 'i'): void
     {
         if ($page !== false) {
             $this->sanitize->set_image_handler($page . '?' . $qs . '=');
@@ -1615,9 +1564,8 @@ class SimplePie
      * Set the limit for items returned per-feed with multifeeds
      *
      * @param int $limit The maximum number of items to return.
-     * @return void
      */
-    public function set_item_limit(int $limit = 0)
+    public function set_item_limit(int $limit = 0): void
     {
         $this->item_limit = $limit;
     }
@@ -1626,9 +1574,8 @@ class SimplePie
      * Enable throwing exceptions
      *
      * @param bool $enable Should we throw exceptions, or use the old-style error property?
-     * @return void
      */
-    public function enable_exceptions(bool $enable = true)
+    public function enable_exceptions(bool $enable = true): void
     {
         $this->enable_exceptions = $enable;
     }
@@ -1649,8 +1596,8 @@ class SimplePie
             $this->error = 'XML or PCRE extensions not loaded!';
             return false;
         }
-        // Then check the xml extension is sane (i.e., libxml 2.7.x issue on PHP < 5.2.9 and libxml 2.7.0 to 2.7.2 on any version) if we don't have xmlreader.
-        elseif (!extension_loaded('xmlreader')) {
+        // Check absolute bare minimum requirements.
+        if (!extension_loaded('xmlreader')) {
             static $xml_is_sane = null;
             if ($xml_is_sane === null) {
                 $parser_check = xml_parser_create();
@@ -1695,7 +1642,6 @@ class SimplePie
                 $http_client->getUriFactory()
             );
         }
-
         if (!empty($this->multifeed_url)) {
             $i = 0;
             $success = 0;
@@ -1712,7 +1658,9 @@ class SimplePie
                 $i++;
             }
             return (bool) $success;
-        } elseif ($this->feed_url === null && $this->raw_data === null) {
+        }
+
+        if ($this->feed_url === null && $this->raw_data === null) {
             return false;
         }
 
@@ -1729,11 +1677,13 @@ class SimplePie
             if ($this->enable_cache && $parsed_feed_url['scheme'] !== '') {
                 $cache = $this->get_cache($this->feed_url);
             }
-
             // Fetch the data into $this->raw_data
             if (($fetched = $this->fetch_data($cache)) === true) {
                 return true;
-            } elseif ($fetched === false) {
+            }
+
+            // Fetch the data into $this->raw_data
+            if ($fetched === false) {
                 return false;
             }
 
@@ -2000,7 +1950,7 @@ class SimplePie
                 $this->useragent,
                 $this->max_checked_feeds,
                 $this->force_fsockopen,
-                $this->curl_options
+                $this->curl_options,
             ]);
 
             $http_client = $this->get_http_client();
@@ -2162,9 +2112,8 @@ class SimplePie
      * top).
      *
      * @param string $mime MIME type to serve the page as
-     * @return void
      */
-    public function handle_content_type(string $mime = 'text/html')
+    public function handle_content_type(string $mime = 'text/html'): void
     {
         if (!headers_sent()) {
             $header = "Content-type: $mime;";
@@ -2284,9 +2233,8 @@ class SimplePie
      * @todo Also, |atom:link|@rel=self
      * @param bool $permanent Permanent mode to return only the original URL or the first redirection
      * iff it is a 301 redirection
-     * @return string|null
      */
-    public function subscribe_url(bool $permanent = false)
+    public function subscribe_url(bool $permanent = false): ?string
     {
         if ($permanent) {
             if ($this->permanent_url !== null) {
@@ -2525,17 +2473,23 @@ class SimplePie
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'title')) {
             return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'title')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'title')) {
             return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_10, 'title')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_RSS_10, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_090, 'title')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_RSS_090, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'title')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_DC_11, 'title')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_DC_11, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_DC_10, 'title')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_DC_10, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
         }
 
@@ -2552,11 +2506,8 @@ class SimplePie
     public function get_category(int $key = 0)
     {
         $categories = $this->get_categories();
-        if (isset($categories[$key])) {
-            return $categories[$key];
-        }
 
-        return null;
+        return $categories[$key] ?? null;
     }
 
     /**
@@ -2567,7 +2518,7 @@ class SimplePie
      * @since Unknown
      * @return array<Category>|null List of {@see Category} objects
      */
-    public function get_categories()
+    public function get_categories(): ?array
     {
         $categories = [];
 
@@ -2621,11 +2572,8 @@ class SimplePie
     public function get_author(int $key = 0)
     {
         $authors = $this->get_authors();
-        if (isset($authors[$key])) {
-            return $authors[$key];
-        }
 
-        return null;
+        return $authors[$key] ?? null;
     }
 
     /**
@@ -2636,7 +2584,7 @@ class SimplePie
      * @since 1.1
      * @return array<Author>|null List of {@see Author} objects
      */
-    public function get_authors()
+    public function get_authors(): ?array
     {
         $authors = [];
         foreach ((array) $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'author') as $author) {
@@ -2702,11 +2650,8 @@ class SimplePie
     public function get_contributor(int $key = 0)
     {
         $contributors = $this->get_contributors();
-        if (isset($contributors[$key])) {
-            return $contributors[$key];
-        }
 
-        return null;
+        return $contributors[$key] ?? null;
     }
 
     /**
@@ -2717,7 +2662,7 @@ class SimplePie
      * @since 1.1
      * @return array<Author>|null List of {@see Author} objects
      */
-    public function get_contributors()
+    public function get_contributors(): ?array
     {
         $contributors = [];
         foreach ((array) $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'contributor') as $contributor) {
@@ -2775,11 +2720,8 @@ class SimplePie
     public function get_link(int $key = 0, string $rel = 'alternate')
     {
         $links = $this->get_links($rel);
-        if (isset($links[$key])) {
-            return $links[$key];
-        }
 
-        return null;
+        return $links[$key] ?? null;
     }
 
     /**
@@ -2814,7 +2756,7 @@ class SimplePie
             if ($links = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'link')) {
                 foreach ($links as $link) {
                     if (isset($link['attribs']['']['href'])) {
-                        $link_rel = (isset($link['attribs']['']['rel'])) ? $link['attribs']['']['rel'] : 'alternate';
+                        $link_rel = $link['attribs']['']['rel'] ?? 'alternate';
                         $this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['href'], self::CONSTRUCT_IRI, $this->get_base($link));
                     }
                 }
@@ -2822,7 +2764,7 @@ class SimplePie
             if ($links = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'link')) {
                 foreach ($links as $link) {
                     if (isset($link['attribs']['']['href'])) {
-                        $link_rel = (isset($link['attribs']['']['rel'])) ? $link['attribs']['']['rel'] : 'alternate';
+                        $link_rel = $link['attribs']['']['rel'] ?? 'alternate';
                         $this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['href'], self::CONSTRUCT_IRI, $this->get_base($link));
                     }
                 }
@@ -2865,11 +2807,7 @@ class SimplePie
             }
         }
 
-        if (isset($this->data['links'][$rel])) {
-            return $this->data['links'][$rel];
-        }
-
-        return null;
+        return $this->data['links'][$rel] ?? null;
     }
 
     /**
@@ -2893,21 +2831,29 @@ class SimplePie
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'subtitle')) {
             return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'tagline')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'tagline')) {
             return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_10, 'description')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_RSS_10, 'description')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_090, 'description')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_RSS_090, 'description')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'description')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'description')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_HTML, $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_DC_11, 'description')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_DC_11, 'description')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_DC_10, 'description')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_DC_10, 'description')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ITUNES, 'summary')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_ITUNES, 'summary')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_HTML, $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ITUNES, 'subtitle')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_ITUNES, 'subtitle')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_HTML, $this->get_base($return[0]));
         }
 
@@ -2926,13 +2872,17 @@ class SimplePie
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'rights')) {
             return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'copyright')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'copyright')) {
             return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'copyright')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'copyright')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_DC_11, 'rights')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_DC_11, 'rights')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_DC_10, 'rights')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_DC_10, 'rights')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
         }
 
@@ -2951,17 +2901,23 @@ class SimplePie
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'language')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_DC_11, 'language')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_DC_11, 'language')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_DC_10, 'language')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_DC_10, 'language')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif (isset($this->data['child'][self::NAMESPACE_ATOM_10]['feed'][0]['xml_lang'])) {
+        }
+        if (isset($this->data['child'][self::NAMESPACE_ATOM_10]['feed'][0]['xml_lang'])) {
             return $this->sanitize($this->data['child'][self::NAMESPACE_ATOM_10]['feed'][0]['xml_lang'], self::CONSTRUCT_TEXT);
-        } elseif (isset($this->data['child'][self::NAMESPACE_ATOM_03]['feed'][0]['xml_lang'])) {
+        }
+        if (isset($this->data['child'][self::NAMESPACE_ATOM_03]['feed'][0]['xml_lang'])) {
             return $this->sanitize($this->data['child'][self::NAMESPACE_ATOM_03]['feed'][0]['xml_lang'], self::CONSTRUCT_TEXT);
-        } elseif (isset($this->data['child'][self::NAMESPACE_RDF]['RDF'][0]['xml_lang'])) {
+        }
+        if (isset($this->data['child'][self::NAMESPACE_RDF]['RDF'][0]['xml_lang'])) {
             return $this->sanitize($this->data['child'][self::NAMESPACE_RDF]['RDF'][0]['xml_lang'], self::CONSTRUCT_TEXT);
-        } elseif (isset($this->data['headers']['content-language'])) {
+        }
+        if (isset($this->data['headers']['content-language'])) {
             return $this->sanitize($this->data['headers']['content-language'], self::CONSTRUCT_TEXT);
         }
 
@@ -2978,13 +2934,13 @@ class SimplePie
      * @since 1.0
      * @link http://www.w3.org/2003/01/geo/ W3C WGS84 Basic Geo
      * @link http://www.georss.org/ GeoRSS
-     * @return float|null
      */
-    public function get_latitude()
+    public function get_latitude(): ?float
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_W3C_BASIC_GEO, 'lat')) {
             return (float) $return[0]['data'];
-        } elseif (($return = $this->get_channel_tags(self::NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match)) {
+        }
+        if (($return = $this->get_channel_tags(self::NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match)) {
             return (float) $match[1];
         }
 
@@ -3001,15 +2957,16 @@ class SimplePie
      * @since 1.0
      * @link http://www.w3.org/2003/01/geo/ W3C WGS84 Basic Geo
      * @link http://www.georss.org/ GeoRSS
-     * @return float|null
      */
-    public function get_longitude()
+    public function get_longitude(): ?float
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_W3C_BASIC_GEO, 'long')) {
             return (float) $return[0]['data'];
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_W3C_BASIC_GEO, 'lon')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_W3C_BASIC_GEO, 'lon')) {
             return (float) $return[0]['data'];
-        } elseif (($return = $this->get_channel_tags(self::NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match)) {
+        }
+        if (($return = $this->get_channel_tags(self::NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match)) {
             return (float) $match[2];
         }
 
@@ -3029,13 +2986,17 @@ class SimplePie
     {
         if ($return = $this->get_image_tags(self::NAMESPACE_RSS_10, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_image_tags(self::NAMESPACE_RSS_090, 'title')) {
+        }
+        if ($return = $this->get_image_tags(self::NAMESPACE_RSS_090, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'title')) {
+        }
+        if ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_image_tags(self::NAMESPACE_DC_11, 'title')) {
+        }
+        if ($return = $this->get_image_tags(self::NAMESPACE_DC_11, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_image_tags(self::NAMESPACE_DC_10, 'title')) {
+        }
+        if ($return = $this->get_image_tags(self::NAMESPACE_DC_10, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
         }
 
@@ -3057,21 +3018,25 @@ class SimplePie
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_ITUNES, 'image')) {
             return $this->sanitize($return[0]['attribs']['']['href'], self::CONSTRUCT_IRI);
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'logo')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'logo')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_IRI, $this->get_base($return[0]));
-        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'icon')) {
+        }
+        if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'icon')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_IRI, $this->get_base($return[0]));
-        } elseif ($return = $this->get_image_tags(self::NAMESPACE_RSS_10, 'url')) {
+        }
+        if ($return = $this->get_image_tags(self::NAMESPACE_RSS_10, 'url')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_IRI, $this->get_base($return[0]));
-        } elseif ($return = $this->get_image_tags(self::NAMESPACE_RSS_090, 'url')) {
+        }
+        if ($return = $this->get_image_tags(self::NAMESPACE_RSS_090, 'url')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_IRI, $this->get_base($return[0]));
-        } elseif ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
+        }
+        if ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_IRI, $this->get_base($return[0]));
         }
 
         return null;
     }
-
 
     /**
      * Get the feed logo's link
@@ -3088,9 +3053,11 @@ class SimplePie
     {
         if ($return = $this->get_image_tags(self::NAMESPACE_RSS_10, 'link')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_IRI, $this->get_base($return[0]));
-        } elseif ($return = $this->get_image_tags(self::NAMESPACE_RSS_090, 'link')) {
+        }
+        if ($return = $this->get_image_tags(self::NAMESPACE_RSS_090, 'link')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_IRI, $this->get_base($return[0]));
-        } elseif ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'link')) {
+        }
+        if ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'link')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_IRI, $this->get_base($return[0]));
         }
 
@@ -3104,14 +3071,13 @@ class SimplePie
      *
      * Uses `<image><width>` or defaults to 88 if no width is specified and
      * the feed is an RSS 2.0 feed.
-     *
-     * @return int|null
      */
-    public function get_image_width()
+    public function get_image_width(): ?int
     {
         if ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'width')) {
             return intval($return[0]['data']);
-        } elseif ($this->get_type() & self::TYPE_RSS_SYNDICATION && $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
+        }
+        if ($this->get_type() & self::TYPE_RSS_SYNDICATION && $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
             return 88;
         }
 
@@ -3125,14 +3091,13 @@ class SimplePie
      *
      * Uses `<image><height>` or defaults to 31 if no height is specified and
      * the feed is an RSS 2.0 feed.
-     *
-     * @return int|null
      */
-    public function get_image_height()
+    public function get_image_height(): ?int
     {
         if ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'height')) {
             return intval($return[0]['data']);
-        } elseif ($this->get_type() & self::TYPE_RSS_SYNDICATION && $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
+        }
+        if ($this->get_type() & self::TYPE_RSS_SYNDICATION && $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
             return 31;
         }
 
@@ -3148,7 +3113,7 @@ class SimplePie
      * @param int $max Maximum value to return. 0 for no limit
      * @return int Number of items in the feed
      */
-    public function get_item_quantity(int $max = 0)
+    public function get_item_quantity(int $max = 0): int
     {
         $qty = count($this->get_items());
         if ($max === 0) {
@@ -3173,11 +3138,8 @@ class SimplePie
     public function get_item(int $key = 0)
     {
         $items = $this->get_items();
-        if (isset($items[$key])) {
-            return $items[$key];
-        }
 
-        return null;
+        return $items[$key] ?? null;
     }
 
     /**
@@ -3262,9 +3224,8 @@ class SimplePie
      *
      * @deprecated Use your own favicon handling instead
      * @param string|false $page
-     * @return bool
      */
-    public function set_favicon_handler($page = false, string $qs = 'i')
+    public function set_favicon_handler($page = false, string $qs = 'i'): bool
     {
         trigger_error('Favicon handling has been removed since SimplePie 1.3, please use your own handling', \E_USER_DEPRECATED);
         return false;
@@ -3329,11 +3290,9 @@ class SimplePie
      * Sorting callback for items
      *
      * @access private
-     * @param Item $a
-     * @param Item $b
      * @return -1|0|1
      */
-    public static function sort_items(Item $a, Item $b)
+    public static function sort_items(Item $a, Item $b): int
     {
         $a_date = $a->get_date('U');
         $b_date = $b->get_date('U');
@@ -3363,7 +3322,7 @@ class SimplePie
      * @param int $limit Maximum number of items per feed
      * @return array<Item>
      */
-    public static function merge_items(array $urls, int $start = 0, int $end = 0, int $limit = 0)
+    public static function merge_items(array $urls, int $start = 0, int $end = 0, int $limit = 0): array
     {
         if (count($urls) > 0) {
             $items = [];
@@ -3410,7 +3369,7 @@ class SimplePie
         }
 
         if (count($linkHeader) > 0) {
-            $file = $file->with_header('link', $linkHeader);
+            return $file->with_header('link', $linkHeader);
         }
 
         return $file;
@@ -3420,8 +3379,6 @@ class SimplePie
      * Get a DataCache
      *
      * @param string $feed_url Only needed for BC, can be removed in SimplePie 2.0.0
-     *
-     * @return DataCache
      */
     private function get_cache(string $feed_url = ''): DataCache
     {
@@ -3430,7 +3387,7 @@ class SimplePie
             $cache = $this->registry->call(Cache::class, 'get_handler', [
                 $this->cache_location,
                 $this->get_cache_filename($feed_url),
-                Base::TYPE_FEED
+                Base::TYPE_FEED,
             ]);
 
             return new BaseDataCache($cache);
@@ -3462,4 +3419,4 @@ class SimplePie
     }
 }
 
-class_alias('SimplePie\SimplePie', 'SimplePie');
+class_alias(\SimplePie\SimplePie::class, 'SimplePie');

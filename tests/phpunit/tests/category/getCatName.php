@@ -1,28 +1,31 @@
 <?php
+
+declare(strict_types=1);
 /**
  * @group taxonomy
  * @group category
  *
  * @covers ::get_cat_name
  */
-class Tests_Category_GetCatName extends WP_UnitTestCase {
+class Tests_Category_GetCatName extends WP_UnitTestCase
+{
+    /**
+     * Validate get_cat_name function
+     */
+    public function test_get_cat_name()
+    {
 
-	/**
-	 * Validate get_cat_name function
-	 */
-	public function test_get_cat_name() {
+        // Create test category.
+        $testcat = self::factory()->category->create_and_get(
+            [
+                'slug' => 'testcat',
+                'name' => 'Test Category 1',
+            ]
+        );
 
-		// Create test category.
-		$testcat = self::factory()->category->create_and_get(
-			array(
-				'slug' => 'testcat',
-				'name' => 'Test Category 1',
-			)
-		);
-
-		// Validate.
-		$this->assertSame( $testcat->name, get_cat_name( $testcat->term_id ) );
-		$this->assertSame( '', get_cat_name( -1 ) );
-		$this->assertSame( '', get_cat_name( $testcat->term_id + 100 ) );
-	}
+        // Validate.
+        $this->assertSame($testcat->name, get_cat_name($testcat->term_id));
+        $this->assertSame('', get_cat_name(-1));
+        $this->assertSame('', get_cat_name($testcat->term_id + 100));
+    }
 }

@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Restriction;
 
-class_exists('SimplePie\Restriction');
+class_exists(\SimplePie\Restriction::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Restriction" class is deprecated since SimplePie 1.7.0, use "SimplePie\Restriction" instead.'), \E_USER_DEPRECATED);
 

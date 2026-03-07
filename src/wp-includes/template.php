@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Template loading functions.
  *
@@ -20,87 +22,88 @@
  * @param string[] $templates An optional list of template candidates.
  * @return string Full path to template file.
  */
-function get_query_template( $type, $templates = array() ) {
-	$type = preg_replace( '|[^a-z0-9-]+|', '', $type );
+function get_query_template($type, $templates = [])
+{
+    $type = preg_replace('|[^a-z0-9-]+|', '', $type);
 
-	if ( empty( $templates ) ) {
-		$templates = array( "{$type}.php" );
-	}
+    if (empty($templates)) {
+        $templates = [ "{$type}.php" ];
+    }
 
-	/**
-	 * Filters the list of template filenames that are searched for when retrieving a template to use.
-	 *
-	 * The dynamic portion of the hook name, `$type`, refers to the filename -- minus the file
-	 * extension and any non-alphanumeric characters delimiting words -- of the file to load.
-	 * The last element in the array should always be the fallback template for this query type.
-	 *
-	 * Possible hook names include:
-	 *
-	 *  - `404_template_hierarchy`
-	 *  - `archive_template_hierarchy`
-	 *  - `attachment_template_hierarchy`
-	 *  - `author_template_hierarchy`
-	 *  - `category_template_hierarchy`
-	 *  - `date_template_hierarchy`
-	 *  - `embed_template_hierarchy`
-	 *  - `frontpage_template_hierarchy`
-	 *  - `home_template_hierarchy`
-	 *  - `index_template_hierarchy`
-	 *  - `page_template_hierarchy`
-	 *  - `paged_template_hierarchy`
-	 *  - `privacypolicy_template_hierarchy`
-	 *  - `search_template_hierarchy`
-	 *  - `single_template_hierarchy`
-	 *  - `singular_template_hierarchy`
-	 *  - `tag_template_hierarchy`
-	 *  - `taxonomy_template_hierarchy`
-	 *
-	 * @since 4.7.0
-	 *
-	 * @param string[] $templates A list of template candidates, in descending order of priority.
-	 */
-	$templates = apply_filters( "{$type}_template_hierarchy", $templates );
+    /**
+     * Filters the list of template filenames that are searched for when retrieving a template to use.
+     *
+     * The dynamic portion of the hook name, `$type`, refers to the filename -- minus the file
+     * extension and any non-alphanumeric characters delimiting words -- of the file to load.
+     * The last element in the array should always be the fallback template for this query type.
+     *
+     * Possible hook names include:
+     *
+     *  - `404_template_hierarchy`
+     *  - `archive_template_hierarchy`
+     *  - `attachment_template_hierarchy`
+     *  - `author_template_hierarchy`
+     *  - `category_template_hierarchy`
+     *  - `date_template_hierarchy`
+     *  - `embed_template_hierarchy`
+     *  - `frontpage_template_hierarchy`
+     *  - `home_template_hierarchy`
+     *  - `index_template_hierarchy`
+     *  - `page_template_hierarchy`
+     *  - `paged_template_hierarchy`
+     *  - `privacypolicy_template_hierarchy`
+     *  - `search_template_hierarchy`
+     *  - `single_template_hierarchy`
+     *  - `singular_template_hierarchy`
+     *  - `tag_template_hierarchy`
+     *  - `taxonomy_template_hierarchy`
+     *
+     * @since 4.7.0
+     *
+     * @param string[] $templates A list of template candidates, in descending order of priority.
+     */
+    $templates = apply_filters("{$type}_template_hierarchy", $templates);
 
-	$template = locate_template( $templates );
+    $template = locate_template($templates);
 
-	$template = locate_block_template( $template, $type, $templates );
+    $template = locate_block_template($template, $type, $templates);
 
-	/**
-	 * Filters the path of the queried template by type.
-	 *
-	 * The dynamic portion of the hook name, `$type`, refers to the filename -- minus the file
-	 * extension and any non-alphanumeric characters delimiting words -- of the file to load.
-	 * This hook also applies to various types of files loaded as part of the Template Hierarchy.
-	 *
-	 * Possible hook names include:
-	 *
-	 *  - `404_template`
-	 *  - `archive_template`
-	 *  - `attachment_template`
-	 *  - `author_template`
-	 *  - `category_template`
-	 *  - `date_template`
-	 *  - `embed_template`
-	 *  - `frontpage_template`
-	 *  - `home_template`
-	 *  - `index_template`
-	 *  - `page_template`
-	 *  - `paged_template`
-	 *  - `privacypolicy_template`
-	 *  - `search_template`
-	 *  - `single_template`
-	 *  - `singular_template`
-	 *  - `tag_template`
-	 *  - `taxonomy_template`
-	 *
-	 * @since 1.5.0
-	 * @since 4.8.0 The `$type` and `$templates` parameters were added.
-	 *
-	 * @param string   $template  Path to the template. See locate_template().
-	 * @param string   $type      Sanitized filename without extension.
-	 * @param string[] $templates A list of template candidates, in descending order of priority.
-	 */
-	return apply_filters( "{$type}_template", $template, $type, $templates );
+    /**
+     * Filters the path of the queried template by type.
+     *
+     * The dynamic portion of the hook name, `$type`, refers to the filename -- minus the file
+     * extension and any non-alphanumeric characters delimiting words -- of the file to load.
+     * This hook also applies to various types of files loaded as part of the Template Hierarchy.
+     *
+     * Possible hook names include:
+     *
+     *  - `404_template`
+     *  - `archive_template`
+     *  - `attachment_template`
+     *  - `author_template`
+     *  - `category_template`
+     *  - `date_template`
+     *  - `embed_template`
+     *  - `frontpage_template`
+     *  - `home_template`
+     *  - `index_template`
+     *  - `page_template`
+     *  - `paged_template`
+     *  - `privacypolicy_template`
+     *  - `search_template`
+     *  - `single_template`
+     *  - `singular_template`
+     *  - `tag_template`
+     *  - `taxonomy_template`
+     *
+     * @since 1.5.0
+     * @since 4.8.0 The `$type` and `$templates` parameters were added.
+     *
+     * @param string   $template  Path to the template. See locate_template().
+     * @param string   $type      Sanitized filename without extension.
+     * @param string[] $templates A list of template candidates, in descending order of priority.
+     */
+    return apply_filters("{$type}_template", $template, $type, $templates);
 }
 
 /**
@@ -115,8 +118,9 @@ function get_query_template( $type, $templates = array() ) {
  *
  * @return string Full path to index template file.
  */
-function get_index_template() {
-	return get_query_template( 'index' );
+function get_index_template()
+{
+    return get_query_template('index');
 }
 
 /**
@@ -131,8 +135,9 @@ function get_index_template() {
  *
  * @return string Full path to 404 template file.
  */
-function get_404_template() {
-	return get_query_template( '404' );
+function get_404_template()
+{
+    return get_query_template('404');
 }
 
 /**
@@ -147,18 +152,19 @@ function get_404_template() {
  *
  * @return string Full path to archive template file.
  */
-function get_archive_template() {
-	$post_types = array_filter( (array) get_query_var( 'post_type' ) );
+function get_archive_template()
+{
+    $post_types = array_filter((array) get_query_var('post_type'));
 
-	$templates = array();
+    $templates = [];
 
-	if ( count( $post_types ) === 1 ) {
-		$post_type   = reset( $post_types );
-		$templates[] = "archive-{$post_type}.php";
-	}
-	$templates[] = 'archive.php';
+    if (count($post_types) === 1) {
+        $post_type   = reset($post_types);
+        $templates[] = "archive-{$post_type}.php";
+    }
+    $templates[] = 'archive.php';
 
-	return get_query_template( 'archive', $templates );
+    return get_query_template('archive', $templates);
 }
 
 /**
@@ -173,18 +179,19 @@ function get_archive_template() {
  *
  * @return string Full path to archive template file.
  */
-function get_post_type_archive_template() {
-	$post_type = get_query_var( 'post_type' );
-	if ( is_array( $post_type ) ) {
-		$post_type = reset( $post_type );
-	}
+function get_post_type_archive_template()
+{
+    $post_type = get_query_var('post_type');
+    if (is_array($post_type)) {
+        $post_type = reset($post_type);
+    }
 
-	$obj = get_post_type_object( $post_type );
-	if ( ! ( $obj instanceof WP_Post_Type ) || ! $obj->has_archive ) {
-		return '';
-	}
+    $obj = get_post_type_object($post_type);
+    if (! ($obj instanceof WP_Post_Type) || ! $obj->has_archive) {
+        return '';
+    }
 
-	return get_archive_template();
+    return get_archive_template();
 }
 
 /**
@@ -211,18 +218,19 @@ function get_post_type_archive_template() {
  *
  * @return string Full path to author template file.
  */
-function get_author_template() {
-	$author = get_queried_object();
+function get_author_template()
+{
+    $author = get_queried_object();
 
-	$templates = array();
+    $templates = [];
 
-	if ( $author instanceof WP_User ) {
-		$templates[] = "author-{$author->user_nicename}.php";
-		$templates[] = "author-{$author->ID}.php";
-	}
-	$templates[] = 'author.php';
+    if ($author instanceof WP_User) {
+        $templates[] = "author-{$author->user_nicename}.php";
+        $templates[] = "author-{$author->ID}.php";
+    }
+    $templates[] = 'author.php';
 
-	return get_query_template( 'author', $templates );
+    return get_query_template('author', $templates);
 }
 
 /**
@@ -251,24 +259,25 @@ function get_author_template() {
  *
  * @return string Full path to category template file.
  */
-function get_category_template() {
-	$category = get_queried_object();
+function get_category_template()
+{
+    $category = get_queried_object();
 
-	$templates = array();
+    $templates = [];
 
-	if ( ! empty( $category->slug ) ) {
+    if (! empty($category->slug)) {
 
-		$slug_decoded = urldecode( $category->slug );
-		if ( $slug_decoded !== $category->slug ) {
-			$templates[] = "category-{$slug_decoded}.php";
-		}
+        $slug_decoded = urldecode($category->slug);
+        if ($slug_decoded !== $category->slug) {
+            $templates[] = "category-{$slug_decoded}.php";
+        }
 
-		$templates[] = "category-{$category->slug}.php";
-		$templates[] = "category-{$category->term_id}.php";
-	}
-	$templates[] = 'category.php';
+        $templates[] = "category-{$category->slug}.php";
+        $templates[] = "category-{$category->term_id}.php";
+    }
+    $templates[] = 'category.php';
 
-	return get_query_template( 'category', $templates );
+    return get_query_template('category', $templates);
 }
 
 /**
@@ -297,24 +306,25 @@ function get_category_template() {
  *
  * @return string Full path to tag template file.
  */
-function get_tag_template() {
-	$tag = get_queried_object();
+function get_tag_template()
+{
+    $tag = get_queried_object();
 
-	$templates = array();
+    $templates = [];
 
-	if ( ! empty( $tag->slug ) ) {
+    if (! empty($tag->slug)) {
 
-		$slug_decoded = urldecode( $tag->slug );
-		if ( $slug_decoded !== $tag->slug ) {
-			$templates[] = "tag-{$slug_decoded}.php";
-		}
+        $slug_decoded = urldecode($tag->slug);
+        if ($slug_decoded !== $tag->slug) {
+            $templates[] = "tag-{$slug_decoded}.php";
+        }
 
-		$templates[] = "tag-{$tag->slug}.php";
-		$templates[] = "tag-{$tag->term_id}.php";
-	}
-	$templates[] = 'tag.php';
+        $templates[] = "tag-{$tag->slug}.php";
+        $templates[] = "tag-{$tag->term_id}.php";
+    }
+    $templates[] = 'tag.php';
 
-	return get_query_template( 'tag', $templates );
+    return get_query_template('tag', $templates);
 }
 
 /**
@@ -346,26 +356,27 @@ function get_tag_template() {
  *
  * @return string Full path to custom taxonomy term template file.
  */
-function get_taxonomy_template() {
-	$term = get_queried_object();
+function get_taxonomy_template()
+{
+    $term = get_queried_object();
 
-	$templates = array();
+    $templates = [];
 
-	if ( ! empty( $term->slug ) ) {
-		$taxonomy = $term->taxonomy;
+    if (! empty($term->slug)) {
+        $taxonomy = $term->taxonomy;
 
-		$slug_decoded = urldecode( $term->slug );
-		if ( $slug_decoded !== $term->slug ) {
-			$templates[] = "taxonomy-$taxonomy-{$slug_decoded}.php";
-		}
+        $slug_decoded = urldecode($term->slug);
+        if ($slug_decoded !== $term->slug) {
+            $templates[] = "taxonomy-$taxonomy-{$slug_decoded}.php";
+        }
 
-		$templates[] = "taxonomy-$taxonomy-{$term->slug}.php";
-		$templates[] = "taxonomy-$taxonomy-{$term->term_id}.php";
-		$templates[] = "taxonomy-$taxonomy.php";
-	}
-	$templates[] = 'taxonomy.php';
+        $templates[] = "taxonomy-$taxonomy-{$term->slug}.php";
+        $templates[] = "taxonomy-$taxonomy-{$term->term_id}.php";
+        $templates[] = "taxonomy-$taxonomy.php";
+    }
+    $templates[] = 'taxonomy.php';
 
-	return get_query_template( 'taxonomy', $templates );
+    return get_query_template('taxonomy', $templates);
 }
 
 /**
@@ -380,8 +391,9 @@ function get_taxonomy_template() {
  *
  * @return string Full path to date template file.
  */
-function get_date_template() {
-	return get_query_template( 'date' );
+function get_date_template()
+{
+    return get_query_template('date');
 }
 
 /**
@@ -396,10 +408,11 @@ function get_date_template() {
  *
  * @return string Full path to home template file.
  */
-function get_home_template() {
-	$templates = array( 'home.php', 'index.php' );
+function get_home_template()
+{
+    $templates = [ 'home.php', 'index.php' ];
 
-	return get_query_template( 'home', $templates );
+    return get_query_template('home', $templates);
 }
 
 /**
@@ -414,10 +427,11 @@ function get_home_template() {
  *
  * @return string Full path to front page template file.
  */
-function get_front_page_template() {
-	$templates = array( 'front-page.php' );
+function get_front_page_template()
+{
+    $templates = [ 'front-page.php' ];
 
-	return get_query_template( 'frontpage', $templates );
+    return get_query_template('frontpage', $templates);
 }
 
 /**
@@ -432,10 +446,11 @@ function get_front_page_template() {
  *
  * @return string Full path to privacy policy template file.
  */
-function get_privacy_policy_template() {
-	$templates = array( 'privacy-policy.php' );
+function get_privacy_policy_template()
+{
+    $templates = [ 'privacy-policy.php' ];
 
-	return get_query_template( 'privacypolicy', $templates );
+    return get_query_template('privacypolicy', $templates);
 }
 
 /**
@@ -468,39 +483,40 @@ function get_privacy_policy_template() {
  *
  * @return string Full path to page template file.
  */
-function get_page_template() {
-	$id       = get_queried_object_id();
-	$template = get_page_template_slug();
-	$pagename = get_query_var( 'pagename' );
+function get_page_template()
+{
+    $id       = get_queried_object_id();
+    $template = get_page_template_slug();
+    $pagename = get_query_var('pagename');
 
-	if ( ! $pagename && $id ) {
-		/*
-		 * If a static page is set as the front page, $pagename will not be set.
-		 * Retrieve it from the queried object.
-		 */
-		$post = get_queried_object();
-		if ( $post ) {
-			$pagename = $post->post_name;
-		}
-	}
+    if (! $pagename && $id) {
+        /*
+         * If a static page is set as the front page, $pagename will not be set.
+         * Retrieve it from the queried object.
+         */
+        $post = get_queried_object();
+        if ($post) {
+            $pagename = $post->post_name;
+        }
+    }
 
-	$templates = array();
-	if ( $template && 0 === validate_file( $template ) ) {
-		$templates[] = $template;
-	}
-	if ( $pagename ) {
-		$pagename_decoded = urldecode( $pagename );
-		if ( $pagename_decoded !== $pagename ) {
-			$templates[] = "page-{$pagename_decoded}.php";
-		}
-		$templates[] = "page-{$pagename}.php";
-	}
-	if ( $id ) {
-		$templates[] = "page-{$id}.php";
-	}
-	$templates[] = 'page.php';
+    $templates = [];
+    if ($template && 0 === validate_file($template)) {
+        $templates[] = $template;
+    }
+    if ($pagename) {
+        $pagename_decoded = urldecode($pagename);
+        if ($pagename_decoded !== $pagename) {
+            $templates[] = "page-{$pagename_decoded}.php";
+        }
+        $templates[] = "page-{$pagename}.php";
+    }
+    if ($id) {
+        $templates[] = "page-{$id}.php";
+    }
+    $templates[] = 'page.php';
 
-	return get_query_template( 'page', $templates );
+    return get_query_template('page', $templates);
 }
 
 /**
@@ -515,8 +531,9 @@ function get_page_template() {
  *
  * @return string Full path to search template file.
  */
-function get_search_template() {
-	return get_query_template( 'search' );
+function get_search_template()
+{
+    return get_query_template('search');
 }
 
 /**
@@ -550,29 +567,30 @@ function get_search_template() {
  *
  * @return string Full path to single template file.
  */
-function get_single_template() {
-	$object = get_queried_object();
+function get_single_template()
+{
+    $object = get_queried_object();
 
-	$templates = array();
+    $templates = [];
 
-	if ( ! empty( $object->post_type ) ) {
-		$template = get_page_template_slug( $object );
-		if ( $template && 0 === validate_file( $template ) ) {
-			$templates[] = $template;
-		}
+    if (! empty($object->post_type)) {
+        $template = get_page_template_slug($object);
+        if ($template && 0 === validate_file($template)) {
+            $templates[] = $template;
+        }
 
-		$name_decoded = urldecode( $object->post_name );
-		if ( $name_decoded !== $object->post_name ) {
-			$templates[] = "single-{$object->post_type}-{$name_decoded}.php";
-		}
+        $name_decoded = urldecode($object->post_name);
+        if ($name_decoded !== $object->post_name) {
+            $templates[] = "single-{$object->post_type}-{$name_decoded}.php";
+        }
 
-		$templates[] = "single-{$object->post_type}-{$object->post_name}.php";
-		$templates[] = "single-{$object->post_type}.php";
-	}
+        $templates[] = "single-{$object->post_type}-{$object->post_name}.php";
+        $templates[] = "single-{$object->post_type}.php";
+    }
 
-	$templates[] = 'single.php';
+    $templates[] = 'single.php';
 
-	return get_query_template( 'single', $templates );
+    return get_query_template('single', $templates);
 }
 
 /**
@@ -599,22 +617,23 @@ function get_single_template() {
  *
  * @return string Full path to embed template file.
  */
-function get_embed_template() {
-	$object = get_queried_object();
+function get_embed_template()
+{
+    $object = get_queried_object();
 
-	$templates = array();
+    $templates = [];
 
-	if ( ! empty( $object->post_type ) ) {
-		$post_format = get_post_format( $object );
-		if ( $post_format ) {
-			$templates[] = "embed-{$object->post_type}-{$post_format}.php";
-		}
-		$templates[] = "embed-{$object->post_type}.php";
-	}
+    if (! empty($object->post_type)) {
+        $post_format = get_post_format($object);
+        if ($post_format) {
+            $templates[] = "embed-{$object->post_type}-{$post_format}.php";
+        }
+        $templates[] = "embed-{$object->post_type}.php";
+    }
 
-	$templates[] = 'embed.php';
+    $templates[] = 'embed.php';
 
-	return get_query_template( 'embed', $templates );
+    return get_query_template('embed', $templates);
 }
 
 /**
@@ -629,8 +648,9 @@ function get_embed_template() {
  *
  * @return string Full path to singular template file.
  */
-function get_singular_template() {
-	return get_query_template( 'singular' );
+function get_singular_template()
+{
+    return get_query_template('singular');
 }
 
 /**
@@ -660,27 +680,28 @@ function get_singular_template() {
  *
  * @return string Full path to attachment template file.
  */
-function get_attachment_template() {
-	$attachment = get_queried_object();
+function get_attachment_template()
+{
+    $attachment = get_queried_object();
 
-	$templates = array();
+    $templates = [];
 
-	if ( $attachment ) {
-		if ( str_contains( $attachment->post_mime_type, '/' ) ) {
-			list( $type, $subtype ) = explode( '/', $attachment->post_mime_type );
-		} else {
-			list( $type, $subtype ) = array( $attachment->post_mime_type, '' );
-		}
+    if ($attachment) {
+        if (str_contains($attachment->post_mime_type, '/')) {
+            list($type, $subtype) = explode('/', $attachment->post_mime_type);
+        } else {
+            list($type, $subtype) = [ $attachment->post_mime_type, '' ];
+        }
 
-		if ( ! empty( $subtype ) ) {
-			$templates[] = "{$type}-{$subtype}.php";
-			$templates[] = "{$subtype}.php";
-		}
-		$templates[] = "{$type}.php";
-	}
-	$templates[] = 'attachment.php';
+        if (! empty($subtype)) {
+            $templates[] = "{$type}-{$subtype}.php";
+            $templates[] = "{$subtype}.php";
+        }
+        $templates[] = "{$type}.php";
+    }
+    $templates[] = 'attachment.php';
 
-	return get_query_template( 'attachment', $templates );
+    return get_query_template('attachment', $templates);
 }
 
 /**
@@ -691,11 +712,12 @@ function get_attachment_template() {
  * @global string $wp_stylesheet_path Path to current theme's stylesheet directory.
  * @global string $wp_template_path   Path to current theme's template directory.
  */
-function wp_set_template_globals() {
-	global $wp_stylesheet_path, $wp_template_path;
+function wp_set_template_globals()
+{
+    global $wp_stylesheet_path, $wp_template_path;
 
-	$wp_stylesheet_path = get_stylesheet_directory();
-	$wp_template_path   = get_template_directory();
+    $wp_stylesheet_path = get_stylesheet_directory();
+    $wp_template_path   = get_template_directory();
 }
 
 /**
@@ -719,37 +741,38 @@ function wp_set_template_globals() {
  *                                     Default empty array.
  * @return string The template filename if one is located.
  */
-function locate_template( $template_names, $load = false, $load_once = true, $args = array() ) {
-	global $wp_stylesheet_path, $wp_template_path;
+function locate_template($template_names, $load = false, $load_once = true, $args = [])
+{
+    global $wp_stylesheet_path, $wp_template_path;
 
-	if ( ! isset( $wp_stylesheet_path ) || ! isset( $wp_template_path ) ) {
-		wp_set_template_globals();
-	}
+    if (! isset($wp_stylesheet_path) || ! isset($wp_template_path)) {
+        wp_set_template_globals();
+    }
 
-	$is_child_theme = is_child_theme();
+    $is_child_theme = is_child_theme();
 
-	$located = '';
-	foreach ( (array) $template_names as $template_name ) {
-		if ( ! $template_name ) {
-			continue;
-		}
-		if ( file_exists( $wp_stylesheet_path . '/' . $template_name ) ) {
-			$located = $wp_stylesheet_path . '/' . $template_name;
-			break;
-		} elseif ( $is_child_theme && file_exists( $wp_template_path . '/' . $template_name ) ) {
-			$located = $wp_template_path . '/' . $template_name;
-			break;
-		} elseif ( file_exists( ABSPATH . WPINC . '/theme-compat/' . $template_name ) ) {
-			$located = ABSPATH . WPINC . '/theme-compat/' . $template_name;
-			break;
-		}
-	}
+    $located = '';
+    foreach ((array) $template_names as $template_name) {
+        if (! $template_name) {
+            continue;
+        }
+        if (file_exists($wp_stylesheet_path . '/' . $template_name)) {
+            $located = $wp_stylesheet_path . '/' . $template_name;
+            break;
+        } elseif ($is_child_theme && file_exists($wp_template_path . '/' . $template_name)) {
+            $located = $wp_template_path . '/' . $template_name;
+            break;
+        } elseif (file_exists(ABSPATH . WPINC . '/theme-compat/' . $template_name)) {
+            $located = ABSPATH . WPINC . '/theme-compat/' . $template_name;
+            break;
+        }
+    }
 
-	if ( $load && '' !== $located ) {
-		load_template( $located, $load_once, $args );
-	}
+    if ($load && '' !== $located) {
+        load_template($located, $load_once, $args);
+    }
 
-	return $located;
+    return $located;
 }
 
 /**
@@ -779,53 +802,54 @@ function locate_template( $template_names, $load = false, $load_once = true, $ar
  * @param array  $args           Optional. Additional arguments passed to the template.
  *                               Default empty array.
  */
-function load_template( $_template_file, $load_once = true, $args = array() ) {
-	global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
+function load_template($_template_file, $load_once = true, $args = [])
+{
+    global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
 
-	if ( is_array( $wp_query->query_vars ) ) {
-		/*
-		 * This use of extract() cannot be removed. There are many possible ways that
-		 * templates could depend on variables that it creates existing, and no way to
-		 * detect and deprecate it.
-		 *
-		 * Passing the EXTR_SKIP flag is the safest option, ensuring globals and
-		 * function variables cannot be overwritten.
-		 */
-		// phpcs:ignore WordPress.PHP.DontExtract.extract_extract
-		extract( $wp_query->query_vars, EXTR_SKIP );
-	}
+    if (is_array($wp_query->query_vars)) {
+        /*
+         * This use of extract() cannot be removed. There are many possible ways that
+         * templates could depend on variables that it creates existing, and no way to
+         * detect and deprecate it.
+         *
+         * Passing the EXTR_SKIP flag is the safest option, ensuring globals and
+         * function variables cannot be overwritten.
+         */
+        // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+        extract($wp_query->query_vars, EXTR_SKIP);
+    }
 
-	if ( isset( $s ) ) {
-		$s = esc_attr( $s ); // @phpstan-ignore variable.undefined (It's extracted from query vars.)
-	}
+    if (isset($s)) {
+        $s = esc_attr($s); // @phpstan-ignore variable.undefined (It's extracted from query vars.)
+    }
 
-	/**
-	 * Fires before a template file is loaded.
-	 *
-	 * @since 6.1.0
-	 *
-	 * @param string $_template_file The full path to the template file.
-	 * @param bool   $load_once      Whether to require_once or require.
-	 * @param array  $args           Additional arguments passed to the template.
-	 */
-	do_action( 'wp_before_load_template', $_template_file, $load_once, $args );
+    /**
+     * Fires before a template file is loaded.
+     *
+     * @since 6.1.0
+     *
+     * @param string $_template_file The full path to the template file.
+     * @param bool   $load_once      Whether to require_once or require.
+     * @param array  $args           Additional arguments passed to the template.
+     */
+    do_action('wp_before_load_template', $_template_file, $load_once, $args);
 
-	if ( $load_once ) {
-		require_once $_template_file;
-	} else {
-		require $_template_file;
-	}
+    if ($load_once) {
+        require_once $_template_file;
+    } else {
+        require $_template_file;
+    }
 
-	/**
-	 * Fires after a template file is loaded.
-	 *
-	 * @since 6.1.0
-	 *
-	 * @param string $_template_file The full path to the template file.
-	 * @param bool   $load_once      Whether to require_once or require.
-	 * @param array  $args           Additional arguments passed to the template.
-	 */
-	do_action( 'wp_after_load_template', $_template_file, $load_once, $args );
+    /**
+     * Fires after a template file is loaded.
+     *
+     * @since 6.1.0
+     *
+     * @param string $_template_file The full path to the template file.
+     * @param bool   $load_once      Whether to require_once or require.
+     * @param array  $args           Additional arguments passed to the template.
+     */
+    do_action('wp_after_load_template', $_template_file, $load_once, $args);
 }
 
 /**
@@ -839,22 +863,23 @@ function load_template( $_template_file, $load_once = true, $args = array() ) {
  *
  * @return bool Whether the template should be output-buffered for enhancement.
  */
-function wp_should_output_buffer_template_for_enhancement(): bool {
-	/**
-	 * Filters whether the template should be output-buffered for enhancement.
-	 *
-	 * By default, an output buffer is only started if a {@see 'wp_template_enhancement_output_buffer'} filter has been
-	 * added or if a plugin has added a {@see 'wp_finalized_template_enhancement_output_buffer'} action. For this
-	 * default to apply, either of the hooks must be added by the time the template is included at the
-	 * {@see 'wp_before_include_template'} action. This allows template responses to be streamed unless the there is
-	 * code which depends on an output buffer being opened. This filter allows a site to opt in to adding such template
-	 * enhancement filters later during the rendering of the template.
-	 *
-	 * @since 6.9.0
-	 *
-	 * @param bool $use_output_buffer Whether an output buffer is started.
-	 */
-	return (bool) apply_filters( 'wp_should_output_buffer_template_for_enhancement', has_filter( 'wp_template_enhancement_output_buffer' ) || has_action( 'wp_finalized_template_enhancement_output_buffer' ) );
+function wp_should_output_buffer_template_for_enhancement(): bool
+{
+    /**
+     * Filters whether the template should be output-buffered for enhancement.
+     *
+     * By default, an output buffer is only started if a {@see 'wp_template_enhancement_output_buffer'} filter has been
+     * added or if a plugin has added a {@see 'wp_finalized_template_enhancement_output_buffer'} action. For this
+     * default to apply, either of the hooks must be added by the time the template is included at the
+     * {@see 'wp_before_include_template'} action. This allows template responses to be streamed unless the there is
+     * code which depends on an output buffer being opened. This filter allows a site to opt in to adding such template
+     * enhancement filters later during the rendering of the template.
+     *
+     * @since 6.9.0
+     *
+     * @param bool $use_output_buffer Whether an output buffer is started.
+     */
+    return (bool) apply_filters('wp_should_output_buffer_template_for_enhancement', has_filter('wp_template_enhancement_output_buffer') || has_action('wp_finalized_template_enhancement_output_buffer'));
 }
 
 /**
@@ -866,45 +891,46 @@ function wp_should_output_buffer_template_for_enhancement(): bool {
  *
  * @return bool Whether the output buffer successfully started.
  */
-function wp_start_template_enhancement_output_buffer(): bool {
-	if ( ! wp_should_output_buffer_template_for_enhancement() ) {
-		return false;
-	}
+function wp_start_template_enhancement_output_buffer(): bool
+{
+    if (! wp_should_output_buffer_template_for_enhancement()) {
+        return false;
+    }
 
-	$started = ob_start(
-		'wp_finalize_template_enhancement_output_buffer',
-		0, // Unlimited buffer size so that entire output is passed to the filter.
-		/*
-		 * Instead of the default PHP_OUTPUT_HANDLER_STDFLAGS (cleanable, flushable, and removable) being used for
-		 * flags, the PHP_OUTPUT_HANDLER_FLUSHABLE flag must be omitted. If the buffer were flushable, then each time
-		 * that ob_flush() is called, a fragment of the output would be sent into the output buffer callback. This
-		 * output buffer is intended to capture the entire response for processing, as indicated by the chunk size of 0.
-		 * So the buffer does not allow flushing to ensure the entire buffer can be processed, such as for optimizing an
-		 * entire HTML document, where markup in the HEAD may need to be adjusted based on markup that appears late in
-		 * the BODY.
-		 *
-		 * If this ends up being problematic, then PHP_OUTPUT_HANDLER_FLUSHABLE could be added to the $flags and the
-		 * output buffer callback could check if the phase is PHP_OUTPUT_HANDLER_FLUSH and abort any subsequent
-		 * processing while also emitting a _doing_it_wrong().
-		 *
-		 * The output buffer needs to be removable because WordPress calls wp_ob_end_flush_all() and then calls
-		 * wp_cache_close(). If the buffers are not all flushed before wp_cache_close() is closed, then some output buffer
-		 * handlers (e.g. for caching plugins) may fail to be able to store the page output in the object cache.
-		 * See <https://github.com/WordPress/performance/pull/1317#issuecomment-2271955356>.
-		 */
-		PHP_OUTPUT_HANDLER_STDFLAGS ^ PHP_OUTPUT_HANDLER_FLUSHABLE
-	);
+    $started = ob_start(
+        'wp_finalize_template_enhancement_output_buffer',
+        0, // Unlimited buffer size so that entire output is passed to the filter.
+        /*
+         * Instead of the default PHP_OUTPUT_HANDLER_STDFLAGS (cleanable, flushable, and removable) being used for
+         * flags, the PHP_OUTPUT_HANDLER_FLUSHABLE flag must be omitted. If the buffer were flushable, then each time
+         * that ob_flush() is called, a fragment of the output would be sent into the output buffer callback. This
+         * output buffer is intended to capture the entire response for processing, as indicated by the chunk size of 0.
+         * So the buffer does not allow flushing to ensure the entire buffer can be processed, such as for optimizing an
+         * entire HTML document, where markup in the HEAD may need to be adjusted based on markup that appears late in
+         * the BODY.
+         *
+         * If this ends up being problematic, then PHP_OUTPUT_HANDLER_FLUSHABLE could be added to the $flags and the
+         * output buffer callback could check if the phase is PHP_OUTPUT_HANDLER_FLUSH and abort any subsequent
+         * processing while also emitting a _doing_it_wrong().
+         *
+         * The output buffer needs to be removable because WordPress calls wp_ob_end_flush_all() and then calls
+         * wp_cache_close(). If the buffers are not all flushed before wp_cache_close() is closed, then some output buffer
+         * handlers (e.g. for caching plugins) may fail to be able to store the page output in the object cache.
+         * See <https://github.com/WordPress/performance/pull/1317#issuecomment-2271955356>.
+         */
+        PHP_OUTPUT_HANDLER_STDFLAGS ^ PHP_OUTPUT_HANDLER_FLUSHABLE
+    );
 
-	if ( $started ) {
-		/**
-		 * Fires when the template enhancement output buffer has started.
-		 *
-		 * @since 6.9.0
-		 */
-		do_action( 'wp_template_enhancement_output_buffer_started' );
-	}
+    if ($started) {
+        /**
+         * Fires when the template enhancement output buffer has started.
+         *
+         * @since 6.9.0
+         */
+        do_action('wp_template_enhancement_output_buffer_started');
+    }
 
-	return $started;
+    return $started;
 }
 
 /**
@@ -921,197 +947,198 @@ function wp_start_template_enhancement_output_buffer(): bool {
  * @param int    $phase  Phase.
  * @return string Finalized output buffer.
  */
-function wp_finalize_template_enhancement_output_buffer( string $output, int $phase ): string {
-	// When the output is being cleaned (e.g. pending template is replaced with error page), do not send it through the filter.
-	if ( ( $phase & PHP_OUTPUT_HANDLER_CLEAN ) !== 0 ) {
-		return $output;
-	}
+function wp_finalize_template_enhancement_output_buffer(string $output, int $phase): string
+{
+    // When the output is being cleaned (e.g. pending template is replaced with error page), do not send it through the filter.
+    if (($phase & PHP_OUTPUT_HANDLER_CLEAN) !== 0) {
+        return $output;
+    }
 
-	// Detect if the response is an HTML content type.
-	$is_html_content_type = null;
-	$html_content_types   = array( 'text/html', 'application/xhtml+xml' );
-	foreach ( headers_list() as $header ) {
-		$header_parts = explode( ':', strtolower( $header ), 2 );
-		if (
-			count( $header_parts ) === 2 &&
-			'content-type' === $header_parts[0]
-		) {
-			/*
-			 * This is looking for very specific content types, therefore it
-			 * doesn’t need to fully parse the header’s value. Instead, it needs
-			 * only assert that the content type is one of the static HTML types.
-			 *
-			 * Example:
-			 *
-			 *     Content-Type: text/html; charset=utf8
-			 *     Content-Type: text/html  ;charset=latin4
-			 *     Content-Type:application/xhtml+xml
-			 */
-			$media_type           = trim( strtok( $header_parts[1], ';' ), " \t" );
-			$is_html_content_type = in_array( $media_type, $html_content_types, true );
-			break; // PHP only sends the first Content-Type header in the list.
-		}
-	}
-	if ( null === $is_html_content_type ) {
-		$is_html_content_type = in_array( ini_get( 'default_mimetype' ), $html_content_types, true );
-	}
+    // Detect if the response is an HTML content type.
+    $is_html_content_type = null;
+    $html_content_types   = [ 'text/html', 'application/xhtml+xml' ];
+    foreach (headers_list() as $header) {
+        $header_parts = explode(':', strtolower($header), 2);
+        if (
+            count($header_parts) === 2 &&
+            'content-type' === $header_parts[0]
+        ) {
+            /*
+             * This is looking for very specific content types, therefore it
+             * doesn’t need to fully parse the header’s value. Instead, it needs
+             * only assert that the content type is one of the static HTML types.
+             *
+             * Example:
+             *
+             *     Content-Type: text/html; charset=utf8
+             *     Content-Type: text/html  ;charset=latin4
+             *     Content-Type:application/xhtml+xml
+             */
+            $media_type           = trim(strtok($header_parts[1], ';'), " \t");
+            $is_html_content_type = in_array($media_type, $html_content_types, true);
+            break; // PHP only sends the first Content-Type header in the list.
+        }
+    }
+    if (null === $is_html_content_type) {
+        $is_html_content_type = in_array(ini_get('default_mimetype'), $html_content_types, true);
+    }
 
-	// If the content type is not HTML, short-circuit since it is not relevant for enhancement.
-	if ( ! $is_html_content_type ) {
-		/** This action is documented in wp-includes/template.php */
-		do_action( 'wp_finalized_template_enhancement_output_buffer', $output );
-		return $output;
-	}
+    // If the content type is not HTML, short-circuit since it is not relevant for enhancement.
+    if (! $is_html_content_type) {
+        /** This action is documented in wp-includes/template.php */
+        do_action('wp_finalized_template_enhancement_output_buffer', $output);
+        return $output;
+    }
 
-	$filtered_output = $output;
+    $filtered_output = $output;
 
-	$did_just_catch = false;
+    $did_just_catch = false;
 
-	$error_log = array();
-	set_error_handler(
-		static function ( int $level, string $message, ?string $file = null, ?int $line = null ) use ( &$error_log, &$did_just_catch ) {
-			// Switch a user error to an exception so that it can be caught and the buffer can be returned.
-			if ( E_USER_ERROR === $level ) {
-				throw new Exception( __( 'User error triggered:' ) . ' ' . $message );
-			}
+    $error_log = [];
+    set_error_handler(
+        static function (int $level, string $message, ?string $file = null, ?int $line = null) use (&$error_log, &$did_just_catch) {
+            // Switch a user error to an exception so that it can be caught and the buffer can be returned.
+            if (E_USER_ERROR === $level) {
+                throw new Exception(__('User error triggered:') . ' ' . $message);
+            }
 
-			// Display a caught exception as an error since it prevents any of the output buffer filters from applying.
-			if ( $did_just_catch ) {
-				$level = E_USER_ERROR;
-			}
+            // Display a caught exception as an error since it prevents any of the output buffer filters from applying.
+            if ($did_just_catch) {
+                $level = E_USER_ERROR;
+            }
 
-			// Capture a reported error to be displayed by appending to the processed output buffer if display_errors is enabled.
-			if ( error_reporting() & $level ) {
-				$error_log[] = compact( 'level', 'message', 'file', 'line' );
-			}
-			return false;
-		}
-	);
-	$original_display_errors = ini_get( 'display_errors' );
-	if ( $original_display_errors ) {
-		ini_set( 'display_errors', 0 );
-	}
+            // Capture a reported error to be displayed by appending to the processed output buffer if display_errors is enabled.
+            if (error_reporting() & $level) {
+                $error_log[] = compact('level', 'message', 'file', 'line');
+            }
+            return false;
+        }
+    );
+    $original_display_errors = ini_get('display_errors');
+    if ($original_display_errors) {
+        ini_set('display_errors', 0);
+    }
 
-	try {
-		/**
-		 * Filters the template enhancement output buffer prior to sending to the client.
-		 *
-		 * This filter only applies the HTML output of an included template. This filter is a progressive enhancement
-		 * intended for applications such as optimizing markup to improve frontend page load performance. Sites must not
-		 * depend on this filter applying since they may opt to stream the responses instead. Callbacks for this filter
-		 * are highly discouraged from using regular expressions to do any kind of replacement on the output. Use the
-		 * HTML API (either `WP_HTML_Tag_Processor` or `WP_HTML_Processor`), or else use {@see DOM\HtmlDocument} as of
-		 * PHP 8.4 which fully supports HTML5.
-		 *
-		 * Do not print any output during this filter. While filters normally don't print anything, this is especially
-		 * important since this applies during an output buffer callback. Prior to PHP 8.5, the output will be silently
-		 * omitted, whereas afterward a deprecation notice will be emitted.
-		 *
-		 * Important: Because this filter is applied inside an output buffer callback (i.e. display handler), any
-		 * callbacks added to the filter must not attempt to start their own output buffers. Otherwise, PHP will raise a
-		 * fatal error: "Cannot use output buffering in output buffering display handlers."
-		 *
-		 * @since 6.9.0
-		 *
-		 * @param string $filtered_output HTML template enhancement output buffer.
-		 * @param string $output          Original HTML template output buffer.
-		 */
-		$filtered_output = (string) apply_filters( 'wp_template_enhancement_output_buffer', $filtered_output, $output );
-	} catch ( Throwable $throwable ) {
-		// Emit to the error log as a warning not as an error to prevent halting execution.
-		$did_just_catch = true;
-		trigger_error(
-			sprintf(
-				/* translators: %s is the throwable class name */
-				__( 'Uncaught "%s" thrown:' ),
-				get_class( $throwable )
-			) . ' ' . $throwable->getMessage(),
-			E_USER_WARNING
-		);
-		$did_just_catch = false;
-	}
+    try {
+        /**
+         * Filters the template enhancement output buffer prior to sending to the client.
+         *
+         * This filter only applies the HTML output of an included template. This filter is a progressive enhancement
+         * intended for applications such as optimizing markup to improve frontend page load performance. Sites must not
+         * depend on this filter applying since they may opt to stream the responses instead. Callbacks for this filter
+         * are highly discouraged from using regular expressions to do any kind of replacement on the output. Use the
+         * HTML API (either `WP_HTML_Tag_Processor` or `WP_HTML_Processor`), or else use {@see DOM\HtmlDocument} as of
+         * PHP 8.4 which fully supports HTML5.
+         *
+         * Do not print any output during this filter. While filters normally don't print anything, this is especially
+         * important since this applies during an output buffer callback. Prior to PHP 8.5, the output will be silently
+         * omitted, whereas afterward a deprecation notice will be emitted.
+         *
+         * Important: Because this filter is applied inside an output buffer callback (i.e. display handler), any
+         * callbacks added to the filter must not attempt to start their own output buffers. Otherwise, PHP will raise a
+         * fatal error: "Cannot use output buffering in output buffering display handlers."
+         *
+         * @since 6.9.0
+         *
+         * @param string $filtered_output HTML template enhancement output buffer.
+         * @param string $output          Original HTML template output buffer.
+         */
+        $filtered_output = (string) apply_filters('wp_template_enhancement_output_buffer', $filtered_output, $output);
+    } catch (Throwable $throwable) {
+        // Emit to the error log as a warning not as an error to prevent halting execution.
+        $did_just_catch = true;
+        trigger_error(
+            sprintf(
+                /* translators: %s is the throwable class name */
+                __('Uncaught "%s" thrown:'),
+                get_class($throwable)
+            ) . ' ' . $throwable->getMessage(),
+            E_USER_WARNING
+        );
+        $did_just_catch = false;
+    }
 
-	try {
-		/**
-		 * Fires after the template enhancement output buffer has been finalized.
-		 *
-		 * This happens immediately before the template enhancement output buffer is flushed. No output may be printed
-		 * at this action; prior to PHP 8.5, the output will be silently omitted, whereas afterward a deprecation notice
-		 * will be emitted. Nevertheless, HTTP headers may be sent, which makes this action complimentary to the
-		 * {@see 'send_headers'} action, in which headers may be sent before the template has started rendering. In
-		 * contrast, this `wp_finalized_template_enhancement_output_buffer` action is the possible point at which HTTP
-		 * headers can be sent. This action does not fire if the "template enhancement output buffer" was not started.
-		 * This output buffer is automatically started if this action is added before
-		 * {@see wp_start_template_enhancement_output_buffer()} runs at the {@see 'wp_before_include_template'} action
-		 * with priority 1000. Before this point, the output buffer will also be started automatically if there was a
-		 * {@see 'wp_template_enhancement_output_buffer'} filter added, or if the
-		 * {@see 'wp_should_output_buffer_template_for_enhancement'} filter is made to return `true`.
-		 *
-		 * Important: Because this action fires inside an output buffer callback (i.e. display handler), any callbacks
-		 * added to the action must not attempt to start their own output buffers. Otherwise, PHP will raise a fatal
-		 * error: "Cannot use output buffering in output buffering display handlers."
-		 *
-		 * @since 6.9.0
-		 *
-		 * @param string $output Finalized output buffer.
-		 */
-		do_action( 'wp_finalized_template_enhancement_output_buffer', $filtered_output );
-	} catch ( Throwable $throwable ) {
-		// Emit to the error log as a warning not as an error to prevent halting execution.
-		$did_just_catch = true;
-		trigger_error(
-			sprintf(
-				/* translators: %s is the class name */
-				__( 'Uncaught "%s" thrown:' ),
-				get_class( $throwable )
-			) . ' ' . $throwable->getMessage(),
-			E_USER_WARNING
-		);
-		$did_just_catch = false;
-	}
+    try {
+        /**
+         * Fires after the template enhancement output buffer has been finalized.
+         *
+         * This happens immediately before the template enhancement output buffer is flushed. No output may be printed
+         * at this action; prior to PHP 8.5, the output will be silently omitted, whereas afterward a deprecation notice
+         * will be emitted. Nevertheless, HTTP headers may be sent, which makes this action complimentary to the
+         * {@see 'send_headers'} action, in which headers may be sent before the template has started rendering. In
+         * contrast, this `wp_finalized_template_enhancement_output_buffer` action is the possible point at which HTTP
+         * headers can be sent. This action does not fire if the "template enhancement output buffer" was not started.
+         * This output buffer is automatically started if this action is added before
+         * {@see wp_start_template_enhancement_output_buffer()} runs at the {@see 'wp_before_include_template'} action
+         * with priority 1000. Before this point, the output buffer will also be started automatically if there was a
+         * {@see 'wp_template_enhancement_output_buffer'} filter added, or if the
+         * {@see 'wp_should_output_buffer_template_for_enhancement'} filter is made to return `true`.
+         *
+         * Important: Because this action fires inside an output buffer callback (i.e. display handler), any callbacks
+         * added to the action must not attempt to start their own output buffers. Otherwise, PHP will raise a fatal
+         * error: "Cannot use output buffering in output buffering display handlers."
+         *
+         * @since 6.9.0
+         *
+         * @param string $output Finalized output buffer.
+         */
+        do_action('wp_finalized_template_enhancement_output_buffer', $filtered_output);
+    } catch (Throwable $throwable) {
+        // Emit to the error log as a warning not as an error to prevent halting execution.
+        $did_just_catch = true;
+        trigger_error(
+            sprintf(
+                /* translators: %s is the class name */
+                __('Uncaught "%s" thrown:'),
+                get_class($throwable)
+            ) . ' ' . $throwable->getMessage(),
+            E_USER_WARNING
+        );
+        $did_just_catch = false;
+    }
 
-	// Append any errors to be displayed before returning flushing the buffer.
-	if ( $original_display_errors && 'stderr' !== $original_display_errors ) {
-		foreach ( $error_log as $error ) {
-			switch ( $error['level'] ) {
-				case E_USER_NOTICE:
-					$type = 'Notice';
-					break;
-				case E_USER_DEPRECATED:
-					$type = 'Deprecated';
-					break;
-				case E_USER_WARNING:
-					$type = 'Warning';
-					break;
-				default:
-					$type = 'Error';
-			}
+    // Append any errors to be displayed before returning flushing the buffer.
+    if ($original_display_errors && 'stderr' !== $original_display_errors) {
+        foreach ($error_log as $error) {
+            switch ($error['level']) {
+                case E_USER_NOTICE:
+                    $type = 'Notice';
+                    break;
+                case E_USER_DEPRECATED:
+                    $type = 'Deprecated';
+                    break;
+                case E_USER_WARNING:
+                    $type = 'Warning';
+                    break;
+                default:
+                    $type = 'Error';
+            }
 
-			if ( ini_get( 'html_errors' ) ) {
-				/*
-				 * Adapted from PHP internals: <https://github.com/php/php-src/blob/a979e9f897a90a580e883b1f39ce5673686ffc67/main/main.c#L1478>.
-				 * The self-closing tags are a vestige of the XHTML past!
-				 */
-				$format = "%s<br />\n<b>%s</b>:  %s in <b>%s</b> on line <b>%s</b><br />\n%s";
-			} else {
-				// Adapted from PHP internals: <https://github.com/php/php-src/blob/a979e9f897a90a580e883b1f39ce5673686ffc67/main/main.c#L1492>.
-				$format = "%s\n%s: %s in %s on line %s\n%s";
-			}
-			$filtered_output .= sprintf(
-				$format,
-				ini_get( 'error_prepend_string' ),
-				$type,
-				$error['message'],
-				$error['file'],
-				$error['line'],
-				ini_get( 'error_append_string' )
-			);
-		}
+            if (ini_get('html_errors')) {
+                /*
+                 * Adapted from PHP internals: <https://github.com/php/php-src/blob/a979e9f897a90a580e883b1f39ce5673686ffc67/main/main.c#L1478>.
+                 * The self-closing tags are a vestige of the XHTML past!
+                 */
+                $format = "%s<br />\n<b>%s</b>:  %s in <b>%s</b> on line <b>%s</b><br />\n%s";
+            } else {
+                // Adapted from PHP internals: <https://github.com/php/php-src/blob/a979e9f897a90a580e883b1f39ce5673686ffc67/main/main.c#L1492>.
+                $format = "%s\n%s: %s in %s on line %s\n%s";
+            }
+            $filtered_output .= sprintf(
+                $format,
+                ini_get('error_prepend_string'),
+                $type,
+                $error['message'],
+                $error['file'],
+                $error['line'],
+                ini_get('error_append_string')
+            );
+        }
 
-		ini_set( 'display_errors', $original_display_errors );
-	}
+        ini_set('display_errors', $original_display_errors);
+    }
 
-	restore_error_handler();
+    restore_error_handler();
 
-	return $filtered_output;
+    return $filtered_output;
 }

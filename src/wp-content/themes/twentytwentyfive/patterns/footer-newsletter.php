@@ -17,17 +17,17 @@
 	<!-- wp:group {"align":"wide","layout":{"type":"default"}} -->
 	<div class="wp-block-group alignwide">
 		<!-- wp:heading {"style":{"typography":{"fontSize":"clamp(1rem, 380px, 24vw)","letterSpacing":"-0.02em","fontWeight":"600","fontStyle":"normal"}}} -->
-		<h2 class="wp-block-heading" style="font-size:clamp(1rem, 380px, 24vw);font-style:normal;font-weight:600;letter-spacing:-0.02em"><?php esc_html_e( 'Stories', 'twentytwentyfive' ); ?></h2>
+		<h2 class="wp-block-heading" style="font-size:clamp(1rem, 380px, 24vw);font-style:normal;font-weight:600;letter-spacing:-0.02em"><?php esc_html_e('Stories', 'twentytwentyfive'); ?></h2>
 		<!-- /wp:heading -->
 
 		<!-- wp:paragraph {"fontSize":"x-large"} -->
-		<p class="has-x-large-font-size"><?php esc_html_e( 'Receive our articles in your inbox.', 'twentytwentyfive' ); ?></p>
+		<p class="has-x-large-font-size"><?php esc_html_e('Receive our articles in your inbox.', 'twentytwentyfive'); ?></p>
 		<!-- /wp:paragraph -->
 
 		<!-- wp:buttons -->
 		<div class="wp-block-buttons">
 			<!-- wp:button -->
-			<div class="wp-block-button"><a class="wp-block-button__link wp-element-button"><?php esc_html_e( 'Subscribe', 'twentytwentyfive' ); ?></a></div>
+			<div class="wp-block-button"><a class="wp-block-button__link wp-element-button"><?php esc_html_e('Subscribe', 'twentytwentyfive'); ?></a></div>
 			<!-- /wp:button -->
 		</div>
 		<!-- /wp:buttons -->
@@ -39,17 +39,17 @@
 		<!-- wp:group {"align":"full","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between"}} -->
 		<div class="wp-block-group alignfull">
 			<!-- wp:paragraph {"fontSize":"small"} -->
-			<p class="has-small-font-size"><?php esc_html_e( 'Twenty Twenty-Five', 'twentytwentyfive' ); ?></p>
+			<p class="has-small-font-size"><?php esc_html_e('Twenty Twenty-Five', 'twentytwentyfive'); ?></p>
 			<!-- /wp:paragraph -->
 			<!-- wp:paragraph {"fontSize":"small"} -->
 			<p class="has-small-font-size">
 				<?php
-					printf(
-						/* translators: Designed with WordPress. %s: WordPress link. */
-						esc_html__( 'Designed with %s', 'twentytwentyfive' ),
-						'<a href="' . esc_url( __( 'https://wordpress.org', 'twentytwentyfive' ) ) . '" rel="nofollow">WordPress</a>'
-					);
-					?>
+                    printf(
+                        /* translators: Designed with WordPress. %s: WordPress link. */
+                        esc_html__('Designed with %s', 'twentytwentyfive'),
+                        '<a href="' . esc_url(__('https://wordpress.org', 'twentytwentyfive')) . '" rel="nofollow">WordPress</a>'
+                    );
+?>
 			</p>
 			<!-- /wp:paragraph -->
 		</div>

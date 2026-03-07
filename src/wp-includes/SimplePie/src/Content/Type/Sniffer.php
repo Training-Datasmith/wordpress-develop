@@ -74,21 +74,23 @@ class Sniffer
                 $official = $content_type;
             }
             $official = trim(strtolower($official));
-
             if ($official === 'unknown/unknown'
                 || $official === 'application/unknown') {
                 return $this->unknown();
-            } elseif (substr($official, -4) === '+xml'
+            }
+            if (substr($official, -4) === '+xml'
                 || $official === 'text/xml'
                 || $official === 'application/xml') {
                 return $official;
-            } elseif (substr($official, 0, 6) === 'image/') {
+            }
+            if (substr($official, 0, 6) === 'image/') {
                 if ($return = $this->image()) {
                     return $return;
                 }
-
                 return $official;
-            } elseif ($official === 'text/html') {
+            }
+
+            if ($official === 'text/html') {
                 return $this->feed_or_html();
             }
 
@@ -103,16 +105,17 @@ class Sniffer
      *
      * @return string Actual Content-Type
      */
-    public function text_or_binary()
+    public function text_or_binary(): string
     {
         $body = $this->file->get_body_content();
-
         if (substr($body, 0, 2) === "\xFE\xFF"
             || substr($body, 0, 2) === "\xFF\xFE"
             || substr($body, 0, 4) === "\x00\x00\xFE\xFF"
             || substr($body, 0, 3) === "\xEF\xBB\xBF") {
             return 'text/plain';
-        } elseif (preg_match('/[\x00-\x08\x0E-\x1A\x1C-\x1F]/', $body)) {
+        }
+
+        if (preg_match('/[\x00-\x08\x0E-\x1A\x1C-\x1F]/', $body)) {
             return 'application/octet-stream';
         }
 
@@ -133,20 +136,27 @@ class Sniffer
             || strtolower(substr($body, $ws, 5)) === '<html'
             || strtolower(substr($body, $ws, 7)) === '<script') {
             return 'text/html';
-        } elseif (substr($body, 0, 5) === '%PDF-') {
+        }
+        if (substr($body, 0, 5) === '%PDF-') {
             return 'application/pdf';
-        } elseif (substr($body, 0, 11) === '%!PS-Adobe-') {
+        }
+        if (substr($body, 0, 11) === '%!PS-Adobe-') {
             return 'application/postscript';
-        } elseif (substr($body, 0, 6) === 'GIF87a'
+        }
+        if (substr($body, 0, 6) === 'GIF87a'
             || substr($body, 0, 6) === 'GIF89a') {
             return 'image/gif';
-        } elseif (substr($body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
+        }
+        if (substr($body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
             return 'image/png';
-        } elseif (substr($body, 0, 3) === "\xFF\xD8\xFF") {
+        }
+        if (substr($body, 0, 3) === "\xFF\xD8\xFF") {
             return 'image/jpeg';
-        } elseif (substr($body, 0, 2) === "\x42\x4D") {
+        }
+        if (substr($body, 0, 2) === "\x42\x4D") {
             return 'image/bmp';
-        } elseif (substr($body, 0, 4) === "\x00\x00\x01\x00") {
+        }
+        if (substr($body, 0, 4) === "\x00\x00\x01\x00") {
             return 'image/vnd.microsoft.icon';
         }
 
@@ -161,17 +171,21 @@ class Sniffer
     public function image()
     {
         $body = $this->file->get_body_content();
-
         if (substr($body, 0, 6) === 'GIF87a'
             || substr($body, 0, 6) === 'GIF89a') {
             return 'image/gif';
-        } elseif (substr($body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
+        }
+        if (substr($body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
             return 'image/png';
-        } elseif (substr($body, 0, 3) === "\xFF\xD8\xFF") {
+        }
+        if (substr($body, 0, 3) === "\xFF\xD8\xFF") {
             return 'image/jpeg';
-        } elseif (substr($body, 0, 2) === "\x42\x4D") {
+        }
+        if (substr($body, 0, 2) === "\x42\x4D") {
             return 'image/bmp';
-        } elseif (substr($body, 0, 4) === "\x00\x00\x01\x00") {
+        }
+
+        if (substr($body, 0, 4) === "\x00\x00\x01\x00") {
             return 'image/vnd.microsoft.icon';
         }
 
@@ -183,7 +197,7 @@ class Sniffer
      *
      * @return string Actual Content-Type
      */
-    public function feed_or_html()
+    public function feed_or_html(): string
     {
         $body = $this->file->get_body_content();
 
@@ -240,4 +254,4 @@ class Sniffer
     }
 }
 
-class_alias('SimplePie\Content\Type\Sniffer', 'SimplePie_Content_Type_Sniffer');
+class_alias(\SimplePie\Content\Type\Sniffer::class, 'SimplePie_Content_Type_Sniffer');

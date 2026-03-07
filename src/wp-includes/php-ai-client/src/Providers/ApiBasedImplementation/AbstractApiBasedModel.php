@@ -1,6 +1,7 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\ApiBasedImplementation;
 
 use WordPress\AiClient\Providers\ApiBasedImplementation\Contracts\ApiBasedModelInterface;
@@ -12,6 +13,7 @@ use WordPress\AiClient\Providers\Http\Traits\WithHttpTransporterTrait;
 use WordPress\AiClient\Providers\Http\Traits\WithRequestAuthenticationTrait;
 use WordPress\AiClient\Providers\Models\DTO\ModelConfig;
 use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
+
 /**
  * Base class for an API-based model for a provider.
  *

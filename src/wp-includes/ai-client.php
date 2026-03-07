@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * WordPress AI Client API.
  *
@@ -29,6 +31,7 @@ use WordPress\AiClient\AiClient;
  *                                                                                                   conversations. Default null.
  * @return WP_AI_Client_Prompt_Builder The prompt builder instance.
  */
-function wp_ai_client_prompt( $prompt = null ) {
-	return new WP_AI_Client_Prompt_Builder( AiClient::defaultRegistry(), $prompt );
+function wp_ai_client_prompt($prompt = null)
+{
+    return new WP_AI_Client_Prompt_Builder(AiClient::defaultRegistry(), $prompt);
 }

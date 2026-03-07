@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core_HChaCha20', false)) {
     return;
 }
@@ -26,7 +28,7 @@ class ParagonIE_Sodium_Core_HChaCha20 extends ParagonIE_Sodium_Core_ChaCha20
         if (self::strlen($key) !== 32) {
             throw new SodiumException('Argument 2 must be 32 bytes');
         }
-        $ctx = array();
+        $ctx = [];
 
         if ($c === null) {
             $ctx[0] = 0x61707865;
@@ -34,23 +36,23 @@ class ParagonIE_Sodium_Core_HChaCha20 extends ParagonIE_Sodium_Core_ChaCha20
             $ctx[2] = 0x79622d32;
             $ctx[3] = 0x6b206574;
         } else {
-            $ctx[0] = self::load_4(self::substr($c,  0, 4));
-            $ctx[1] = self::load_4(self::substr($c,  4, 4));
-            $ctx[2] = self::load_4(self::substr($c,  8, 4));
+            $ctx[0] = self::load_4(self::substr($c, 0, 4));
+            $ctx[1] = self::load_4(self::substr($c, 4, 4));
+            $ctx[2] = self::load_4(self::substr($c, 8, 4));
             $ctx[3] = self::load_4(self::substr($c, 12, 4));
         }
-        $ctx[4]  = self::load_4(self::substr($key,  0, 4));
-        $ctx[5]  = self::load_4(self::substr($key,  4, 4));
-        $ctx[6]  = self::load_4(self::substr($key,  8, 4));
+        $ctx[4]  = self::load_4(self::substr($key, 0, 4));
+        $ctx[5]  = self::load_4(self::substr($key, 4, 4));
+        $ctx[6]  = self::load_4(self::substr($key, 8, 4));
         $ctx[7]  = self::load_4(self::substr($key, 12, 4));
         $ctx[8]  = self::load_4(self::substr($key, 16, 4));
         $ctx[9]  = self::load_4(self::substr($key, 20, 4));
         $ctx[10] = self::load_4(self::substr($key, 24, 4));
         $ctx[11] = self::load_4(self::substr($key, 28, 4));
-        $ctx[12] = self::load_4(self::substr($in,   0, 4));
-        $ctx[13] = self::load_4(self::substr($in,   4, 4));
-        $ctx[14] = self::load_4(self::substr($in,   8, 4));
-        $ctx[15] = self::load_4(self::substr($in,  12, 4));
+        $ctx[12] = self::load_4(self::substr($in, 0, 4));
+        $ctx[13] = self::load_4(self::substr($in, 4, 4));
+        $ctx[14] = self::load_4(self::substr($in, 8, 4));
+        $ctx[15] = self::load_4(self::substr($in, 12, 4));
         return self::hChaCha20Bytes($ctx);
     }
 

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Autoloader for the bundled PHP AI Client library.
  *
@@ -11,35 +13,35 @@
  */
 
 spl_autoload_register(
-	static function ( $class_name ) {
-		// Namespace prefix for the AI client.
-		$client_prefix     = 'WordPress\\AiClient\\';
-		$client_prefix_len = 19; // strlen( 'WordPress\\AiClient\\' )
+    static function ($class_name) {
+        // Namespace prefix for the AI client.
+        $client_prefix     = 'WordPress\\AiClient\\';
+        $client_prefix_len = 19; // strlen( 'WordPress\\AiClient\\' )
 
-		// Namespace prefix for scoped dependencies (includes Psr\*, Http\*, etc.).
-		$scoped_prefix     = 'WordPress\\AiClientDependencies\\';
-		$scoped_prefix_len = 31; // strlen( 'WordPress\\AiClientDependencies\\' )
+        // Namespace prefix for scoped dependencies (includes Psr\*, Http\*, etc.).
+        $scoped_prefix     = 'WordPress\\AiClientDependencies\\';
+        $scoped_prefix_len = 31; // strlen( 'WordPress\\AiClientDependencies\\' )
 
-		$base_dir = __DIR__;
+        $base_dir = __DIR__;
 
-		// 1. WordPress\AiClient\* → src/
-		if ( 0 === strncmp( $class_name, $client_prefix, $client_prefix_len ) ) {
-			$relative_class = substr( $class_name, $client_prefix_len );
-			$file           = $base_dir . '/src/' . str_replace( '\\', '/', $relative_class ) . '.php';
-			if ( file_exists( $file ) ) {
-				require $file;
-			}
-			return;
-		}
+        // 1. WordPress\AiClient\* → src/
+        if (0 === strncmp($class_name, $client_prefix, $client_prefix_len)) {
+            $relative_class = substr($class_name, $client_prefix_len);
+            $file           = $base_dir . '/src/' . str_replace('\\', '/', $relative_class) . '.php';
+            if (file_exists($file)) {
+                require $file;
+            }
+            return;
+        }
 
-		// 2. WordPress\AiClientDependencies\* → third-party/ (strip prefix).
-		if ( 0 === strncmp( $class_name, $scoped_prefix, $scoped_prefix_len ) ) {
-			$relative_class = substr( $class_name, $scoped_prefix_len );
-			$file           = $base_dir . '/third-party/' . str_replace( '\\', '/', $relative_class ) . '.php';
-			if ( file_exists( $file ) ) {
-				require $file;
-			}
-			return;
-		}
-	}
+        // 2. WordPress\AiClientDependencies\* → third-party/ (strip prefix).
+        if (0 === strncmp($class_name, $scoped_prefix, $scoped_prefix_len)) {
+            $relative_class = substr($class_name, $scoped_prefix_len);
+            $file           = $base_dir . '/third-party/' . str_replace('\\', '/', $relative_class) . '.php';
+            if (file_exists($file)) {
+                require $file;
+            }
+            return;
+        }
+    }
 );

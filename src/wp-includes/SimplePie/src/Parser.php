@@ -51,10 +51,7 @@ class Parser implements RegistryAware
     /** @var Registry */
     protected $registry;
 
-    /**
-     * @return void
-     */
-    public function set_registry(\SimplePie\Registry $registry)
+    public function set_registry(\SimplePie\Registry $registry): void
     {
         $this->registry = $registry;
     }
@@ -153,7 +150,7 @@ class Parser implements RegistryAware
 
                     if (!xml_parse($xml, $stream_data, feof($stream))) {
                         $this->error_code = xml_get_error_code($xml);
-                        $this->error_string = xml_error_string($this->error_code) ?: "Unknown";
+                        $this->error_string = xml_error_string($this->error_code) ?: 'Unknown';
                         $return = false;
                         break;
                     }
@@ -275,9 +272,8 @@ class Parser implements RegistryAware
     /**
      * @param XMLParser|resource|null $parser
      * @param array<string, string> $attributes
-     * @return void
      */
-    public function tag_open($parser, string $tag, array $attributes)
+    public function tag_open($parser, string $tag, array $attributes): void
     {
         [$this->namespace[], $this->element[]] = $this->split_ns($tag);
 
@@ -331,9 +327,8 @@ class Parser implements RegistryAware
 
     /**
      * @param XMLParser|resource|null $parser
-     * @return void
      */
-    public function cdata($parser, string $cdata)
+    public function cdata($parser, string $cdata): void
     {
         if ($this->current_xhtml_construct >= 0) {
             $this->data['data'] .= htmlspecialchars($cdata, ENT_QUOTES, $this->encoding);
@@ -344,9 +339,8 @@ class Parser implements RegistryAware
 
     /**
      * @param XMLParser|resource|null $parser
-     * @return void
      */
-    public function tag_close($parser, string $tag)
+    public function tag_close($parser, string $tag): void
     {
         if ($this->current_xhtml_construct >= 0) {
             $this->current_xhtml_construct--;
@@ -527,8 +521,10 @@ class Parser implements RegistryAware
                                         continue;
                                     }
                                     // It must have a url property matching what we fetched.
-                                    if (!isset($hcard['properties']['url']) ||
-                                            !(in_array($author, $hcard['properties']['url']))) {
+                                    if (!isset($hcard['properties']['url'])) {
+                                        continue;
+                                    }
+                                    if (!(in_array($author, $hcard['properties']['url']))) {
                                         continue;
                                     }
                                     // Save parse_hcard the trouble of finding the correct url.
@@ -552,7 +548,7 @@ class Parser implements RegistryAware
                     $photo_list = [];
                     for ($j = 0; $j < count($entry['properties']['photo']); $j++) {
                         $photo = $entry['properties']['photo'][$j];
-                        if (!empty($photo) && strpos($content, $photo) === false) {
+                        if (!empty($photo) && strpos($content, (string) $photo) === false) {
                             $photo_list[] = $photo;
                         }
                     }
@@ -672,4 +668,4 @@ class Parser implements RegistryAware
     }
 }
 
-class_alias('SimplePie\Parser', 'SimplePie_Parser');
+class_alias(\SimplePie\Parser::class, 'SimplePie_Parser');

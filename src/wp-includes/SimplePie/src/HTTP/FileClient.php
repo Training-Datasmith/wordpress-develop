@@ -20,11 +20,10 @@ use Throwable;
  */
 final class FileClient implements Client
 {
-    /** @var Registry */
-    private $registry;
+    private \SimplePie\Registry $registry;
 
     /** @var array{timeout?: int, redirects?: int, useragent?: string, force_fsockopen?: bool, curl_options?: array<mixed>} */
-    private $options;
+    private array $options;
 
     /**
      * @param array{timeout?: int, redirects?: int, useragent?: string, force_fsockopen?: bool, curl_options?: array<mixed>} $options
@@ -62,7 +61,7 @@ final class FileClient implements Client
                 $headers,
                 $this->options['useragent'] ?? Misc::get_default_useragent(),
                 $this->options['force_fsockopen'] ?? false,
-                $this->options['curl_options'] ?? []
+                $this->options['curl_options'] ?? [],
             ]);
         } catch (Throwable $th) {
             throw new ClientException($th->getMessage(), $th->getCode(), $th);

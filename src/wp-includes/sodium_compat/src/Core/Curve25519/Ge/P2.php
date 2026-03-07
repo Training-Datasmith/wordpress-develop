@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core_Curve25519_Ge_P2', false)) {
     return;
 }

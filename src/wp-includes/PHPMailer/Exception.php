@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * PHPMailer Exception class.
  * PHP Version 5.5.
@@ -30,10 +32,8 @@ class Exception extends \Exception
 {
     /**
      * Prettify error message output.
-     *
-     * @return string
      */
-    public function errorMessage()
+    public function errorMessage(): string
     {
         return '<strong>' . htmlspecialchars($this->getMessage(), ENT_COMPAT | ENT_HTML401) . "</strong><br />\n";
     }

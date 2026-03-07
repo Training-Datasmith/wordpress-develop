@@ -1,12 +1,14 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Http\Abstracts;
 
 use WordPress\AiClientDependencies\Http\Discovery\Psr18ClientDiscovery;
 use WordPress\AiClientDependencies\Http\Discovery\Strategy\DiscoveryStrategy;
 use WordPress\AiClientDependencies\Nyholm\Psr7\Factory\Psr17Factory;
 use WordPress\AiClientDependencies\Psr\Http\Client\ClientInterface;
+
 /**
  * Abstract discovery strategy for HTTP client implementations.
  *

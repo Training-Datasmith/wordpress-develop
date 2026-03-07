@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Class for generating SQL clauses that filter a primary query according to date.
  *
@@ -8,7 +10,7 @@
  * @package WordPress
  */
 
-_deprecated_file( basename( __FILE__ ), '5.3.0', WPINC . '/class-wp-date-query.php' );
+_deprecated_file(basename(__FILE__), '5.3.0', WPINC . '/class-wp-date-query.php');
 
 /** WP_Date_Query class */
 require_once ABSPATH . WPINC . '/class-wp-date-query.php';

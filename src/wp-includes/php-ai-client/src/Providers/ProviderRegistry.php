@@ -1,9 +1,9 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers;
 
-use WordPress\AiClientDependencies\Http\Discovery\Exception\NotFoundException as DiscoveryNotFoundException;
 use WordPress\AiClient\Common\Exception\InvalidArgumentException;
 use WordPress\AiClient\Common\Exception\RuntimeException;
 use WordPress\AiClient\Providers\Contracts\ProviderInterface;
@@ -20,6 +20,8 @@ use WordPress\AiClient\Providers\Models\Contracts\ModelInterface;
 use WordPress\AiClient\Providers\Models\DTO\ModelConfig;
 use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
 use WordPress\AiClient\Providers\Models\DTO\ModelRequirements;
+use WordPress\AiClientDependencies\Http\Discovery\Exception\NotFoundException as DiscoveryNotFoundException;
+
 /**
  * Registry for managing AI providers and their models.
  *

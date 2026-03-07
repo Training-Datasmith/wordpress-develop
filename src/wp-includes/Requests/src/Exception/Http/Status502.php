@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Exception for 502 Bad Gateway responses
  *
@@ -14,18 +16,19 @@ use WpOrg\Requests\Exception\Http;
  *
  * @package Requests\Exceptions
  */
-final class Status502 extends Http {
-	/**
-	 * HTTP status code
-	 *
-	 * @var integer
-	 */
-	protected $code = 502;
+final class Status502 extends Http
+{
+    /**
+     * HTTP status code
+     *
+     * @var integer
+     */
+    protected $code = 502;
 
-	/**
-	 * Reason phrase
-	 *
-	 * @var string
-	 */
-	protected $reason = 'Bad Gateway';
+    /**
+     * Reason phrase
+     *
+     * @var string
+     */
+    protected $reason = 'Bad Gateway';
 }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * File for Mock_Invokable class.
  *
@@ -11,7 +13,9 @@
  *
  * This class is used to mock a class that has an `__invoke` method.
  */
-class Mock_Invokable {
-
-	public function __invoke() {}
+class Mock_Invokable
+{
+    public function __invoke()
+    {
+    }
 }

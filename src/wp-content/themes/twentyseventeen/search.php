@@ -15,15 +15,15 @@ get_header(); ?>
 <div class="wrap">
 
 	<header class="page-header">
-		<?php if ( have_posts() ) : ?>
+		<?php if (have_posts()) : ?>
 			<h1 class="page-title">
 			<?php
-			/* translators: Search query. */
-			printf( __( 'Search Results for: %s', 'twentyseventeen' ), '<span>' . esc_html( get_search_query( false ) ) . '</span>' );
-			?>
+            /* translators: Search query. */
+            printf(__('Search Results for: %s', 'twentyseventeen'), '<span>' . esc_html(get_search_query(false)) . '</span>');
+		    ?>
 			</h1>
 		<?php else : ?>
-			<h1 class="page-title"><?php _e( 'Nothing Found', 'twentyseventeen' ); ?></h1>
+			<h1 class="page-title"><?php _e('Nothing Found', 'twentyseventeen'); ?></h1>
 		<?php endif; ?>
 	</header><!-- .page-header -->
 
@@ -31,40 +31,39 @@ get_header(); ?>
 		<main id="main" class="site-main">
 
 		<?php
-		if ( have_posts() ) :
-			// Start the Loop.
-			while ( have_posts() ) :
-				the_post();
+        if (have_posts()) :
+            // Start the Loop.
+            while (have_posts()) :
+                the_post();
 
-				/**
-				 * Run the loop for the search to output the results.
-				 * If you want to overload this in a child theme then include a file
-				 * called content-search.php and that will be used instead.
-				 */
-				get_template_part( 'template-parts/post/content', 'excerpt' );
+                /**
+                 * Run the loop for the search to output the results.
+                 * If you want to overload this in a child theme then include a file
+                 * called content-search.php and that will be used instead.
+                 */
+                get_template_part('template-parts/post/content', 'excerpt');
 
-			endwhile; // End the loop.
+            endwhile; // End the loop.
 
-			the_posts_pagination(
-				array(
-					/* translators: Hidden accessibility text. */
-					'prev_text'          => twentyseventeen_get_svg( array( 'icon' => 'arrow-left' ) ) . '<span class="screen-reader-text">' . __( 'Previous page', 'twentyseventeen' ) . '</span>',
-					/* translators: Hidden accessibility text. */
-					'next_text'          => '<span class="screen-reader-text">' . __( 'Next page', 'twentyseventeen' ) . '</span>' . twentyseventeen_get_svg( array( 'icon' => 'arrow-right' ) ),
-					/* translators: Hidden accessibility text. */
-					'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'twentyseventeen' ) . ' </span>',
-				)
-			);
+            the_posts_pagination(
+                [
+                    /* translators: Hidden accessibility text. */
+                    'prev_text'          => twentyseventeen_get_svg([ 'icon' => 'arrow-left' ]) . '<span class="screen-reader-text">' . __('Previous page', 'twentyseventeen') . '</span>',
+                    /* translators: Hidden accessibility text. */
+                    'next_text'          => '<span class="screen-reader-text">' . __('Next page', 'twentyseventeen') . '</span>' . twentyseventeen_get_svg([ 'icon' => 'arrow-right' ]),
+                    /* translators: Hidden accessibility text. */
+                    'before_page_number' => '<span class="meta-nav screen-reader-text">' . __('Page', 'twentyseventeen') . ' </span>',
+                ]
+            );
+        else :
+            ?>
 
-		else :
-			?>
-
-			<p><?php _e( 'Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'twentyseventeen' ); ?></p>
+			<p><?php _e('Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'twentyseventeen'); ?></p>
 			<?php
-				get_search_form();
+                get_search_form();
 
-		endif;
-		?>
+        endif;
+?>
 
 		</main><!-- #main -->
 	</div><!-- #primary -->

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Block Bindings API
  *
@@ -91,8 +93,9 @@
  * }
  * @return WP_Block_Bindings_Source|false Source when the registration was successful, or `false` on failure.
  */
-function register_block_bindings_source( string $source_name, array $source_properties ) {
-	return WP_Block_Bindings_Registry::get_instance()->register( $source_name, $source_properties );
+function register_block_bindings_source(string $source_name, array $source_properties)
+{
+    return WP_Block_Bindings_Registry::get_instance()->register($source_name, $source_properties);
 }
 
 /**
@@ -103,8 +106,9 @@ function register_block_bindings_source( string $source_name, array $source_prop
  * @param string $source_name Block bindings source name including namespace.
  * @return WP_Block_Bindings_Source|false The unregistered block bindings source on success and `false` otherwise.
  */
-function unregister_block_bindings_source( string $source_name ) {
-	return WP_Block_Bindings_Registry::get_instance()->unregister( $source_name );
+function unregister_block_bindings_source(string $source_name)
+{
+    return WP_Block_Bindings_Registry::get_instance()->unregister($source_name);
 }
 
 /**
@@ -114,8 +118,9 @@ function unregister_block_bindings_source( string $source_name ) {
  *
  * @return WP_Block_Bindings_Source[] The array of registered block bindings sources.
  */
-function get_all_registered_block_bindings_sources() {
-	return WP_Block_Bindings_Registry::get_instance()->get_all_registered();
+function get_all_registered_block_bindings_sources()
+{
+    return WP_Block_Bindings_Registry::get_instance()->get_all_registered();
 }
 
 /**
@@ -126,8 +131,9 @@ function get_all_registered_block_bindings_sources() {
  * @param string $source_name The name of the source.
  * @return WP_Block_Bindings_Source|null The registered block bindings source, or `null` if it is not registered.
  */
-function get_block_bindings_source( string $source_name ) {
-	return WP_Block_Bindings_Registry::get_instance()->get_registered( $source_name );
+function get_block_bindings_source(string $source_name)
+{
+    return WP_Block_Bindings_Registry::get_instance()->get_registered($source_name);
 }
 
 /**
@@ -138,50 +144,51 @@ function get_block_bindings_source( string $source_name ) {
  * @param string $block_type The block type whose supported attributes are being retrieved.
  * @return array The list of block attributes that are supported by block bindings.
  */
-function get_block_bindings_supported_attributes( $block_type ) {
-	$block_bindings_supported_attributes = array(
-		'core/paragraph'          => array( 'content' ),
-		'core/heading'            => array( 'content' ),
-		'core/image'              => array( 'id', 'url', 'title', 'alt', 'caption' ),
-		'core/button'             => array( 'url', 'text', 'linkTarget', 'rel' ),
-		'core/post-date'          => array( 'datetime' ),
-		'core/navigation-link'    => array( 'url' ),
-		'core/navigation-submenu' => array( 'url' ),
-	);
+function get_block_bindings_supported_attributes($block_type)
+{
+    $block_bindings_supported_attributes = [
+        'core/paragraph'          => [ 'content' ],
+        'core/heading'            => [ 'content' ],
+        'core/image'              => [ 'id', 'url', 'title', 'alt', 'caption' ],
+        'core/button'             => [ 'url', 'text', 'linkTarget', 'rel' ],
+        'core/post-date'          => [ 'datetime' ],
+        'core/navigation-link'    => [ 'url' ],
+        'core/navigation-submenu' => [ 'url' ],
+    ];
 
-	$supported_block_attributes =
-		isset( $block_type, $block_bindings_supported_attributes[ $block_type ] ) ?
-			$block_bindings_supported_attributes[ $block_type ] :
-			array();
+    $supported_block_attributes =
+        isset($block_type, $block_bindings_supported_attributes[ $block_type ]) ?
+            $block_bindings_supported_attributes[ $block_type ] :
+            [];
 
-	/**
-	 * Filters the supported block attributes for block bindings.
-	 *
-	 * @since 6.9.0
-	 *
-	 * @param string[] $supported_block_attributes The block's attributes that are supported by block bindings.
-	 * @param string   $block_type                 The block type whose attributes are being filtered.
-	 */
-	$supported_block_attributes = apply_filters(
-		'block_bindings_supported_attributes',
-		$supported_block_attributes,
-		$block_type
-	);
+    /**
+     * Filters the supported block attributes for block bindings.
+     *
+     * @since 6.9.0
+     *
+     * @param string[] $supported_block_attributes The block's attributes that are supported by block bindings.
+     * @param string   $block_type                 The block type whose attributes are being filtered.
+     */
+    $supported_block_attributes = apply_filters(
+        'block_bindings_supported_attributes',
+        $supported_block_attributes,
+        $block_type
+    );
 
-	/**
-	 * Filters the supported block attributes for block bindings.
-	 *
-	 * The dynamic portion of the hook name, `$block_type`, refers to the block type
-	 * whose attributes are being filtered.
-	 *
-	 * @since 6.9.0
-	 *
-	 * @param string[] $supported_block_attributes The block's attributes that are supported by block bindings.
-	 */
-	$supported_block_attributes = apply_filters(
-		"block_bindings_supported_attributes_{$block_type}",
-		$supported_block_attributes
-	);
+    /**
+     * Filters the supported block attributes for block bindings.
+     *
+     * The dynamic portion of the hook name, `$block_type`, refers to the block type
+     * whose attributes are being filtered.
+     *
+     * @since 6.9.0
+     *
+     * @param string[] $supported_block_attributes The block's attributes that are supported by block bindings.
+     */
+    $supported_block_attributes = apply_filters(
+        "block_bindings_supported_attributes_{$block_type}",
+        $supported_block_attributes
+    );
 
-	return $supported_block_attributes;
+    return $supported_block_attributes;
 }

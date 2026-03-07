@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Feed API
  *
@@ -7,10 +9,10 @@
  * @deprecated 4.7.0
  */
 
-_deprecated_file( basename( __FILE__ ), '4.7.0', 'fetch_feed()' );
+_deprecated_file(basename(__FILE__), '4.7.0', 'fetch_feed()');
 
-if ( ! class_exists( 'SimplePie\SimplePie', false ) ) {
-	require_once ABSPATH . WPINC . '/class-simplepie.php';
+if (! class_exists('SimplePie\SimplePie', false)) {
+    require_once ABSPATH . WPINC . '/class-simplepie.php';
 }
 
 require_once ABSPATH . WPINC . '/class-wp-feed-cache.php';

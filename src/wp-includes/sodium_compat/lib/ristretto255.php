@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (!defined('SODIUM_CRYPTO_CORE_RISTRETTO255_BYTES')) {
     define(
         'SODIUM_CRYPTO_CORE_RISTRETTO255_BYTES',

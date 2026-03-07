@@ -14,55 +14,55 @@
 		</div><!-- .site-content -->
 
 		<footer id="colophon" class="site-footer">
-			<?php if ( has_nav_menu( 'primary' ) ) : ?>
-				<nav class="main-navigation" aria-label="<?php esc_attr_e( 'Footer Primary Menu', 'twentysixteen' ); ?>">
+			<?php if (has_nav_menu('primary')) : ?>
+				<nav class="main-navigation" aria-label="<?php esc_attr_e('Footer Primary Menu', 'twentysixteen'); ?>">
 					<?php
-						wp_nav_menu(
-							array(
-								'theme_location' => 'primary',
-								'menu_class'     => 'primary-menu',
-							)
-						);
-					?>
+                        wp_nav_menu(
+                            [
+                                'theme_location' => 'primary',
+                                'menu_class'     => 'primary-menu',
+                            ]
+                        );
+			    ?>
 				</nav><!-- .main-navigation -->
 			<?php endif; ?>
 
-			<?php if ( has_nav_menu( 'social' ) ) : ?>
-				<nav class="social-navigation" aria-label="<?php esc_attr_e( 'Footer Social Links Menu', 'twentysixteen' ); ?>">
+			<?php if (has_nav_menu('social')) : ?>
+				<nav class="social-navigation" aria-label="<?php esc_attr_e('Footer Social Links Menu', 'twentysixteen'); ?>">
 					<?php
-						wp_nav_menu(
-							array(
-								'theme_location' => 'social',
-								'menu_class'     => 'social-links-menu',
-								'depth'          => 1,
-								'link_before'    => '<span class="screen-reader-text">',
-								'link_after'     => '</span>',
-							)
-						);
-					?>
+			        wp_nav_menu(
+			            [
+			                'theme_location' => 'social',
+			                'menu_class'     => 'social-links-menu',
+			                'depth'          => 1,
+			                'link_before'    => '<span class="screen-reader-text">',
+			                'link_after'     => '</span>',
+			            ]
+			        );
+			    ?>
 				</nav><!-- .social-navigation -->
 			<?php endif; ?>
 
 			<div class="site-info">
 				<?php
-					/**
-					 * Fires before the twentysixteen footer text for footer customization.
-					 *
-					 * @since Twenty Sixteen 1.0
-					 */
-					do_action( 'twentysixteen_credits' );
-				?>
-				<span class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></span>
+			    /**
+			     * Fires before the twentysixteen footer text for footer customization.
+			     *
+			     * @since Twenty Sixteen 1.0
+			     */
+			    do_action('twentysixteen_credits');
+?>
+				<span class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>" rel="home"><?php bloginfo('name'); ?></a></span>
 				<?php
-				if ( function_exists( 'the_privacy_policy_link' ) ) {
-					the_privacy_policy_link( '', '<span role="separator" aria-hidden="true"></span>' );
-				}
-				?>
-				<a href="<?php echo esc_url( __( 'https://wordpress.org/', 'twentysixteen' ) ); ?>" class="imprint">
+if (function_exists('the_privacy_policy_link')) {
+    the_privacy_policy_link('', '<span role="separator" aria-hidden="true"></span>');
+}
+?>
+				<a href="<?php echo esc_url(__('https://wordpress.org/', 'twentysixteen')); ?>" class="imprint">
 					<?php
-					/* translators: %s: WordPress */
-					printf( __( 'Proudly powered by %s', 'twentysixteen' ), 'WordPress' );
-					?>
+    /* translators: %s: WordPress */
+    printf(__('Proudly powered by %s', 'twentysixteen'), 'WordPress');
+?>
 				</a>
 			</div><!-- .site-info -->
 		</footer><!-- .site-footer -->

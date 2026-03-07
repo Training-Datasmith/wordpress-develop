@@ -28,7 +28,7 @@ class Memcached implements Base
      * NativeMemcached instance
      * @var NativeMemcached
      */
-    protected $cache;
+    protected \Memcached $cache;
 
     /**
      * Options
@@ -38,9 +38,8 @@ class Memcached implements Base
 
     /**
      * Cache name
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Create a new cache object
@@ -71,7 +70,7 @@ class Memcached implements Base
      * @param array<mixed>|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
-    public function save($data)
+    public function save($data): bool
     {
         if ($data instanceof \SimplePie\SimplePie) {
             $data = $data->data;
@@ -98,7 +97,7 @@ class Memcached implements Base
      * Retrieve the last modified time for the cache
      * @return int Timestamp
      */
-    public function mtime()
+    public function mtime(): int
     {
         $data = $this->cache->get($this->name . '_mtime');
         return (int) $data;
@@ -108,7 +107,7 @@ class Memcached implements Base
      * Set the last modified time to the current time
      * @return bool Success status
      */
-    public function touch()
+    public function touch(): bool
     {
         $data = $this->cache->get($this->name);
         return $this->setData($data);
@@ -118,7 +117,7 @@ class Memcached implements Base
      * Remove the cache
      * @return bool Success status
      */
-    public function unlink()
+    public function unlink(): bool
     {
         return $this->cache->delete($this->name, 0);
     }
@@ -139,4 +138,4 @@ class Memcached implements Base
     }
 }
 
-class_alias('SimplePie\Cache\Memcached', 'SimplePie_Cache_Memcached');
+class_alias(\SimplePie\Cache\Memcached::class, 'SimplePie_Cache_Memcached');

@@ -77,4 +77,4 @@ interface Base
     public function unlink();
 }
 
-class_alias('SimplePie\Cache\Base', 'SimplePie_Cache_Base');
+class_alias(\SimplePie\Cache\Base::class, 'SimplePie_Cache_Base');

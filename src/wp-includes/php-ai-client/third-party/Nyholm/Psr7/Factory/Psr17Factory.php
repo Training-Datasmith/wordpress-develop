@@ -1,6 +1,7 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClientDependencies\Nyholm\Psr7\Factory;
 
 use WordPress\AiClientDependencies\Nyholm\Psr7\Request;
@@ -21,6 +22,7 @@ use WordPress\AiClientDependencies\Psr\Http\Message\UploadedFileFactoryInterface
 use WordPress\AiClientDependencies\Psr\Http\Message\UploadedFileInterface;
 use WordPress\AiClientDependencies\Psr\Http\Message\UriFactoryInterface;
 use WordPress\AiClientDependencies\Psr\Http\Message\UriInterface;
+
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  * @author Martijn van der Ven <martijn@vanderven.se>

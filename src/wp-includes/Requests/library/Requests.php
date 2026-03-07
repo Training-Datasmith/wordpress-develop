@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Loads the old Requests class file when the autoloader
  * references the original PSR-0 Requests class.

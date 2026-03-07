@@ -1,10 +1,9 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient;
 
-use WordPress\AiClientDependencies\Psr\EventDispatcher\EventDispatcherInterface;
-use WordPress\AiClientDependencies\Psr\SimpleCache\CacheInterface;
 use WordPress\AiClient\Builders\PromptBuilder;
 use WordPress\AiClient\Common\Exception\InvalidArgumentException;
 use WordPress\AiClient\Common\Exception\RuntimeException;
@@ -14,6 +13,9 @@ use WordPress\AiClient\Providers\Models\Contracts\ModelInterface;
 use WordPress\AiClient\Providers\Models\DTO\ModelConfig;
 use WordPress\AiClient\Providers\ProviderRegistry;
 use WordPress\AiClient\Results\DTO\GenerativeAiResult;
+use WordPress\AiClientDependencies\Psr\EventDispatcher\EventDispatcherInterface;
+use WordPress\AiClientDependencies\Psr\SimpleCache\CacheInterface;
+
 /**
  * Main AI Client class providing both fluent and traditional APIs for AI operations.
  *

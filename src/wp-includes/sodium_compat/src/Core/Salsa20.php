@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core_Salsa20', false)) {
     return;
 }
@@ -9,7 +11,7 @@ if (class_exists('ParagonIE_Sodium_Core_Salsa20', false)) {
  */
 abstract class ParagonIE_Sodium_Core_Salsa20 extends ParagonIE_Sodium_Core_Util
 {
-    const ROUNDS = 20;
+    public const ROUNDS = 20;
 
     /**
      * Calculate an salsa20 hash of a single block
@@ -263,7 +265,8 @@ abstract class ParagonIE_Sodium_Core_Salsa20 extends ParagonIE_Sodium_Core_Util
     {
         $u &= 0xffffffff;
         $c %= 32;
-        return (int) (0xffffffff & (
+        return (int) (
+            0xffffffff & (
                 ($u << $c)
                     |
                 ($u >> (32 - $c))

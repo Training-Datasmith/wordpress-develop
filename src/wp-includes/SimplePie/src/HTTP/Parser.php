@@ -37,7 +37,7 @@ class Parser
     /**
      * @var Psr7Compatible whether headers are compatible with PSR-7 format.
      */
-    private $psr7Compatible;
+    private bool $psr7Compatible;
 
     /**
      * Key/value pairs of the headers
@@ -90,17 +90,13 @@ class Parser
 
     /**
      * Input data
-     *
-     * @var string
      */
-    protected $data = '';
+    protected string $data;
 
     /**
      * Input data length (to avoid calling strlen() everytime this is needed)
-     *
-     * @var int
      */
-    protected $data_length = 0;
+    protected int $data_length;
 
     /**
      * Current position of the pointer
@@ -141,7 +137,7 @@ class Parser
      *
      * @return bool true on success, false on failure
      */
-    public function parse()
+    public function parse(): bool
     {
         while ($this->state && $this->state !== self::STATE_EMIT && $this->has_data()) {
             $state = $this->state;
@@ -166,9 +162,9 @@ class Parser
      *
      * @return bool true if there is further data, false if not
      */
-    protected function has_data()
+    protected function has_data(): bool
     {
-        return (bool) ($this->position < $this->data_length);
+        return $this->position < $this->data_length;
     }
 
     /**
@@ -176,13 +172,13 @@ class Parser
      *
      * @return bool true if the next character is LWS, false if not
      */
-    protected function is_linear_whitespace()
+    protected function is_linear_whitespace(): bool
     {
-        return (bool) ($this->data[$this->position] === "\x09"
+        return $this->data[$this->position] === "\x09"
             || $this->data[$this->position] === "\x20"
             || ($this->data[$this->position] === "\x0A"
                 && isset($this->data[$this->position + 1])
-                && ($this->data[$this->position + 1] === "\x09" || $this->data[$this->position + 1] === "\x20")));
+                && ($this->data[$this->position + 1] === "\x09" || $this->data[$this->position + 1] === "\x20"));
     }
 
     /**
@@ -473,7 +469,7 @@ class Parser
             $length = hexdec(trim($matches[1]));
             // For PHPStan: this will only be float when larger than PHP_INT_MAX.
             // But even on 32-bit systems, it would mean 2GiB chunk, which sounds unlikely.
-            \assert(\is_int($length), "Length needs to be shorter than PHP_INT_MAX");
+            \assert(\is_int($length), 'Length needs to be shorter than PHP_INT_MAX');
             if ($length === 0) {
                 // Ignore trailer headers
                 $this->state = self::STATE_EMIT;
@@ -520,4 +516,4 @@ class Parser
     }
 }
 
-class_alias('SimplePie\HTTP\Parser', 'SimplePie_HTTP_Parser');
+class_alias(\SimplePie\HTTP\Parser::class, 'SimplePie_HTTP_Parser');

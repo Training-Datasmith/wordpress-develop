@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Block template loader functions.
  *
@@ -11,10 +13,11 @@
  * @access private
  * @since 5.9.0
  */
-function _add_template_loader_filters() {
-	if ( isset( $_GET['_wp-find-template'] ) && current_theme_supports( 'block-templates' ) ) {
-		add_action( 'pre_get_posts', '_resolve_template_for_new_post' );
-	}
+function _add_template_loader_filters()
+{
+    if (isset($_GET['_wp-find-template']) && current_theme_supports('block-templates')) {
+        add_action('pre_get_posts', '_resolve_template_for_new_post');
+    }
 }
 
 /**
@@ -25,22 +28,23 @@ function _add_template_loader_filters() {
  * @param WP_Block_Template $block_template The block template object.
  * @return string The warning screen HTML.
  */
-function wp_render_empty_block_template_warning( $block_template ) {
-	wp_enqueue_style( 'wp-empty-template-alert' );
-	return sprintf(
-		/* translators: %1$s: Block template title. %2$s: Empty template warning message. %3$s: Edit template link. %4$s: Edit template button label. */
-		'<div id="wp-empty-template-alert">
+function wp_render_empty_block_template_warning($block_template)
+{
+    wp_enqueue_style('wp-empty-template-alert');
+    return sprintf(
+        /* translators: %1$s: Block template title. %2$s: Empty template warning message. %3$s: Edit template link. %4$s: Edit template button label. */
+        '<div id="wp-empty-template-alert">
 			<h2>%1$s</h2>
 			<p>%2$s</p>
 			<a href="%3$s" class="wp-element-button">
 				%4$s
 			</a>
 		</div>',
-		esc_html( $block_template->title ),
-		__( 'This page is blank because the template is empty. You can reset or customize it in the Site Editor.' ),
-		get_edit_post_link( $block_template->wp_id, 'site-editor' ),
-		__( 'Edit template' )
-	);
+        esc_html($block_template->title),
+        __('This page is blank because the template is empty. You can reset or customize it in the Site Editor.'),
+        get_edit_post_link($block_template->wp_id, 'site-editor'),
+        __('Edit template')
+    );
 }
 
 /**
@@ -59,83 +63,84 @@ function wp_render_empty_block_template_warning( $block_template ) {
  * @param string[] $templates A list of template candidates, in descending order of priority.
  * @return string The path to the Site Editor template canvas file, or the fallback PHP template.
  */
-function locate_block_template( $template, $type, array $templates ) {
-	global $_wp_current_template_content, $_wp_current_template_id;
+function locate_block_template($template, $type, array $templates)
+{
+    global $_wp_current_template_content, $_wp_current_template_id;
 
-	if ( ! current_theme_supports( 'block-templates' ) ) {
-		return $template;
-	}
+    if (! current_theme_supports('block-templates')) {
+        return $template;
+    }
 
-	if ( $template ) {
-		/*
-		 * locate_template() has found a PHP template at the path specified by $template.
-		 * That means that we have a fallback candidate if we cannot find a block template
-		 * with higher specificity.
-		 *
-		 * Thus, before looking for matching block themes, we shorten our list of candidate
-		 * templates accordingly.
-		 */
+    if ($template) {
+        /*
+         * locate_template() has found a PHP template at the path specified by $template.
+         * That means that we have a fallback candidate if we cannot find a block template
+         * with higher specificity.
+         *
+         * Thus, before looking for matching block themes, we shorten our list of candidate
+         * templates accordingly.
+         */
 
-		// Locate the index of $template (without the theme directory path) in $templates.
-		$relative_template_path = str_replace(
-			array( get_stylesheet_directory() . '/', get_template_directory() . '/' ),
-			'',
-			$template
-		);
-		$index                  = array_search( $relative_template_path, $templates, true );
+        // Locate the index of $template (without the theme directory path) in $templates.
+        $relative_template_path = str_replace(
+            [ get_stylesheet_directory() . '/', get_template_directory() . '/' ],
+            '',
+            $template
+        );
+        $index                  = array_search($relative_template_path, $templates, true);
 
-		// If the template hierarchy algorithm has successfully located a PHP template file,
-		// we will only consider block templates with higher or equal specificity.
-		$templates = array_slice( $templates, 0, $index + 1 );
-	}
+        // If the template hierarchy algorithm has successfully located a PHP template file,
+        // we will only consider block templates with higher or equal specificity.
+        $templates = array_slice($templates, 0, $index + 1);
+    }
 
-	$block_template = resolve_block_template( $type, $templates, $template );
+    $block_template = resolve_block_template($type, $templates, $template);
 
-	if ( $block_template ) {
-		$_wp_current_template_id = $block_template->id;
+    if ($block_template) {
+        $_wp_current_template_id = $block_template->id;
 
-		if ( empty( $block_template->content ) ) {
-			if ( is_user_logged_in() ) {
-				$_wp_current_template_content = wp_render_empty_block_template_warning( $block_template );
-			} else {
-				if ( $block_template->has_theme_file ) {
-					// Show contents from theme template if user is not logged in.
-					$theme_template               = _get_block_template_file( 'wp_template', $block_template->slug );
-					$_wp_current_template_content = file_get_contents( $theme_template['path'] );
-				} else {
-					$_wp_current_template_content = $block_template->content;
-				}
-			}
-		} elseif ( ! empty( $block_template->content ) ) {
-			$_wp_current_template_content = $block_template->content;
-		}
-		if ( isset( $_GET['_wp-find-template'] ) ) {
-			wp_send_json_success( $block_template );
-		}
-	} else {
-		if ( $template ) {
-			return $template;
-		}
+        if (empty($block_template->content)) {
+            if (is_user_logged_in()) {
+                $_wp_current_template_content = wp_render_empty_block_template_warning($block_template);
+            } else {
+                if ($block_template->has_theme_file) {
+                    // Show contents from theme template if user is not logged in.
+                    $theme_template               = _get_block_template_file('wp_template', $block_template->slug);
+                    $_wp_current_template_content = file_get_contents($theme_template['path']);
+                } else {
+                    $_wp_current_template_content = $block_template->content;
+                }
+            }
+        } elseif (! empty($block_template->content)) {
+            $_wp_current_template_content = $block_template->content;
+        }
+        if (isset($_GET['_wp-find-template'])) {
+            wp_send_json_success($block_template);
+        }
+    } else {
+        if ($template) {
+            return $template;
+        }
 
-		if ( 'index' === $type ) {
-			if ( isset( $_GET['_wp-find-template'] ) ) {
-				wp_send_json_error( array( 'message' => __( 'No matching template found.' ) ) );
-			}
-		} else {
-			return ''; // So that the template loader keeps looking for templates.
-		}
-	}
+        if ('index' === $type) {
+            if (isset($_GET['_wp-find-template'])) {
+                wp_send_json_error([ 'message' => __('No matching template found.') ]);
+            }
+        } else {
+            return ''; // So that the template loader keeps looking for templates.
+        }
+    }
 
-	// Add hooks for template canvas.
-	// Add viewport meta tag.
-	add_action( 'wp_head', '_block_template_viewport_meta_tag', 0 );
+    // Add hooks for template canvas.
+    // Add viewport meta tag.
+    add_action('wp_head', '_block_template_viewport_meta_tag', 0);
 
-	// Render title tag with content, regardless of whether theme has title-tag support.
-	remove_action( 'wp_head', '_wp_render_title_tag', 1 );    // Remove conditional title tag rendering...
-	add_action( 'wp_head', '_block_template_render_title_tag', 1 ); // ...and make it unconditional.
+    // Render title tag with content, regardless of whether theme has title-tag support.
+    remove_action('wp_head', '_wp_render_title_tag', 1);    // Remove conditional title tag rendering...
+    add_action('wp_head', '_block_template_render_title_tag', 1); // ...and make it unconditional.
 
-	// This file will be included instead of the theme's template file.
-	return ABSPATH . WPINC . '/template-canvas.php';
+    // This file will be included instead of the theme's template file.
+    return ABSPATH . WPINC . '/template-canvas.php';
 }
 
 /**
@@ -150,75 +155,76 @@ function locate_block_template( $template, $type, array $templates ) {
  * @param string   $fallback_template  A PHP fallback template to use if no matching block template is found.
  * @return WP_Block_Template|null template A template object, or null if none could be found.
  */
-function resolve_block_template( $template_type, $template_hierarchy, $fallback_template ) {
-	if ( ! $template_type ) {
-		return null;
-	}
+function resolve_block_template($template_type, $template_hierarchy, $fallback_template)
+{
+    if (! $template_type) {
+        return null;
+    }
 
-	if ( empty( $template_hierarchy ) ) {
-		$template_hierarchy = array( $template_type );
-	}
+    if (empty($template_hierarchy)) {
+        $template_hierarchy = [ $template_type ];
+    }
 
-	$slugs = array_map(
-		'_strip_template_file_suffix',
-		$template_hierarchy
-	);
+    $slugs = array_map(
+        '_strip_template_file_suffix',
+        $template_hierarchy
+    );
 
-	// Find all potential templates 'wp_template' post matching the hierarchy.
-	$query     = array(
-		'slug__in' => $slugs,
-	);
-	$templates = get_block_templates( $query );
+    // Find all potential templates 'wp_template' post matching the hierarchy.
+    $query     = [
+        'slug__in' => $slugs,
+    ];
+    $templates = get_block_templates($query);
 
-	// Order these templates per slug priority.
-	// Build map of template slugs to their priority in the current hierarchy.
-	$slug_priorities = array_flip( $slugs );
+    // Order these templates per slug priority.
+    // Build map of template slugs to their priority in the current hierarchy.
+    $slug_priorities = array_flip($slugs);
 
-	usort(
-		$templates,
-		static function ( $template_a, $template_b ) use ( $slug_priorities ) {
-			return $slug_priorities[ $template_a->slug ] - $slug_priorities[ $template_b->slug ];
-		}
-	);
+    usort(
+        $templates,
+        static function ($template_a, $template_b) use ($slug_priorities) {
+            return $slug_priorities[ $template_a->slug ] - $slug_priorities[ $template_b->slug ];
+        }
+    );
 
-	$theme_base_path        = get_stylesheet_directory() . DIRECTORY_SEPARATOR;
-	$parent_theme_base_path = get_template_directory() . DIRECTORY_SEPARATOR;
+    $theme_base_path        = get_stylesheet_directory() . DIRECTORY_SEPARATOR;
+    $parent_theme_base_path = get_template_directory() . DIRECTORY_SEPARATOR;
 
-	// Is the active theme a child theme, and is the PHP fallback template part of it?
-	if (
-		str_starts_with( $fallback_template, $theme_base_path ) &&
-		! str_contains( $fallback_template, $parent_theme_base_path )
-	) {
-		$fallback_template_slug = substr(
-			$fallback_template,
-			// Starting position of slug.
-			strpos( $fallback_template, $theme_base_path ) + strlen( $theme_base_path ),
-			// Remove '.php' suffix.
-			-4
-		);
+    // Is the active theme a child theme, and is the PHP fallback template part of it?
+    if (
+        str_starts_with($fallback_template, $theme_base_path) &&
+        ! str_contains($fallback_template, $parent_theme_base_path)
+    ) {
+        $fallback_template_slug = substr(
+            $fallback_template,
+            // Starting position of slug.
+            strpos($fallback_template, $theme_base_path) + strlen($theme_base_path),
+            // Remove '.php' suffix.
+            -4
+        );
 
-		// Is our candidate block template's slug identical to our PHP fallback template's?
-		if (
-			count( $templates ) &&
-			$fallback_template_slug === $templates[0]->slug &&
-			'theme' === $templates[0]->source
-		) {
-			// Unfortunately, we cannot trust $templates[0]->theme, since it will always
-			// be set to the active theme's slug by _build_block_template_result_from_file(),
-			// even if the block template is really coming from the active theme's parent.
-			// (The reason for this is that we want it to be associated with the active theme
-			// -- not its parent -- once we edit it and store it to the DB as a wp_template CPT.)
-			// Instead, we use _get_block_template_file() to locate the block template file.
-			$template_file = _get_block_template_file( 'wp_template', $fallback_template_slug );
-			if ( $template_file && get_template() === $template_file['theme'] ) {
-				// The block template is part of the parent theme, so we
-				// have to give precedence to the child theme's PHP template.
-				array_shift( $templates );
-			}
-		}
-	}
+        // Is our candidate block template's slug identical to our PHP fallback template's?
+        if (
+            count($templates) &&
+            $fallback_template_slug === $templates[0]->slug &&
+            'theme' === $templates[0]->source
+        ) {
+            // Unfortunately, we cannot trust $templates[0]->theme, since it will always
+            // be set to the active theme's slug by _build_block_template_result_from_file(),
+            // even if the block template is really coming from the active theme's parent.
+            // (The reason for this is that we want it to be associated with the active theme
+            // -- not its parent -- once we edit it and store it to the DB as a wp_template CPT.)
+            // Instead, we use _get_block_template_file() to locate the block template file.
+            $template_file = _get_block_template_file('wp_template', $fallback_template_slug);
+            if ($template_file && get_template() === $template_file['theme']) {
+                // The block template is part of the parent theme, so we
+                // have to give precedence to the child theme's PHP template.
+                array_shift($templates);
+            }
+        }
+    }
 
-	return count( $templates ) ? $templates[0] : null;
+    return count($templates) ? $templates[0] : null;
 }
 
 /**
@@ -229,8 +235,9 @@ function resolve_block_template( $template_type, $template_hierarchy, $fallback_
  *
  * @see _wp_render_title_tag()
  */
-function _block_template_render_title_tag() {
-	echo '<title>' . wp_get_document_title() . '</title>' . "\n";
+function _block_template_render_title_tag()
+{
+    echo '<title>' . wp_get_document_title() . '</title>' . "\n";
 }
 
 /**
@@ -246,72 +253,73 @@ function _block_template_render_title_tag() {
  *
  * @return string Block template markup.
  */
-function get_the_block_template_html() {
-	global $_wp_current_template_id, $_wp_current_template_content, $wp_embed, $wp_query;
+function get_the_block_template_html()
+{
+    global $_wp_current_template_id, $_wp_current_template_content, $wp_embed, $wp_query;
 
-	if ( ! $_wp_current_template_content ) {
-		if ( is_user_logged_in() ) {
-			return '<h1>' . esc_html__( 'No matching template found' ) . '</h1>';
-		}
-		return '';
-	}
+    if (! $_wp_current_template_content) {
+        if (is_user_logged_in()) {
+            return '<h1>' . esc_html__('No matching template found') . '</h1>';
+        }
+        return '';
+    }
 
-	$content = $wp_embed->run_shortcode( $_wp_current_template_content );
-	$content = $wp_embed->autoembed( $content );
-	$content = shortcode_unautop( $content );
-	$content = do_shortcode( $content );
+    $content = $wp_embed->run_shortcode($_wp_current_template_content);
+    $content = $wp_embed->autoembed($content);
+    $content = shortcode_unautop($content);
+    $content = do_shortcode($content);
 
-	/*
-	 * Most block themes omit the `core/query` and `core/post-template` blocks in their singular content templates.
-	 * While this technically still works since singular content templates are always for only one post, it results in
-	 * the main query loop never being entered which causes bugs in core and the plugin ecosystem.
-	 *
-	 * The workaround below ensures that the loop is started even for those singular templates. The while loop will by
-	 * definition only go through a single iteration, i.e. `do_blocks()` is only called once. Additional safeguard
-	 * checks are included to ensure the main query loop has not been tampered with and really only encompasses a
-	 * single post.
-	 *
-	 * Even if the block template contained a `core/query` and `core/post-template` block referencing the main query
-	 * loop, it would not cause errors since it would use a cloned instance and go through the same loop of a single
-	 * post, within the actual main query loop.
-	 *
-	 * This special logic should be skipped if the current template does not come from the current theme, in which case
-	 * it has been injected by a plugin by hijacking the block template loader mechanism. In that case, entirely custom
-	 * logic may be applied which is unpredictable and therefore safer to omit this special handling on.
-	 */
-	if (
-		$_wp_current_template_id &&
-		str_starts_with( $_wp_current_template_id, get_stylesheet() . '//' ) &&
-		is_singular() &&
-		1 === $wp_query->post_count &&
-		have_posts()
-	) {
-		while ( have_posts() ) {
-			the_post();
-			$content = do_blocks( $content );
-		}
-	} else {
-		$content = do_blocks( $content );
-	}
+    /*
+     * Most block themes omit the `core/query` and `core/post-template` blocks in their singular content templates.
+     * While this technically still works since singular content templates are always for only one post, it results in
+     * the main query loop never being entered which causes bugs in core and the plugin ecosystem.
+     *
+     * The workaround below ensures that the loop is started even for those singular templates. The while loop will by
+     * definition only go through a single iteration, i.e. `do_blocks()` is only called once. Additional safeguard
+     * checks are included to ensure the main query loop has not been tampered with and really only encompasses a
+     * single post.
+     *
+     * Even if the block template contained a `core/query` and `core/post-template` block referencing the main query
+     * loop, it would not cause errors since it would use a cloned instance and go through the same loop of a single
+     * post, within the actual main query loop.
+     *
+     * This special logic should be skipped if the current template does not come from the current theme, in which case
+     * it has been injected by a plugin by hijacking the block template loader mechanism. In that case, entirely custom
+     * logic may be applied which is unpredictable and therefore safer to omit this special handling on.
+     */
+    if (
+        $_wp_current_template_id &&
+        str_starts_with($_wp_current_template_id, get_stylesheet() . '//') &&
+        is_singular() &&
+        1 === $wp_query->post_count &&
+        have_posts()
+    ) {
+        while (have_posts()) {
+            the_post();
+            $content = do_blocks($content);
+        }
+    } else {
+        $content = do_blocks($content);
+    }
 
-	$content = wptexturize( $content );
-	$content = convert_smilies( $content );
-	$content = wp_filter_content_tags( $content, 'template' );
-	$content = str_replace( ']]>', ']]&gt;', $content );
+    $content = wptexturize($content);
+    $content = convert_smilies($content);
+    $content = wp_filter_content_tags($content, 'template');
+    $content = str_replace(']]>', ']]&gt;', $content);
 
-	// Wrap block template in .wp-site-blocks to allow for specific descendant styles
-	// (e.g. `.wp-site-blocks > *`).
-	$template_html = '<div class="wp-site-blocks">' . $content . '</div>';
+    // Wrap block template in .wp-site-blocks to allow for specific descendant styles
+    // (e.g. `.wp-site-blocks > *`).
+    $template_html = '<div class="wp-site-blocks">' . $content . '</div>';
 
-	// Back-compat for plugins that disable functionality by unhooking one of these actions.
-	if (
-		! has_action( 'wp_footer', 'the_block_template_skip_link' ) ||
-		! has_action( 'wp_enqueue_scripts', 'wp_enqueue_block_template_skip_link' )
-	) {
-		return $template_html;
-	}
+    // Back-compat for plugins that disable functionality by unhooking one of these actions.
+    if (
+        ! has_action('wp_footer', 'the_block_template_skip_link') ||
+        ! has_action('wp_enqueue_scripts', 'wp_enqueue_block_template_skip_link')
+    ) {
+        return $template_html;
+    }
 
-	return _block_template_add_skip_link( $template_html );
+    return _block_template_add_skip_link($template_html);
 }
 
 /**
@@ -347,56 +355,58 @@ function get_the_block_template_html() {
  * @param string $template_html Block template markup.
  * @return string Modified markup with skip link when applicable.
  */
-function _block_template_add_skip_link( string $template_html ): string {
-	// Anonymous subclass of WP_HTML_Tag_Processor to access protected bookmark spans.
-	$processor = new class( $template_html ) extends WP_HTML_Tag_Processor {
-		/**
-		 * Inserts text before the current token.
-		 *
-		 * @param string $text Text to insert.
-		 */
-		public function insert_before( string $text ) {
-			$this->set_bookmark( 'here' );
-			$this->lexical_updates[] = new WP_HTML_Text_Replacement( $this->bookmarks['here']->start, 0, $text );
-		}
-	};
+function _block_template_add_skip_link(string $template_html): string
+{
+    // Anonymous subclass of WP_HTML_Tag_Processor to access protected bookmark spans.
+    $processor = new class ($template_html) extends WP_HTML_Tag_Processor {
+        /**
+         * Inserts text before the current token.
+         *
+         * @param string $text Text to insert.
+         */
+        public function insert_before(string $text)
+        {
+            $this->set_bookmark('here');
+            $this->lexical_updates[] = new WP_HTML_Text_Replacement($this->bookmarks['here']->start, 0, $text);
+        }
+    };
 
-	// Find and bookmark the first DIV.wp-site-blocks.
-	if (
-		! $processor->next_tag(
-			array(
-				'tag_name'   => 'DIV',
-				'class_name' => 'wp-site-blocks',
-			)
-		)
-	) {
-		return $template_html;
-	}
-	$processor->set_bookmark( 'skip_link_insertion_point' );
+    // Find and bookmark the first DIV.wp-site-blocks.
+    if (
+        ! $processor->next_tag(
+            [
+                'tag_name'   => 'DIV',
+                'class_name' => 'wp-site-blocks',
+            ]
+        )
+    ) {
+        return $template_html;
+    }
+    $processor->set_bookmark('skip_link_insertion_point');
 
-	// Ensure the MAIN element has an ID.
-	if ( ! $processor->next_tag( 'MAIN' ) ) {
-		return $template_html;
-	}
+    // Ensure the MAIN element has an ID.
+    if (! $processor->next_tag('MAIN')) {
+        return $template_html;
+    }
 
-	$skip_link_target_id = $processor->get_attribute( 'id' );
-	if ( ! is_string( $skip_link_target_id ) || '' === $skip_link_target_id ) {
-		$skip_link_target_id = 'wp--skip-link--target';
-		$processor->set_attribute( 'id', $skip_link_target_id );
-	}
+    $skip_link_target_id = $processor->get_attribute('id');
+    if (! is_string($skip_link_target_id) || '' === $skip_link_target_id) {
+        $skip_link_target_id = 'wp--skip-link--target';
+        $processor->set_attribute('id', $skip_link_target_id);
+    }
 
-	// Seek back to the bookmarked insertion point.
-	$processor->seek( 'skip_link_insertion_point' );
+    // Seek back to the bookmarked insertion point.
+    $processor->seek('skip_link_insertion_point');
 
-	$skip_link = sprintf(
-		'<a class="skip-link screen-reader-text" id="wp-skip-link" href="%s">%s</a>',
-		esc_url( '#' . $skip_link_target_id ),
-		/* translators: Hidden accessibility text. */
-		esc_html__( 'Skip to content' )
-	);
-	$processor->insert_before( $skip_link );
+    $skip_link = sprintf(
+        '<a class="skip-link screen-reader-text" id="wp-skip-link" href="%s">%s</a>',
+        esc_url('#' . $skip_link_target_id),
+        /* translators: Hidden accessibility text. */
+        esc_html__('Skip to content')
+    );
+    $processor->insert_before($skip_link);
 
-	return $processor->get_updated_html();
+    return $processor->get_updated_html();
 }
 
 /**
@@ -407,8 +417,9 @@ function _block_template_add_skip_link( string $template_html ): string {
  * @access private
  * @since 5.8.0
  */
-function _block_template_viewport_meta_tag() {
-	echo '<meta name="viewport" content="width=device-width, initial-scale=1" />' . "\n";
+function _block_template_viewport_meta_tag()
+{
+    echo '<meta name="viewport" content="width=device-width, initial-scale=1" />' . "\n";
 }
 
 /**
@@ -420,8 +431,9 @@ function _block_template_viewport_meta_tag() {
  * @param string $template_file Template file name.
  * @return string Template file name without extension.
  */
-function _strip_template_file_suffix( $template_file ) {
-	return preg_replace( '/\.(php|html)$/', '', $template_file );
+function _strip_template_file_suffix($template_file)
+{
+    return preg_replace('/\.(php|html)$/', '', $template_file);
 }
 
 /**
@@ -434,19 +446,20 @@ function _strip_template_file_suffix( $template_file ) {
  *
  * @return array Filtered context.
  */
-function _block_template_render_without_post_block_context( $context ) {
-	/*
-	 * When loading a template directly and not through a page that resolves it,
-	 * the top-level post ID and type context get set to that of the template.
-	 * Templates are just the structure of a site, and they should not be available
-	 * as post context because blocks like Post Content would recurse infinitely.
-	 */
-	if ( isset( $context['postType'] ) && 'wp_template' === $context['postType'] ) {
-		unset( $context['postId'] );
-		unset( $context['postType'] );
-	}
+function _block_template_render_without_post_block_context($context)
+{
+    /*
+     * When loading a template directly and not through a page that resolves it,
+     * the top-level post ID and type context get set to that of the template.
+     * Templates are just the structure of a site, and they should not be available
+     * as post context because blocks like Post Content would recurse infinitely.
+     */
+    if (isset($context['postType']) && 'wp_template' === $context['postType']) {
+        unset($context['postId']);
+        unset($context['postType']);
+    }
 
-	return $context;
+    return $context;
 }
 
 /**
@@ -460,29 +473,30 @@ function _block_template_render_without_post_block_context( $context ) {
  *
  * @param WP_Query $wp_query Current WP_Query instance, passed by reference.
  */
-function _resolve_template_for_new_post( $wp_query ) {
-	if ( ! $wp_query->is_main_query() ) {
-		return;
-	}
+function _resolve_template_for_new_post($wp_query)
+{
+    if (! $wp_query->is_main_query()) {
+        return;
+    }
 
-	remove_filter( 'pre_get_posts', '_resolve_template_for_new_post' );
+    remove_filter('pre_get_posts', '_resolve_template_for_new_post');
 
-	// Pages.
-	$page_id = $wp_query->query['page_id'] ?? null;
+    // Pages.
+    $page_id = $wp_query->query['page_id'] ?? null;
 
-	// Posts, including custom post types.
-	$p = $wp_query->query['p'] ?? null;
+    // Posts, including custom post types.
+    $p = $wp_query->query['p'] ?? null;
 
-	$post_id = $page_id ? $page_id : $p;
-	$post    = get_post( $post_id );
+    $post_id = $page_id ? $page_id : $p;
+    $post    = get_post($post_id);
 
-	if (
-		$post &&
-		'auto-draft' === $post->post_status &&
-		current_user_can( 'edit_post', $post->ID )
-	) {
-		$wp_query->set( 'post_status', 'auto-draft' );
-	}
+    if (
+        $post &&
+        'auto-draft' === $post->post_status &&
+        current_user_can('edit_post', $post->ID)
+    ) {
+        $wp_query->set('post_status', 'auto-draft');
+    }
 }
 
 /**
@@ -503,8 +517,9 @@ function _resolve_template_for_new_post( $wp_query ) {
  * }
  * @return WP_Block_Template|WP_Error The registered template object on success, WP_Error object on failure.
  */
-function register_block_template( $template_name, $args = array() ) {
-	return WP_Block_Templates_Registry::get_instance()->register( $template_name, $args );
+function register_block_template($template_name, $args = [])
+{
+    return WP_Block_Templates_Registry::get_instance()->register($template_name, $args);
 }
 
 /**
@@ -516,6 +531,7 @@ function register_block_template( $template_name, $args = array() ) {
  * @return WP_Block_Template|WP_Error The unregistered template object on success, WP_Error object on failure or if the
  *                                    template doesn't exist.
  */
-function unregister_block_template( $template_name ) {
-	return WP_Block_Templates_Registry::get_instance()->unregister( $template_name );
+function unregister_block_template($template_name)
+{
+    return WP_Block_Templates_Registry::get_instance()->unregister($template_name);
 }

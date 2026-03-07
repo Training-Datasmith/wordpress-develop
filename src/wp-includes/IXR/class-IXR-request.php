@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * IXR_Request
  *
@@ -8,14 +10,17 @@
  */
 class IXR_Request
 {
-    var $method;
-    var $args;
-    var $xml;
+    public $method;
+    public $args;
+    /**
+     * @var string
+     */
+    public $xml;
 
-	/**
-	 * PHP5 constructor.
-	 */
-    function __construct($method, $args)
+    /**
+     * PHP5 constructor.
+     */
+    public function __construct($method, $args)
     {
         $this->method = $method;
         $this->args = $args;
@@ -35,19 +40,20 @@ EOD;
         $this->xml .= '</params></methodCall>';
     }
 
-	/**
-	 * PHP4 constructor.
-	 */
-	public function IXR_Request( $method, $args ) {
-		self::__construct( $method, $args );
-	}
+    /**
+     * PHP4 constructor.
+     */
+    public function IXR_Request($method, $args): void
+    {
+        self::__construct($method, $args);
+    }
 
-    function getLength()
+    public function getLength(): int
     {
         return strlen($this->xml);
     }
 
-    function getXml()
+    public function getXml()
     {
         return $this->xml;
     }

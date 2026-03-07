@@ -1,11 +1,13 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Http;
 
+use WordPress\AiClient\Providers\Http\Contracts\HttpTransporterInterface;
 use WordPress\AiClientDependencies\Http\Discovery\Psr17FactoryDiscovery;
 use WordPress\AiClientDependencies\Http\Discovery\Psr18ClientDiscovery;
-use WordPress\AiClient\Providers\Http\Contracts\HttpTransporterInterface;
+
 /**
  * Factory for creating HTTP transporters.
  *

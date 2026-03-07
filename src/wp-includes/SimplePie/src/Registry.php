@@ -70,7 +70,7 @@ class Registry
      * @see register()
      * @var array<string, class-string>
      */
-    private $legacyTypes = [
+    private array $legacyTypes = [
         'Cache' => Cache::class,
         'Locator' => Locator::class,
         'Parser' => Parser::class,
@@ -93,15 +93,6 @@ class Registry
     ];
 
     /**
-     * Constructor
-     *
-     * No-op
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Register a class
      *
      * @param string $type See {@see $default} for names
@@ -109,7 +100,7 @@ class Registry
      * @param bool $legacy Whether to enable legacy support for this class
      * @return bool Successfulness
      */
-    public function register(string $type, $class, bool $legacy = false)
+    public function register(string $type, $class, bool $legacy = false): bool
     {
         if (array_key_exists($type, $this->legacyTypes)) {
             // trigger_error(sprintf('"%s"(): Using argument #1 ($type) with value "%s" is deprecated since SimplePie 1.8.0, use class-string "%s" instead.', __METHOD__, $type, $this->legacyTypes[$type]), \E_USER_DEPRECATED);
@@ -150,7 +141,7 @@ class Registry
      * @param class-string<T> $type
      * @return class-string<T>|null
      */
-    public function get_class($type)
+    public function get_class($type): ?string
     {
         if (array_key_exists($type, $this->legacyTypes)) {
             // trigger_error(sprintf('"%s"(): Using argument #1 ($type) with value "%s" is deprecated since SimplePie 1.8.0, use class-string "%s" instead.', __METHOD__, $type, $this->legacyTypes[$type]), \E_USER_DEPRECATED);
@@ -162,17 +153,11 @@ class Registry
             return null;
         }
 
-        // For PHPStan: values in $default should be subtypes of keys.
-        /** @var class-string<T> */
-        $class = $this->default[$type];
-
         if (array_key_exists($type, $this->classes)) {
-            // For PHPStan: values in $classes should be subtypes of keys.
-            /** @var class-string<T> */
-            $class = $this->classes[$type];
+            return $this->classes[$type];
         }
 
-        return $class;
+        return $this->default[$type];
     }
 
     /**
@@ -217,7 +202,6 @@ class Registry
      * Call a static method for a type
      *
      * @param class-string $type
-     * @param string $method
      * @param array<mixed> $parameters
      * @return mixed
      */
@@ -255,4 +239,4 @@ class Registry
     }
 }
 
-class_alias('SimplePie\Registry', 'SimplePie_Registry');
+class_alias(\SimplePie\Registry::class, 'SimplePie_Registry');

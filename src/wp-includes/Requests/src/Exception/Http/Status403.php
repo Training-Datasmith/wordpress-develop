@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Exception for 403 Forbidden responses
  *
@@ -14,18 +16,19 @@ use WpOrg\Requests\Exception\Http;
  *
  * @package Requests\Exceptions
  */
-final class Status403 extends Http {
-	/**
-	 * HTTP status code
-	 *
-	 * @var integer
-	 */
-	protected $code = 403;
+final class Status403 extends Http
+{
+    /**
+     * HTTP status code
+     *
+     * @var integer
+     */
+    protected $code = 403;
 
-	/**
-	 * Reason phrase
-	 *
-	 * @var string
-	 */
-	protected $reason = 'Forbidden';
+    /**
+     * Reason phrase
+     *
+     * @var string
+     */
+    protected $reason = 'Forbidden';
 }

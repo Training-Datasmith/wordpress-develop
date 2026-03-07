@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Class ParagonIE_Sodium_Core_Ristretto255
  */
 class ParagonIE_Sodium_Core_Ristretto255 extends ParagonIE_Sodium_Core_Ed25519
 {
-    const crypto_core_ristretto255_HASHBYTES = 64;
-    const HASH_SC_L = 48;
-    const CORE_H2C_SHA256 = 1;
-    const CORE_H2C_SHA512 = 2;
+    public const crypto_core_ristretto255_HASHBYTES = 64;
+    public const HASH_SC_L = 48;
+    public const CORE_H2C_SHA256 = 1;
+    public const CORE_H2C_SHA512 = 2;
 
     /**
      * @param ParagonIE_Sodium_Core_Curve25519_Fe $f
@@ -55,7 +57,6 @@ class ParagonIE_Sodium_Core_Ristretto255 extends ParagonIE_Sodium_Core_Ed25519
         }
         return (($d - 1) >> 31) & 1;
     }
-
 
     /**
      * @param ParagonIE_Sodium_Core_Curve25519_Fe $u
@@ -109,10 +110,10 @@ class ParagonIE_Sodium_Core_Ristretto255 extends ParagonIE_Sodium_Core_Ed25519
         $x = self::fe_abs(
             self::fe_cmov($x, $x_sqrtm1, $has_p_root | $has_f_root)
         );
-        return array(
+        return [
             'x' => $x,
-            'nonsquare' => $has_m_root | $has_p_root
-        );
+            'nonsquare' => $has_m_root | $has_p_root,
+        ];
     }
 
     /**
@@ -185,7 +186,7 @@ class ParagonIE_Sodium_Core_Ristretto255 extends ParagonIE_Sodium_Core_Ed25519
         $h->T = self::fe_mul($h->X, $h->Y);
 
         $res = - ((1 - $notsquare) | self::fe_isnegative($h->T) | self::fe_iszero($h->Y));
-        return array('h' => $h, 'res' => $res);
+        return ['h' => $h, 'res' => $res];
     }
 
     /**
@@ -232,7 +233,6 @@ class ParagonIE_Sodium_Core_Ristretto255 extends ParagonIE_Sodium_Core_Ed25519
 
         $x_z_inv = self::fe_mul($x_, $z_inv);
         $y_ = self::fe_cneg($y_, self::fe_isnegative($x_z_inv));
-
 
         // fe25519_sub(s_, h->Z, y_);
         // fe25519_mul(s_, den_inv, s_);
@@ -411,7 +411,6 @@ class ParagonIE_Sodium_Core_Ristretto255 extends ParagonIE_Sodium_Core_Ed25519
         return self::ristretto255_p3_tobytes($r_p3);
     }
 
-
     /**
      * @param int $hLen
      * @param ?string $ctx
@@ -430,12 +429,12 @@ class ParagonIE_Sodium_Core_Ristretto255 extends ParagonIE_Sodium_Core_Ed25519
 
         if ($ctx_len > 0xff) {
             $st = hash_init('sha256');
-            self::hash_update($st, "H2C-OVERSIZE-DST-");
+            self::hash_update($st, 'H2C-OVERSIZE-DST-');
             self::hash_update($st, $ctx);
             $ctx = hash_final($st, true);
             $ctx_len = 32;
         }
-        $t = array(0, $hLen, 0);
+        $t = [0, $hLen, 0];
         $ux = str_repeat("\0", 64);
         $st = hash_init('sha256');
         self::hash_update($st, $ux);
@@ -480,12 +479,12 @@ class ParagonIE_Sodium_Core_Ristretto255 extends ParagonIE_Sodium_Core_Ed25519
 
         if ($ctx_len > 0xff) {
             $st = hash_init('sha256');
-            self::hash_update($st, "H2C-OVERSIZE-DST-");
+            self::hash_update($st, 'H2C-OVERSIZE-DST-');
             self::hash_update($st, $ctx);
             $ctx = hash_final($st, true);
             $ctx_len = 32;
         }
-        $t = array(0, $hLen, 0);
+        $t = [0, $hLen, 0];
         $ux = str_repeat("\0", 128);
         $st = hash_init('sha512');
         self::hash_update($st, $ux);
@@ -577,7 +576,6 @@ class ParagonIE_Sodium_Core_Ristretto255 extends ParagonIE_Sodium_Core_Ed25519
         return self::scalar_complement($s);
     }
 
-
     /**
      * @param string $s
      * @return string
@@ -639,7 +637,10 @@ class ParagonIE_Sodium_Core_Ristretto255 extends ParagonIE_Sodium_Core_Ed25519
         $h = array_fill(0, 64, 0);
         $h_be = self::stringToIntArray(
             self::h2c_string_to_hash(
-                self::HASH_SC_L, $ctx, $msg, $hash_alg
+                self::HASH_SC_L,
+                $ctx,
+                $msg,
+                $hash_alg
             )
         );
 

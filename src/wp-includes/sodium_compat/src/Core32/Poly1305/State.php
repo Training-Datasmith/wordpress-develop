@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core32_Poly1305_State', false)) {
     return;
 }
@@ -12,7 +14,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
     /**
      * @var array<int, int>
      */
-    protected $buffer = array();
+    protected $buffer = [];
 
     /**
      * @var bool
@@ -57,7 +59,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
             );
         }
         /* r &= 0xffffffc0ffffffc0ffffffc0fffffff */
-        $this->r = array(
+        $this->r = [
             // st->r[0] = ...
             ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($key, 0, 4))
                 ->setUnsignedInt(true)
@@ -81,20 +83,20 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
             ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($key, 12, 4))
                 ->setUnsignedInt(true)
                 ->shiftRight(8)
-                ->mask(0x00fffff)
-        );
+                ->mask(0x00fffff),
+        ];
 
         /* h = 0 */
-        $this->h = array(
-            new ParagonIE_Sodium_Core32_Int32(array(0, 0), true),
-            new ParagonIE_Sodium_Core32_Int32(array(0, 0), true),
-            new ParagonIE_Sodium_Core32_Int32(array(0, 0), true),
-            new ParagonIE_Sodium_Core32_Int32(array(0, 0), true),
-            new ParagonIE_Sodium_Core32_Int32(array(0, 0), true)
-        );
+        $this->h = [
+            new ParagonIE_Sodium_Core32_Int32([0, 0], true),
+            new ParagonIE_Sodium_Core32_Int32([0, 0], true),
+            new ParagonIE_Sodium_Core32_Int32([0, 0], true),
+            new ParagonIE_Sodium_Core32_Int32([0, 0], true),
+            new ParagonIE_Sodium_Core32_Int32([0, 0], true),
+        ];
 
         /* save pad for later */
-        $this->pad = array(
+        $this->pad = [
             ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($key, 16, 4))
                 ->setUnsignedInt(true)->toInt64(),
             ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($key, 20, 4))
@@ -103,7 +105,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
                 ->setUnsignedInt(true)->toInt64(),
             ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($key, 28, 4))
                 ->setUnsignedInt(true)->toInt64(),
-        );
+        ];
 
         $this->leftover = 0;
         $this->final = false;
@@ -190,7 +192,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
         }
         $hibit = ParagonIE_Sodium_Core32_Int32::fromInt((int) ($this->final ? 0 : 1 << 24)); /* 1 << 128 */
         $hibit->setUnsignedInt(true);
-        $zero = new ParagonIE_Sodium_Core32_Int64(array(0, 0, 0, 0), true);
+        $zero = new ParagonIE_Sodium_Core32_Int64([0, 0, 0, 0], true);
         /**
          * @var ParagonIE_Sodium_Core32_Int64 $d0
          * @var ParagonIE_Sodium_Core32_Int64 $d1
@@ -323,7 +325,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
         }
 
         /** @var array<int, ParagonIE_Sodium_Core32_Int32> $h */
-        $this->h = array($h0, $h1, $h2, $h3, $h4);
+        $this->h = [$h0, $h1, $h2, $h3, $h4];
         return $this;
     }
 

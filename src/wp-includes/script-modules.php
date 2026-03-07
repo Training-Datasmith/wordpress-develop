@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Script Modules API: Script Module functions
  *
@@ -20,14 +22,15 @@
  *
  * @return WP_Script_Modules The main WP_Script_Modules instance.
  */
-function wp_script_modules(): WP_Script_Modules {
-	global $wp_script_modules;
+function wp_script_modules(): WP_Script_Modules
+{
+    global $wp_script_modules;
 
-	if ( ! ( $wp_script_modules instanceof WP_Script_Modules ) ) {
-		$wp_script_modules = new WP_Script_Modules();
-	}
+    if (! ($wp_script_modules instanceof WP_Script_Modules)) {
+        $wp_script_modules = new WP_Script_Modules();
+    }
 
-	return $wp_script_modules;
+    return $wp_script_modules;
 }
 
 /**
@@ -68,8 +71,9 @@ function wp_script_modules(): WP_Script_Modules {
  *     @type 'auto'|'low'|'high' $fetchpriority Fetch priority. Default 'auto'. Optional.
  * }
  */
-function wp_register_script_module( string $id, string $src, array $deps = array(), $version = false, array $args = array() ) {
-	wp_script_modules()->register( $id, $src, $deps, $version, $args );
+function wp_register_script_module(string $id, string $src, array $deps = [], $version = false, array $args = [])
+{
+    wp_script_modules()->register($id, $src, $deps, $version, $args);
 }
 
 /**
@@ -112,8 +116,9 @@ function wp_register_script_module( string $id, string $src, array $deps = array
  *     @type 'auto'|'low'|'high' $fetchpriority Fetch priority. Default 'auto'. Optional.
  * }
  */
-function wp_enqueue_script_module( string $id, string $src = '', array $deps = array(), $version = false, array $args = array() ) {
-	wp_script_modules()->enqueue( $id, $src, $deps, $version, $args );
+function wp_enqueue_script_module(string $id, string $src = '', array $deps = [], $version = false, array $args = [])
+{
+    wp_script_modules()->enqueue($id, $src, $deps, $version, $args);
 }
 
 /**
@@ -123,8 +128,9 @@ function wp_enqueue_script_module( string $id, string $src = '', array $deps = a
  *
  * @param string $id The identifier of the script module.
  */
-function wp_dequeue_script_module( string $id ) {
-	wp_script_modules()->dequeue( $id );
+function wp_dequeue_script_module(string $id)
+{
+    wp_script_modules()->dequeue($id);
 }
 
 /**
@@ -134,8 +140,9 @@ function wp_dequeue_script_module( string $id ) {
  *
  * @param string $id The identifier of the script module.
  */
-function wp_deregister_script_module( string $id ) {
-	wp_script_modules()->deregister( $id );
+function wp_deregister_script_module(string $id)
+{
+    wp_script_modules()->deregister($id);
 }
 
 /**
@@ -143,70 +150,71 @@ function wp_deregister_script_module( string $id ) {
  *
  * @since 6.7.0
  */
-function wp_default_script_modules() {
-	$suffix = defined( 'WP_RUN_CORE_TESTS' ) ? '.min' : wp_scripts_get_suffix();
+function wp_default_script_modules()
+{
+    $suffix = defined('WP_RUN_CORE_TESTS') ? '.min' : wp_scripts_get_suffix();
 
-	/*
-	 * Expects multidimensional array like:
-	 *
-	 *     'interactivity/index.min.js' => array('dependencies' => array(…), 'version' => '…'),
-	 *     'interactivity-router/index.min.js' => array('dependencies' => array(…), 'version' => '…'),
-	 *     'block-library/navigation/view.min.js' => …
-	 */
-	$assets_file = ABSPATH . WPINC . "/assets/script-modules-packages{$suffix}.php";
-	$assets      = file_exists( $assets_file ) ? include $assets_file : array();
+    /*
+     * Expects multidimensional array like:
+     *
+     *     'interactivity/index.min.js' => array('dependencies' => array(…), 'version' => '…'),
+     *     'interactivity-router/index.min.js' => array('dependencies' => array(…), 'version' => '…'),
+     *     'block-library/navigation/view.min.js' => …
+     */
+    $assets_file = ABSPATH . WPINC . "/assets/script-modules-packages{$suffix}.php";
+    $assets      = file_exists($assets_file) ? include $assets_file : [];
 
-	foreach ( $assets as $file_name => $script_module_data ) {
-		/*
-		 * Build the WordPress Script Module ID from the file name.
-		 * Prepend `@wordpress/` and remove extensions and `/index` if present:
-		 *   - interactivity/index.min.js         => @wordpress/interactivity
-		 *   - interactivity-router/index.min.js  => @wordpress/interactivity-router
-		 *   - block-library/navigation/view.js   => @wordpress/block-library/navigation/view
-		 */
-		$script_module_id = '@wordpress/' . preg_replace( '~(?:/index)?(?:\.min)?\.js$~D', '', $file_name, 1 );
+    foreach ($assets as $file_name => $script_module_data) {
+        /*
+         * Build the WordPress Script Module ID from the file name.
+         * Prepend `@wordpress/` and remove extensions and `/index` if present:
+         *   - interactivity/index.min.js         => @wordpress/interactivity
+         *   - interactivity-router/index.min.js  => @wordpress/interactivity-router
+         *   - block-library/navigation/view.js   => @wordpress/block-library/navigation/view
+         */
+        $script_module_id = '@wordpress/' . preg_replace('~(?:/index)?(?:\.min)?\.js$~D', '', $file_name, 1);
 
-		/*
-		 * The Interactivity API is designed with server-side rendering as its primary goal, so all of its script modules
-		 * should be loaded with low fetchpriority and printed in the footer since they should not be needed in the
-		 * critical rendering path. Also, the @wordpress/a11y script module is intended to be used as a dynamic import
-		 * dependency, in which case the fetchpriority is irrelevant. See <https://make.wordpress.org/core/2024/10/14/updates-to-script-modules-in-6-7/>.
-		 * However, in case it is added as a static import dependency, the fetchpriority is explicitly set to be 'low'
-		 * since the module should not be involved in the critical rendering path, and if it is, its fetchpriority will
-		 * be bumped to match the fetchpriority of the dependent script.
-		 */
-		$args = array();
-		if (
-			str_starts_with( $script_module_id, '@wordpress/interactivity' ) ||
-			str_starts_with( $script_module_id, '@wordpress/block-library' ) ||
-			'@wordpress/a11y' === $script_module_id
-		) {
-			$args['fetchpriority'] = 'low';
-			$args['in_footer']     = true;
-		}
+        /*
+         * The Interactivity API is designed with server-side rendering as its primary goal, so all of its script modules
+         * should be loaded with low fetchpriority and printed in the footer since they should not be needed in the
+         * critical rendering path. Also, the @wordpress/a11y script module is intended to be used as a dynamic import
+         * dependency, in which case the fetchpriority is irrelevant. See <https://make.wordpress.org/core/2024/10/14/updates-to-script-modules-in-6-7/>.
+         * However, in case it is added as a static import dependency, the fetchpriority is explicitly set to be 'low'
+         * since the module should not be involved in the critical rendering path, and if it is, its fetchpriority will
+         * be bumped to match the fetchpriority of the dependent script.
+         */
+        $args = [];
+        if (
+            str_starts_with($script_module_id, '@wordpress/interactivity') ||
+            str_starts_with($script_module_id, '@wordpress/block-library') ||
+            '@wordpress/a11y' === $script_module_id
+        ) {
+            $args['fetchpriority'] = 'low';
+            $args['in_footer']     = true;
+        }
 
-		// Marks all Core blocks as compatible with client-side navigation.
-		if ( str_starts_with( $script_module_id, '@wordpress/block-library' ) ) {
-			wp_interactivity()->add_client_navigation_support_to_script_module( $script_module_id );
-		}
+        // Marks all Core blocks as compatible with client-side navigation.
+        if (str_starts_with($script_module_id, '@wordpress/block-library')) {
+            wp_interactivity()->add_client_navigation_support_to_script_module($script_module_id);
+        }
 
-		// VIPS files are always minified — the non-minified versions are not
-		// shipped because they are ~10MB of inlined WASM with no debugging value.
-		if ( str_starts_with( $file_name, 'vips/' ) && ! str_contains( $file_name, '.min.' ) ) {
-			$file_name = str_replace( '.js', '.min.js', $file_name );
-		}
+        // VIPS files are always minified — the non-minified versions are not
+        // shipped because they are ~10MB of inlined WASM with no debugging value.
+        if (str_starts_with($file_name, 'vips/') && ! str_contains($file_name, '.min.')) {
+            $file_name = str_replace('.js', '.min.js', $file_name);
+        }
 
-		$path        = includes_url( "js/dist/script-modules/{$file_name}" );
-		$module_deps = $script_module_data['module_dependencies'] ?? array();
-		wp_register_script_module( $script_module_id, $path, $module_deps, $script_module_data['version'], $args );
-	}
+        $path        = includes_url("js/dist/script-modules/{$file_name}");
+        $module_deps = $script_module_data['module_dependencies'] ?? [];
+        wp_register_script_module($script_module_id, $path, $module_deps, $script_module_data['version'], $args);
+    }
 
-	wp_register_script_module(
-		'espree',
-		includes_url( 'js/codemirror/espree.min.js' ),
-		array(),
-		'9.6.1'
-	);
+    wp_register_script_module(
+        'espree',
+        includes_url('js/codemirror/espree.min.js'),
+        [],
+        '9.6.1'
+    );
 }
 
 /**
@@ -214,10 +222,11 @@ function wp_default_script_modules() {
  *
  * @since 6.9.0
  */
-function wp_enqueue_block_editor_script_modules() {
-	/*
-	 * Enqueue the LaTeX to MathML loader for the math block editor.
-	 * The loader dynamically imports the main LaTeX to MathML module when needed.
-	 */
-	wp_enqueue_script_module( '@wordpress/latex-to-mathml/loader' );
+function wp_enqueue_block_editor_script_modules()
+{
+    /*
+     * Enqueue the LaTeX to MathML loader for the math block editor.
+     * The loader dynamically imports the main LaTeX to MathML module when needed.
+     */
+    wp_enqueue_script_module('@wordpress/latex-to-mathml/loader');
 }

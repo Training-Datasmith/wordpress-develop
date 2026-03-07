@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Exception for errors from the Text_Diff package.
  *
@@ -8,4 +10,6 @@
  * @subpackage Text_Diff
  */
 
-class Text_Exception extends Exception {}
+class Text_Exception extends Exception
+{
+}

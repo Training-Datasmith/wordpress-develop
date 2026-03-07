@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Exception for 414 Request-URI Too Large responses
  *
@@ -14,18 +16,19 @@ use WpOrg\Requests\Exception\Http;
  *
  * @package Requests\Exceptions
  */
-final class Status414 extends Http {
-	/**
-	 * HTTP status code
-	 *
-	 * @var integer
-	 */
-	protected $code = 414;
+final class Status414 extends Http
+{
+    /**
+     * HTTP status code
+     *
+     * @var integer
+     */
+    protected $code = 414;
 
-	/**
-	 * Reason phrase
-	 *
-	 * @var string
-	 */
-	protected $reason = 'Request-URI Too Large';
+    /**
+     * Reason phrase
+     *
+     * @var string
+     */
+    protected $reason = 'Request-URI Too Large';
 }

@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Enclosure;
 
-class_exists('SimplePie\Enclosure');
+class_exists(\SimplePie\Enclosure::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Enclosure" class is deprecated since SimplePie 1.7.0, use "SimplePie\Enclosure" instead.'), \E_USER_DEPRECATED);
 

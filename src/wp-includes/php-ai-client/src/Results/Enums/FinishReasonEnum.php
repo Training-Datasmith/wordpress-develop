@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Results\Enums;
 
 use WordPress\AiClient\Common\AbstractEnum;
+
 /**
  * Enum for finish reasons of AI generation.
  *

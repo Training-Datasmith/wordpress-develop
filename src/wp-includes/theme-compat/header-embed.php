@@ -10,8 +10,8 @@
  * @since 4.5.0
  */
 
-if ( ! headers_sent() ) {
-	header( 'X-WP-embed: true' );
+if (! headers_sent()) {
+    header('X-WP-embed: true');
 }
 
 ?>
@@ -21,12 +21,12 @@ if ( ! headers_sent() ) {
 	<title><?php echo wp_get_document_title(); ?></title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<?php
-	/**
-	 * Prints scripts or data in the embed template head tag.
-	 *
-	 * @since 4.4.0
-	 */
-	do_action( 'embed_head' );
-	?>
+    /**
+     * Prints scripts or data in the embed template head tag.
+     *
+     * @since 4.4.0
+     */
+    do_action('embed_head');
+?>
 </head>
 <body <?php body_class(); ?>>

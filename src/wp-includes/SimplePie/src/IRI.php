@@ -28,28 +28,28 @@ class IRI
      *
      * @var ?string
      */
-    protected $scheme = null;
+    protected $scheme;
 
     /**
      * User Information
      *
      * @var ?string
      */
-    protected $iuserinfo = null;
+    protected $iuserinfo;
 
     /**
      * ihost
      *
      * @var ?string
      */
-    protected $ihost = null;
+    protected $ihost;
 
     /**
      * Port
      *
      * @var ?int
      */
-    protected $port = null;
+    protected $port;
 
     /**
      * ipath
@@ -63,14 +63,14 @@ class IRI
      *
      * @var ?string
      */
-    protected $iquery = null;
+    protected $iquery;
 
     /**
      * ifragment
      *
      * @var ?string
      */
-    protected $ifragment = null;
+    protected $ifragment;
 
     /**
      * Normalization database
@@ -82,30 +82,28 @@ class IRI
      */
     protected $normalization = [
         'acap' => [
-            'port' => 674
+            'port' => 674,
         ],
         'dict' => [
-            'port' => 2628
+            'port' => 2628,
         ],
         'file' => [
-            'ihost' => 'localhost'
+            'ihost' => 'localhost',
         ],
         'http' => [
             'port' => 80,
-            'ipath' => '/'
+            'ipath' => '/',
         ],
         'https' => [
             'port' => 443,
-            'ipath' => '/'
+            'ipath' => '/',
         ],
     ];
 
     /**
      * Return the entire IRI when you try and read the object as a string
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->get_iri();
     }
@@ -204,8 +202,6 @@ class IRI
 
     /**
      * Create a new IRI object, from a specified string
-     *
-     * @param string|null $iri
      */
     public function __construct(?string $iri = null)
     {
@@ -214,7 +210,6 @@ class IRI
 
     /**
      * Clean up
-     * @return void
      */
     public function __destruct()
     {
@@ -239,61 +234,59 @@ class IRI
         }
         if (!$relative->is_valid()) {
             return false;
-        } elseif ($relative->scheme !== null) {
-            return clone $relative;
-        } else {
-            if (!($base instanceof IRI)) {
-                $base = new IRI($base);
-            }
-            if ($base->scheme !== null && $base->is_valid()) {
-                if ($relative->get_iri() !== '') {
-                    if ($relative->iuserinfo !== null || $relative->ihost !== null || $relative->port !== null) {
-                        $target = clone $relative;
-                        $target->scheme = $base->scheme;
-                    } else {
-                        $target = new IRI();
-                        $target->scheme = $base->scheme;
-                        $target->iuserinfo = $base->iuserinfo;
-                        $target->ihost = $base->ihost;
-                        $target->port = $base->port;
-                        if ($relative->ipath !== '') {
-                            if ($relative->ipath[0] === '/') {
-                                $target->ipath = $relative->ipath;
-                            } elseif (($base->iuserinfo !== null || $base->ihost !== null || $base->port !== null) && $base->ipath === '') {
-                                $target->ipath = '/' . $relative->ipath;
-                            } elseif (($last_segment = strrpos($base->ipath, '/')) !== false) {
-                                $target->ipath = substr($base->ipath, 0, $last_segment + 1) . $relative->ipath;
-                            } else {
-                                $target->ipath = $relative->ipath;
-                            }
-                            $target->ipath = $target->remove_dot_segments($target->ipath);
-                            $target->iquery = $relative->iquery;
-                        } else {
-                            $target->ipath = $base->ipath;
-                            if ($relative->iquery !== null) {
-                                $target->iquery = $relative->iquery;
-                            } elseif ($base->iquery !== null) {
-                                $target->iquery = $base->iquery;
-                            }
-                        }
-                        $target->ifragment = $relative->ifragment;
-                    }
-                } else {
-                    $target = clone $base;
-                    $target->ifragment = null;
-                }
-                $target->scheme_normalization();
-                return $target;
-            }
-
-            return false;
         }
+        if ($relative->scheme !== null) {
+            return clone $relative;
+        }
+        if (!($base instanceof IRI)) {
+            $base = new IRI($base);
+        }
+        if ($base->scheme !== null && $base->is_valid()) {
+            if ($relative->get_iri() !== '') {
+                if ($relative->iuserinfo !== null || $relative->ihost !== null || $relative->port !== null) {
+                    $target = clone $relative;
+                    $target->scheme = $base->scheme;
+                } else {
+                    $target = new IRI();
+                    $target->scheme = $base->scheme;
+                    $target->iuserinfo = $base->iuserinfo;
+                    $target->ihost = $base->ihost;
+                    $target->port = $base->port;
+                    if ($relative->ipath !== '') {
+                        if ($relative->ipath[0] === '/') {
+                            $target->ipath = $relative->ipath;
+                        } elseif (($base->iuserinfo !== null || $base->ihost !== null || $base->port !== null) && $base->ipath === '') {
+                            $target->ipath = '/' . $relative->ipath;
+                        } elseif (($last_segment = strrpos($base->ipath, '/')) !== false) {
+                            $target->ipath = substr($base->ipath, 0, $last_segment + 1) . $relative->ipath;
+                        } else {
+                            $target->ipath = $relative->ipath;
+                        }
+                        $target->ipath = $target->remove_dot_segments($target->ipath);
+                        $target->iquery = $relative->iquery;
+                    } else {
+                        $target->ipath = $base->ipath;
+                        if ($relative->iquery !== null) {
+                            $target->iquery = $relative->iquery;
+                        } elseif ($base->iquery !== null) {
+                            $target->iquery = $base->iquery;
+                        }
+                    }
+                    $target->ifragment = $relative->ifragment;
+                }
+            } else {
+                $target = clone $base;
+                $target->ifragment = null;
+            }
+            $target->scheme_normalization();
+            return $target;
+        }
+        return false;
     }
 
     /**
      * Parse an IRI into scheme/authority/path/query/fragment segments
      *
-     * @param string $iri
      * @return array{
      *   scheme: string|null,
      *   authority: string|null,
@@ -307,8 +300,8 @@ class IRI
         $iri = trim($iri, "\x20\x09\x0A\x0C\x0D");
         if (preg_match('/^(?:(?P<scheme>[^:\/?#]+):)?(:?\/\/(?P<authority>[^\/?#]*))?(?P<path>[^?#]*)(?:\?(?P<query>[^#]*))?(?:#(?P<fragment>.*))?$/', $iri, $match, \PREG_UNMATCHED_AS_NULL)) {
             // TODO: Remove once we require PHP ≥ 7.4.
-            $match['query'] = $match['query'] ?? null;
-            $match['fragment'] = $match['fragment'] ?? null;
+            $match['query'] ??= null;
+            $match['fragment'] ??= null;
             return $match;
         }
 
@@ -319,7 +312,6 @@ class IRI
     /**
      * Remove dot segments from a path
      *
-     * @param string $input
      * @return string
      */
     protected function remove_dot_segments(string $input)
@@ -375,11 +367,11 @@ class IRI
     {
         // Normalize as many pct-encoded sections as possible
         $string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', [$this, 'remove_iunreserved_percent_encoded'], $string);
-        \assert(\is_string($string), "For PHPStan: Should not occur, the regex is valid");
+        \assert(\is_string($string), 'For PHPStan: Should not occur, the regex is valid');
 
         // Replace invalid percent characters
         $string = preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $string);
-        \assert(\is_string($string), "For PHPStan: Should not occur, the regex is valid");
+        \assert(\is_string($string), 'For PHPStan: Should not occur, the regex is valid');
 
         // Add unreserved and % to $extra_chars (the latter is safe because all
         // pct-encoded sections are now valid).
@@ -497,7 +489,7 @@ class IRI
      * @param array{string} $match PCRE match, a capture group #0 consisting of a sequence of valid percent-encoded bytes
      * @return string Replacement
      */
-    protected function remove_iunreserved_percent_encoded(array $match)
+    protected function remove_iunreserved_percent_encoded(array $match): string
     {
         // As we just have valid percent encoded sequences we can just explode
         // and ignore the first member of the returned array (an empty string).
@@ -650,10 +642,8 @@ class IRI
     /**
      * Check if the object represents a valid IRI. This needs to be done on each
      * call as some things change depending on another part of the IRI.
-     *
-     * @return bool
      */
-    public function is_valid()
+    public function is_valid(): bool
     {
         if ($this->ipath === '') {
             return true;
@@ -685,7 +675,6 @@ class IRI
      * Set the entire IRI. Returns true on success, false on failure (if there
      * are any invalid characters).
      *
-     * @param string|null $iri
      * @return bool
      */
     public function set_iri(?string $iri, bool $clear_cache = false)
@@ -698,10 +687,11 @@ class IRI
         if (!$cache) {
             $cache = [];
         }
-
         if ($iri === null) {
             return true;
-        } elseif (isset($cache[$iri])) {
+        }
+
+        if (isset($cache[$iri])) {
             [
                 $this->scheme,
                 $this->iuserinfo,
@@ -712,11 +702,10 @@ class IRI
                 $this->ifragment,
                 $return
             ] = $cache[$iri];
-
             return $return;
         }
 
-        $parsed = $this->parse_iri((string) $iri);
+        $parsed = $this->parse_iri($iri);
         if (!$parsed) {
             return false;
         }
@@ -735,7 +724,7 @@ class IRI
             $this->ipath,
             $this->iquery,
             $this->ifragment,
-            $return
+            $return,
         ];
 
         return $return;
@@ -744,11 +733,8 @@ class IRI
     /**
      * Set the scheme. Returns true on success, false on failure (if there are
      * any invalid characters).
-     *
-     * @param string|null $scheme
-     * @return bool
      */
-    public function set_scheme(?string $scheme)
+    public function set_scheme(?string $scheme): bool
     {
         if ($scheme === null) {
             $this->scheme = null;
@@ -765,7 +751,6 @@ class IRI
      * Set the authority. Returns true on success, false on failure (if there are
      * any invalid characters).
      *
-     * @param string|null $authority
      * @return bool
      */
     public function set_authority(?string $authority, bool $clear_cache = false)
@@ -778,20 +763,20 @@ class IRI
         if (!$cache) {
             $cache = [];
         }
-
         if ($authority === null) {
             $this->iuserinfo = null;
             $this->ihost = null;
             $this->port = null;
             return true;
-        } elseif (isset($cache[$authority])) {
+        }
+
+        if (isset($cache[$authority])) {
             [
                 $this->iuserinfo,
                 $this->ihost,
                 $this->port,
                 $return
             ] = $cache[$authority];
-
             return $return;
         }
 
@@ -822,7 +807,7 @@ class IRI
             $this->iuserinfo,
             $this->ihost,
             $this->port,
-            $return
+            $return,
         ];
 
         return $return;
@@ -830,11 +815,8 @@ class IRI
 
     /**
      * Set the iuserinfo.
-     *
-     * @param string|null $iuserinfo
-     * @return bool
      */
-    public function set_userinfo(?string $iuserinfo)
+    public function set_userinfo(?string $iuserinfo): bool
     {
         if ($iuserinfo === null) {
             $this->iuserinfo = null;
@@ -849,16 +831,14 @@ class IRI
     /**
      * Set the ihost. Returns true on success, false on failure (if there are
      * any invalid characters).
-     *
-     * @param string|null $ihost
-     * @return bool
      */
-    public function set_host(?string $ihost)
+    public function set_host(?string $ihost): bool
     {
         if ($ihost === null) {
             $this->ihost = null;
             return true;
-        } elseif (substr($ihost, 0, 1) === '[' && substr($ihost, -1) === ']') {
+        }
+        if (substr($ihost, 0, 1) === '[' && substr($ihost, -1) === ']') {
             if (\SimplePie\Net\IPv6::check_ipv6(substr($ihost, 1, -1))) {
                 $this->ihost = '[' . \SimplePie\Net\IPv6::compress(substr($ihost, 1, -1)) . ']';
             } else {
@@ -895,14 +875,14 @@ class IRI
      * any invalid characters).
      *
      * @param string|int|null $port
-     * @return bool
      */
-    public function set_port($port)
+    public function set_port($port): bool
     {
         if ($port === null) {
             $this->port = null;
             return true;
-        } elseif (strspn((string) $port, '0123456789') === strlen((string) $port)) {
+        }
+        if (strspn((string) $port, '0123456789') === strlen((string) $port)) {
             $this->port = (int) $port;
             $this->scheme_normalization();
             return true;
@@ -914,11 +894,8 @@ class IRI
 
     /**
      * Set the ipath.
-     *
-     * @param string|null $ipath
-     * @return bool
      */
-    public function set_path(?string $ipath, bool $clear_cache = false)
+    public function set_path(?string $ipath, bool $clear_cache = false): bool
     {
         static $cache;
         if ($clear_cache) {
@@ -947,11 +924,8 @@ class IRI
 
     /**
      * Set the iquery.
-     *
-     * @param string|null $iquery
-     * @return bool
      */
-    public function set_query(?string $iquery)
+    public function set_query(?string $iquery): bool
     {
         if ($iquery === null) {
             $this->iquery = null;
@@ -964,11 +938,8 @@ class IRI
 
     /**
      * Set the ifragment.
-     *
-     * @param string|null $ifragment
-     * @return bool
      */
-    public function set_fragment(?string $ifragment)
+    public function set_fragment(?string $ifragment): bool
     {
         if ($ifragment === null) {
             $this->ifragment = null;
@@ -982,7 +953,6 @@ class IRI
     /**
      * Convert an IRI to a URI (or parts thereof)
      *
-     * @param string $string
      * @return string
      */
     public function to_uri(string $string)
@@ -1048,10 +1018,8 @@ class IRI
 
     /**
      * Get the complete iauthority
-     *
-     * @return ?string
      */
-    protected function get_iauthority()
+    protected function get_iauthority(): ?string
     {
         if ($this->iuserinfo !== null || $this->ihost !== null || $this->port !== null) {
             $iauthority = '';
@@ -1086,4 +1054,4 @@ class IRI
     }
 }
 
-class_alias('SimplePie\IRI', 'SimplePie_IRI');
+class_alias(\SimplePie\IRI::class, 'SimplePie_IRI');

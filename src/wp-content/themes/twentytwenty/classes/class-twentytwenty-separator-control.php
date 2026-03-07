@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Customizer Separator Control settings for this theme.
  *
@@ -7,23 +9,25 @@
  * @since Twenty Twenty 1.0
  */
 
-if ( class_exists( 'WP_Customize_Control' ) ) {
+if (class_exists('WP_Customize_Control')) {
 
-	if ( ! class_exists( 'TwentyTwenty_Separator_Control' ) ) {
-		/**
-		 * Separator Control.
-		 *
-		 * @since Twenty Twenty 1.0
-		 */
-		class TwentyTwenty_Separator_Control extends WP_Customize_Control {
-			/**
-			 * Renders the hr.
-			 *
-			 * @since Twenty Twenty 1.0
-			 */
-			public function render_content() {
-				echo '<hr/>';
-			}
-		}
-	}
+    if (! class_exists('TwentyTwenty_Separator_Control')) {
+        /**
+         * Separator Control.
+         *
+         * @since Twenty Twenty 1.0
+         */
+        class TwentyTwenty_Separator_Control extends WP_Customize_Control
+        {
+            /**
+             * Renders the hr.
+             *
+             * @since Twenty Twenty 1.0
+             */
+            public function render_content(): void
+            {
+                echo '<hr/>';
+            }
+        }
+    }
 }

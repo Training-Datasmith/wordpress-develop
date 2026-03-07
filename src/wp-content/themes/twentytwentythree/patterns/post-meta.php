@@ -26,7 +26,7 @@
 			<div class="wp-block-group">
 				<!-- wp:paragraph -->
 				<p>
-					<?php echo esc_html_x( 'Posted', 'Verb to explain the publication status of a post', 'twentytwentythree' ); ?>
+					<?php echo esc_html_x('Posted', 'Verb to explain the publication status of a post', 'twentytwentythree'); ?>
 				</p>
 				<!-- /wp:paragraph -->
 
@@ -34,7 +34,7 @@
 
 				<!-- wp:paragraph -->
 				<p>
-					<?php echo esc_html_x( 'in', 'Preposition to show the relationship between the post and its categories', 'twentytwentythree' ); ?>
+					<?php echo esc_html_x('in', 'Preposition to show the relationship between the post and its categories', 'twentytwentythree'); ?>
 				</p>
 				<!-- /wp:paragraph -->
 
@@ -46,7 +46,7 @@
 			<div class="wp-block-group">
 				<!-- wp:paragraph -->
 				<p>
-					<?php echo esc_html_x( 'by', 'Preposition to show the relationship between the post and its author', 'twentytwentythree' ); ?>
+					<?php echo esc_html_x('by', 'Preposition to show the relationship between the post and its author', 'twentytwentythree'); ?>
 				</p>
 				<!-- /wp:paragraph -->
 
@@ -62,7 +62,7 @@
 			<div class="wp-block-group">
 				<!-- wp:paragraph -->
 				<p>
-					<?php echo esc_html_x( 'Tags:', 'Label for a list of post tags', 'twentytwentythree' ); ?>
+					<?php echo esc_html_x('Tags:', 'Label for a list of post tags', 'twentytwentythree'); ?>
 				</p>
 				<!-- /wp:paragraph -->
 

@@ -58,10 +58,8 @@ class Credit
 
     /**
      * String-ified version
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         // There is no $this->data here
         return md5(serialize($this));
@@ -110,4 +108,4 @@ class Credit
     }
 }
 
-class_alias('SimplePie\Credit', 'SimplePie_Credit');
+class_alias(\SimplePie\Credit::class, 'SimplePie_Credit');

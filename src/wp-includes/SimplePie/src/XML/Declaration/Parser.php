@@ -136,7 +136,7 @@ class Parser
      */
     public function has_data(): bool
     {
-        return (bool) ($this->position < $this->data_length);
+        return $this->position < $this->data_length;
     }
 
     /**
@@ -144,7 +144,7 @@ class Parser
      *
      * @return int Number of whitespace characters passed
      */
-    public function skip_whitespace()
+    public function skip_whitespace(): int
     {
         $whitespace = strspn($this->data, "\x09\x0A\x0D\x20", $this->position);
         $this->position += $whitespace;
@@ -305,4 +305,4 @@ class Parser
     }
 }
 
-class_alias('SimplePie\XML\Declaration\Parser', 'SimplePie_XML_Declaration_Parser');
+class_alias(\SimplePie\XML\Declaration\Parser::class, 'SimplePie_XML_Declaration_Parser');

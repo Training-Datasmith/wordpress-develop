@@ -1,6 +1,7 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\OpenAiCompatibleImplementation;
 
 use WordPress\AiClient\Common\Exception\InvalidArgumentException;
@@ -21,6 +22,7 @@ use WordPress\AiClient\Results\DTO\Candidate;
 use WordPress\AiClient\Results\DTO\GenerativeAiResult;
 use WordPress\AiClient\Results\DTO\TokenUsage;
 use WordPress\AiClient\Results\Enums\FinishReasonEnum;
+
 /**
  * Base class for an image generation model for providers that implement OpenAI's API format.
  *

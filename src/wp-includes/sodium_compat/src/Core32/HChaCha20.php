@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core32_HChaCha20', false)) {
     return;
 }
@@ -19,13 +21,13 @@ class ParagonIE_Sodium_Core32_HChaCha20 extends ParagonIE_Sodium_Core32_ChaCha20
      */
     public static function hChaCha20($in = '', $key = '', $c = null)
     {
-        $ctx = array();
+        $ctx = [];
 
         if ($c === null) {
-            $ctx[0] = new ParagonIE_Sodium_Core32_Int32(array(0x6170, 0x7865));
-            $ctx[1] = new ParagonIE_Sodium_Core32_Int32(array(0x3320, 0x646e));
-            $ctx[2] = new ParagonIE_Sodium_Core32_Int32(array(0x7962, 0x2d32));
-            $ctx[3] = new ParagonIE_Sodium_Core32_Int32(array(0x6b20, 0x6574));
+            $ctx[0] = new ParagonIE_Sodium_Core32_Int32([0x6170, 0x7865]);
+            $ctx[1] = new ParagonIE_Sodium_Core32_Int32([0x3320, 0x646e]);
+            $ctx[2] = new ParagonIE_Sodium_Core32_Int32([0x7962, 0x2d32]);
+            $ctx[3] = new ParagonIE_Sodium_Core32_Int32([0x6b20, 0x6574]);
         } else {
             $ctx[0] = ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($c, 0, 4));
             $ctx[1] = ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($c, 4, 4));

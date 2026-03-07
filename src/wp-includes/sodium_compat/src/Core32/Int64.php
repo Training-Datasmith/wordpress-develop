@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Class ParagonIE_Sodium_Core32_Int64
  *
@@ -12,7 +14,7 @@ class ParagonIE_Sodium_Core32_Int64
     /**
      * @var array<int, int> - four 16-bit integers
      */
-    public $limbs = array(0, 0, 0, 0);
+    public $limbs = [0, 0, 0, 0];
 
     /**
      * @var int
@@ -29,14 +31,14 @@ class ParagonIE_Sodium_Core32_Int64
      * @param array $array
      * @param bool $unsignedInt
      */
-    public function __construct($array = array(0, 0, 0, 0), $unsignedInt = false)
+    public function __construct($array = [0, 0, 0, 0], $unsignedInt = false)
     {
-        $this->limbs = array(
+        $this->limbs = [
             (int) $array[0],
             (int) $array[1],
             (int) $array[2],
-            (int) $array[3]
-        );
+            (int) $array[3],
+        ];
         $this->overflow = 0;
         $this->unsignedInt = $unsignedInt;
     }
@@ -76,7 +78,7 @@ class ParagonIE_Sodium_Core32_Int64
         $r3 &= 0xffff;
 
         $return = new ParagonIE_Sodium_Core32_Int64(
-            array($r0, $r1, $r2, $r3)
+            [$r0, $r1, $r2, $r3]
         );
         $return->overflow = $carry;
         $return->unsignedInt = $this->unsignedInt;
@@ -119,7 +121,7 @@ class ParagonIE_Sodium_Core32_Int64
         $r2 &= 0xffff;
         $r3 &= 0xffff;
         $return = new ParagonIE_Sodium_Core32_Int64(
-            array($r0, $r1, $r2, $r3)
+            [$r0, $r1, $r2, $r3]
         );
         $return->overflow = $carry;
         $return->unsignedInt = $this->unsignedInt;
@@ -185,12 +187,12 @@ class ParagonIE_Sodium_Core32_Int64
         /** @var int $d */
         $d = ($lo & 0xffff);
         return new ParagonIE_Sodium_Core32_Int64(
-            array(
+            [
                 $this->limbs[0] & $a,
                 $this->limbs[1] & $b,
                 $this->limbs[2] & $c,
-                $this->limbs[3] & $d
-            ),
+                $this->limbs[3] & $d,
+            ],
             $this->unsignedInt
         );
     }
@@ -314,10 +316,10 @@ class ParagonIE_Sodium_Core32_Int64
         }
          */
         $x = $a->xorInt64($b)->mask64($d, $d);
-        return array(
+        return [
             $a->xorInt64($x)->mulInt($m),
-            $b->xorInt64($x)->mulInt($m)
-        );
+            $b->xorInt64($x)->mulInt($m),
+        ];
     }
 
     /**
@@ -356,12 +358,12 @@ class ParagonIE_Sodium_Core32_Int64
         $aNeg = ($this->limbs[0] >> 15) & 1;
         $bNeg = ($int >> 31) & 1;
         $a = array_reverse($this->limbs);
-        $b = array(
+        $b = [
             $int & 0xffff,
             ($int >> 16) & 0xffff,
             -$bNeg & 0xffff,
-            -$bNeg & 0xffff
-        );
+            -$bNeg & 0xffff,
+        ];
         if ($aNeg) {
             for ($i = 0; $i < 4; ++$i) {
                 $a[$i] = ($a[$i] ^ 0xffff) & 0xffff;
@@ -393,12 +395,12 @@ class ParagonIE_Sodium_Core32_Int64
 
         // Return our values
         $return = new ParagonIE_Sodium_Core32_Int64();
-        $return->limbs = array(
+        $return->limbs = [
             $res[3] & 0xffff,
             $res[2] & 0xffff,
             $res[1] & 0xffff,
-            $res[0] & 0xffff
-        );
+            $res[0] & 0xffff,
+        ];
         if (count($res) > 4) {
             $return->overflow = $res[4] & 0xffff;
         }
@@ -444,12 +446,12 @@ class ParagonIE_Sodium_Core32_Int64
             }
         }
         $return = new ParagonIE_Sodium_Core32_Int64();
-        $return->limbs = array(
+        $return->limbs = [
             $res[3] & 0xffff,
             $res[2] & 0xffff,
             $res[1] & 0xffff,
-            $res[0] & 0xffff
-        );
+            $res[0] & 0xffff,
+        ];
         if (count($res) > 4) {
             $return->overflow = $res[4];
         }
@@ -562,12 +564,12 @@ class ParagonIE_Sodium_Core32_Int64
     {
         $return = new ParagonIE_Sodium_Core32_Int64();
         $return->unsignedInt = $this->unsignedInt;
-        $return->limbs = array(
+        $return->limbs = [
             (int) ($this->limbs[0] | $b->limbs[0]),
             (int) ($this->limbs[1] | $b->limbs[1]),
             (int) ($this->limbs[2] | $b->limbs[2]),
-            (int) ($this->limbs[3] | $b->limbs[3])
-        );
+            (int) ($this->limbs[3] | $b->limbs[3]),
+        ];
         return $return;
     }
 
@@ -592,10 +594,10 @@ class ParagonIE_Sodium_Core32_Int64
             $return->limbs = $this->limbs;
         } else {
             /** @var array<int, int> $limbs */
-            $limbs =& $return->limbs;
+            $limbs = & $return->limbs;
 
             /** @var array<int, int> $myLimbs */
-            $myLimbs =& $this->limbs;
+            $myLimbs = & $this->limbs;
 
             /** @var int $idx_shift */
             $idx_shift = ($c >> 4) & 3;
@@ -644,10 +646,10 @@ class ParagonIE_Sodium_Core32_Int64
             $return->limbs = $this->limbs;
         } else {
             /** @var array<int, int> $limbs */
-            $limbs =& $return->limbs;
+            $limbs = & $return->limbs;
 
             /** @var array<int, int> $myLimbs */
-            $myLimbs =& $this->limbs;
+            $myLimbs = & $this->limbs;
 
             /** @var int $idx_shift */
             $idx_shift = ($c >> 4) & 3;
@@ -688,17 +690,17 @@ class ParagonIE_Sodium_Core32_Int64
 
         if ($c >= 16) {
             if ($c >= 48) {
-                $return->limbs = array(
-                    $this->limbs[3], 0, 0, 0
-                );
+                $return->limbs = [
+                    $this->limbs[3], 0, 0, 0,
+                ];
             } elseif ($c >= 32) {
-                $return->limbs = array(
-                    $this->limbs[2], $this->limbs[3], 0, 0
-                );
+                $return->limbs = [
+                    $this->limbs[2], $this->limbs[3], 0, 0,
+                ];
             } else {
-                $return->limbs = array(
-                    $this->limbs[1], $this->limbs[2], $this->limbs[3], 0
-                );
+                $return->limbs = [
+                    $this->limbs[1], $this->limbs[2], $this->limbs[3], 0,
+                ];
             }
             return $return->shiftLeft($c & 15);
         }
@@ -742,26 +744,26 @@ class ParagonIE_Sodium_Core32_Int64
         $negative = -(($this->limbs[0] >> 15) & 1);
         if ($c >= 16) {
             if ($c >= 48) {
-                $return->limbs = array(
+                $return->limbs = [
                     (int) ($negative & 0xffff),
-                    (int) ($negative & 0xffff),
-                    (int) ($negative & 0xffff),
-                    (int) $this->limbs[0]
-                );
-            } elseif ($c >= 32) {
-                $return->limbs = array(
                     (int) ($negative & 0xffff),
                     (int) ($negative & 0xffff),
                     (int) $this->limbs[0],
-                    (int) $this->limbs[1]
-                );
-            } else {
-                $return->limbs = array(
+                ];
+            } elseif ($c >= 32) {
+                $return->limbs = [
+                    (int) ($negative & 0xffff),
                     (int) ($negative & 0xffff),
                     (int) $this->limbs[0],
                     (int) $this->limbs[1],
-                    (int) $this->limbs[2]
-                );
+                ];
+            } else {
+                $return->limbs = [
+                    (int) ($negative & 0xffff),
+                    (int) $this->limbs[0],
+                    (int) $this->limbs[1],
+                    (int) $this->limbs[2],
+                ];
             }
             return $return->shiftRight($c & 15);
         }
@@ -786,7 +788,6 @@ class ParagonIE_Sodium_Core32_Int64
         }
         return $return;
     }
-
 
     /**
      * Subtract a normal integer from an int64 object.
@@ -848,12 +849,12 @@ class ParagonIE_Sodium_Core32_Int64
     {
         $return = new ParagonIE_Sodium_Core32_Int64();
         $return->unsignedInt = $this->unsignedInt;
-        $return->limbs = array(
+        $return->limbs = [
             (int) ($this->limbs[0] ^ $b->limbs[0]),
             (int) ($this->limbs[1] ^ $b->limbs[1]),
             (int) ($this->limbs[2] ^ $b->limbs[2]),
-            (int) ($this->limbs[3] ^ $b->limbs[3])
-        );
+            (int) ($this->limbs[3] ^ $b->limbs[3]),
+        ];
         return $return;
     }
 
@@ -872,12 +873,12 @@ class ParagonIE_Sodium_Core32_Int64
         $high = (int) $high;
         $low = (int) $low;
         return new ParagonIE_Sodium_Core32_Int64(
-            array(
+            [
                 (int) (($high >> 16) & 0xffff),
                 (int) ($high & 0xffff),
                 (int) (($low >> 16) & 0xffff),
-                (int) ($low & 0xffff)
-            )
+                (int) ($low & 0xffff),
+            ]
         );
     }
 
@@ -893,12 +894,12 @@ class ParagonIE_Sodium_Core32_Int64
         $low = (int) $low;
 
         return new ParagonIE_Sodium_Core32_Int64(
-            array(
+            [
                 0,
                 0,
                 (int) (($low >> 16) & 0xffff),
-                (int) ($low & 0xffff)
-            )
+                (int) ($low & 0xffff),
+            ]
         );
     }
 
@@ -975,10 +976,10 @@ class ParagonIE_Sodium_Core32_Int64
      */
     public function toArray()
     {
-        return array(
+        return [
             (int) ((($this->limbs[0] & 0xffff) << 16) | ($this->limbs[1] & 0xffff)),
-            (int) ((($this->limbs[2] & 0xffff) << 16) | ($this->limbs[3] & 0xffff))
-        );
+            (int) ((($this->limbs[2] & 0xffff) << 16) | ($this->limbs[3] & 0xffff)),
+        ];
     }
 
     /**

@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Locator;
 
-class_exists('SimplePie\Locator');
+class_exists(\SimplePie\Locator::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Locator" class is deprecated since SimplePie 1.7.0, use "SimplePie\Locator" instead.'), \E_USER_DEPRECATED);
 

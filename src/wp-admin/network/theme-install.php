@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Install theme network administration panel.
  *
@@ -7,8 +9,8 @@
  * @since 3.1.0
  */
 
-if ( isset( $_GET['tab'] ) && ( 'theme-information' === $_GET['tab'] ) ) {
-	define( 'IFRAME_REQUEST', true );
+if (isset($_GET['tab']) && ('theme-information' === $_GET['tab'])) {
+    define('IFRAME_REQUEST', true);
 }
 
 /** Load WordPress Administration Bootstrap */

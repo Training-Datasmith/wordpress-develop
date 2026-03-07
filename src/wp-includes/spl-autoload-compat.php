@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Polyfill for SPL autoload feature. This file is separate to prevent compiler notices
  * on the deprecated __autoload() function.
@@ -11,4 +13,4 @@
  * @access private
  */
 
-_deprecated_file( basename( __FILE__ ), '5.3.0', '', 'SPL can no longer be disabled as of PHP 5.3.' );
+_deprecated_file(basename(__FILE__), '5.3.0', '', 'SPL can no longer be disabled as of PHP 5.3.');

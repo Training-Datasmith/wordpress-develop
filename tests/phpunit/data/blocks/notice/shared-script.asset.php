@@ -1,7 +1,9 @@
 <?php
 
-return array(
-	'handle'       => 'tests-my-shared-script',
-	'dependencies' => array(),
-	'version'      => 'test',
-);
+declare(strict_types=1);
+
+return [
+    'handle'       => 'tests-my-shared-script',
+    'dependencies' => [],
+    'version'      => 'test',
+];

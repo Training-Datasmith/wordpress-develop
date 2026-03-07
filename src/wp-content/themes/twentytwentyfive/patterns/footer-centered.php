@@ -28,12 +28,12 @@
 	<!-- wp:paragraph {"align":"center","fontSize":"small"} -->
 	<p class="has-text-align-center has-small-font-size">
 		<?php
-		printf(
-			/* translators: Designed with WordPress. %s: WordPress link. */
-			esc_html__( 'Designed with %s', 'twentytwentyfive' ),
-			'<a href="' . esc_url( __( 'https://wordpress.org', 'twentytwentyfive' ) ) . '" rel="nofollow">WordPress</a>'
-		);
-		?>
+        printf(
+            /* translators: Designed with WordPress. %s: WordPress link. */
+            esc_html__('Designed with %s', 'twentytwentyfive'),
+            '<a href="' . esc_url(__('https://wordpress.org', 'twentytwentyfive')) . '" rel="nofollow">WordPress</a>'
+        );
+?>
 	</p>
 	<!-- /wp:paragraph -->
 </div>

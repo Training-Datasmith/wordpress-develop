@@ -623,10 +623,8 @@ class Date
      *
      * @final
      * @access public
-     * @param callable $callback
-     * @return void
      */
-    public function add_callback(callable $callback)
+    public function add_callback(callable $callback): void
     {
         $this->user[] = $callback;
     }
@@ -637,7 +635,6 @@ class Date
      * spaces to be used as the time separator (including more than one))
      *
      * @access protected
-     * @param string $date
      * @return int|false Timestamp
      */
     public function date_w3cdtf(string $date)
@@ -714,7 +711,7 @@ PCRE;
      * @param string $string Data to strip comments from
      * @return string Comment stripped string
      */
-    public function remove_rfc2822_comments(string $string)
+    public function remove_rfc2822_comments(string $string): string
     {
         $position = 0;
         $length = strlen($string);
@@ -732,7 +729,8 @@ PCRE;
                     if ($string[$position - 1] === '\\') {
                         $position++;
                         continue;
-                    } elseif (isset($string[$position])) {
+                    }
+                    if (isset($string[$position])) {
                         switch ($string[$position]) {
                             case '(':
                                 $depth++;
@@ -751,16 +749,14 @@ PCRE;
                 $output .= '(';
             }
         }
-        $output .= substr($string, $position);
 
-        return $output;
+        return $output . substr($string, $position);
     }
 
     /**
      * Parse RFC2822's date format
      *
      * @access protected
-     * @param string $date
      * @return int|false Timestamp
      */
     public function date_rfc2822(string $date)
@@ -815,7 +811,7 @@ PCRE;
                 $timezone = $tz_hour * 3600;
                 $timezone += $tz_minute * 60;
                 if ($tz_sign === '-') {
-                    $timezone = 0 - $timezone;
+                    $timezone = -$timezone;
                 }
             }
             // Character timezone
@@ -844,7 +840,6 @@ PCRE;
      * Parse RFC850's date format
      *
      * @access protected
-     * @param string $date
      * @return int|false Timestamp
      */
     public function date_rfc850(string $date)
@@ -909,7 +904,6 @@ PCRE;
      * Parse C99's asctime()'s date format
      *
      * @access protected
-     * @param string $date
      * @return int|false Timestamp
      */
     public function date_asctime(string $date)
@@ -948,7 +942,6 @@ PCRE;
      * Parse dates using strtotime()
      *
      * @access protected
-     * @param string $date
      * @return int|false Timestamp
      */
     public function date_strtotime(string $date)
@@ -962,4 +955,4 @@ PCRE;
     }
 }
 
-class_alias('SimplePie\Parse\Date', 'SimplePie_Parse_Date');
+class_alias(\SimplePie\Parse\Date::class, 'SimplePie_Parse_Date');

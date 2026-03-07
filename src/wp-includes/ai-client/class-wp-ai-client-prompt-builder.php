@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * WP AI Client: WP_AI_Client_Prompt_Builder class
  *
@@ -89,323 +91,330 @@ use WordPress\AiClient\Tools\DTO\WebSearch;
  * @method File|WP_Error generate_speech() Generates speech from the prompt.
  * @method list<File>|WP_Error generate_speeches(?int $candidateCount = null) Generates multiple speech outputs from the prompt.
  */
-class WP_AI_Client_Prompt_Builder {
+class WP_AI_Client_Prompt_Builder
+{
+    /**
+     * Wrapped prompt builder instance from the PHP AI Client SDK.
+     *
+     * @since 7.0.0
+     * @var PromptBuilder
+     */
+    private PromptBuilder $builder;
 
-	/**
-	 * Wrapped prompt builder instance from the PHP AI Client SDK.
-	 *
-	 * @since 7.0.0
-	 * @var PromptBuilder
-	 */
-	private PromptBuilder $builder;
+    /**
+     * WordPress error instance, if any error occurred during method calls.
+     *
+     * @since 7.0.0
+     * @var WP_Error|null
+     */
+    private ?WP_Error $error = null;
 
-	/**
-	 * WordPress error instance, if any error occurred during method calls.
-	 *
-	 * @since 7.0.0
-	 * @var WP_Error|null
-	 */
-	private ?WP_Error $error = null;
+    /**
+     * List of methods that generate a result from the prompt.
+     *
+     * Structured as a map for faster lookups.
+     *
+     * @since 7.0.0
+     * @var array<string, bool>
+     */
+    private static array $generating_methods = [
+        'generate_result'               => true,
+        'generate_text_result'          => true,
+        'generate_image_result'         => true,
+        'generate_speech_result'        => true,
+        'convert_text_to_speech_result' => true,
+        'generate_text'                 => true,
+        'generate_texts'                => true,
+        'generate_image'                => true,
+        'generate_images'               => true,
+        'convert_text_to_speech'        => true,
+        'convert_text_to_speeches'      => true,
+        'generate_speech'               => true,
+        'generate_speeches'             => true,
+    ];
 
-	/**
-	 * List of methods that generate a result from the prompt.
-	 *
-	 * Structured as a map for faster lookups.
-	 *
-	 * @since 7.0.0
-	 * @var array<string, bool>
-	 */
-	private static array $generating_methods = array(
-		'generate_result'               => true,
-		'generate_text_result'          => true,
-		'generate_image_result'         => true,
-		'generate_speech_result'        => true,
-		'convert_text_to_speech_result' => true,
-		'generate_text'                 => true,
-		'generate_texts'                => true,
-		'generate_image'                => true,
-		'generate_images'               => true,
-		'convert_text_to_speech'        => true,
-		'convert_text_to_speeches'      => true,
-		'generate_speech'               => true,
-		'generate_speeches'             => true,
-	);
+    /**
+     * List of methods that check whether the prompt is supported.
+     *
+     * Structured as a map for faster lookups.
+     *
+     * @since 7.0.0
+     * @var array<string, bool>
+     */
+    private static array $support_check_methods = [
+        'is_supported'                               => true,
+        'is_supported_for_text_generation'           => true,
+        'is_supported_for_image_generation'          => true,
+        'is_supported_for_text_to_speech_conversion' => true,
+        'is_supported_for_video_generation'          => true,
+        'is_supported_for_speech_generation'         => true,
+        'is_supported_for_music_generation'          => true,
+        'is_supported_for_embedding_generation'      => true,
+    ];
 
-	/**
-	 * List of methods that check whether the prompt is supported.
-	 *
-	 * Structured as a map for faster lookups.
-	 *
-	 * @since 7.0.0
-	 * @var array<string, bool>
-	 */
-	private static array $support_check_methods = array(
-		'is_supported'                               => true,
-		'is_supported_for_text_generation'           => true,
-		'is_supported_for_image_generation'          => true,
-		'is_supported_for_text_to_speech_conversion' => true,
-		'is_supported_for_video_generation'          => true,
-		'is_supported_for_speech_generation'         => true,
-		'is_supported_for_music_generation'          => true,
-		'is_supported_for_embedding_generation'      => true,
-	);
+    /**
+     * Constructor.
+     *
+     * @since 7.0.0
+     *
+     * @param ProviderRegistry                                                                 $registry The provider registry for finding suitable models.
+     * @param string|MessagePart|Message|array|list<string|MessagePart|array>|list<Message>|null $prompt   Optional. Initial prompt content.
+     *                                                                                                    A string for simple text prompts,
+     *                                                                                                    a MessagePart or Message object for
+     *                                                                                                    structured content, an array for a
+     *                                                                                                    message array shape, or a list of
+     *                                                                                                    parts or messages for multi-turn
+     *                                                                                                    conversations. Default null.
+     */
+    public function __construct(ProviderRegistry $registry, $prompt = null)
+    {
+        try {
+            $this->builder = new PromptBuilder($registry, $prompt);
+        } catch (Exception $e) {
+            $this->builder = new PromptBuilder($registry);
+            $this->error   = new WP_Error(
+                'prompt_builder_error',
+                $e->getMessage(),
+                [
+                    'exception_class' => get_class($e),
+                ]
+            );
+        }
 
-	/**
-	 * Constructor.
-	 *
-	 * @since 7.0.0
-	 *
-	 * @param ProviderRegistry                                                                 $registry The provider registry for finding suitable models.
-	 * @param string|MessagePart|Message|array|list<string|MessagePart|array>|list<Message>|null $prompt   Optional. Initial prompt content.
-	 *                                                                                                    A string for simple text prompts,
-	 *                                                                                                    a MessagePart or Message object for
-	 *                                                                                                    structured content, an array for a
-	 *                                                                                                    message array shape, or a list of
-	 *                                                                                                    parts or messages for multi-turn
-	 *                                                                                                    conversations. Default null.
-	 */
-	public function __construct( ProviderRegistry $registry, $prompt = null ) {
-		try {
-			$this->builder = new PromptBuilder( $registry, $prompt );
-		} catch ( Exception $e ) {
-			$this->builder = new PromptBuilder( $registry );
-			$this->error   = new WP_Error(
-				'prompt_builder_error',
-				$e->getMessage(),
-				array(
-					'exception_class' => get_class( $e ),
-				)
-			);
-		}
+        /**
+         * Filters the default request timeout in seconds for AI Client HTTP requests.
+         *
+         * @since 7.0.0
+         *
+         * @param int $default_timeout The default timeout in seconds.
+         */
+        $default_timeout = (int) apply_filters('wp_ai_client_default_request_timeout', 30);
 
-		/**
-		 * Filters the default request timeout in seconds for AI Client HTTP requests.
-		 *
-		 * @since 7.0.0
-		 *
-		 * @param int $default_timeout The default timeout in seconds.
-		 */
-		$default_timeout = (int) apply_filters( 'wp_ai_client_default_request_timeout', 30 );
+        $this->builder->usingRequestOptions(
+            RequestOptions::fromArray(
+                [
+                    RequestOptions::KEY_TIMEOUT => $default_timeout,
+                ]
+            )
+        );
+    }
 
-		$this->builder->usingRequestOptions(
-			RequestOptions::fromArray(
-				array(
-					RequestOptions::KEY_TIMEOUT => $default_timeout,
-				)
-			)
-		);
-	}
+    /**
+     * Registers WordPress abilities as function declarations for the AI model.
+     *
+     * Converts each WP_Ability to a FunctionDeclaration using the wpab__ prefix
+     * naming convention and passes them to the underlying prompt builder.
+     *
+     * @since 7.0.0
+     *
+     * @param WP_Ability|string ...$abilities The abilities to register, either as WP_Ability objects or ability name strings.
+     * @return self The current instance for method chaining.
+     */
+    public function using_abilities(...$abilities): self
+    {
+        $declarations = [];
 
-	/**
-	 * Registers WordPress abilities as function declarations for the AI model.
-	 *
-	 * Converts each WP_Ability to a FunctionDeclaration using the wpab__ prefix
-	 * naming convention and passes them to the underlying prompt builder.
-	 *
-	 * @since 7.0.0
-	 *
-	 * @param WP_Ability|string ...$abilities The abilities to register, either as WP_Ability objects or ability name strings.
-	 * @return self The current instance for method chaining.
-	 */
-	public function using_abilities( ...$abilities ): self {
-		$declarations = array();
+        foreach ($abilities as $ability) {
+            if (is_string($ability)) {
+                $ability_name = $ability;
+                $ability      = wp_get_ability($ability);
+                if (! $ability) {
+                    _doing_it_wrong(
+                        __METHOD__,
+                        sprintf(
+                            /* translators: %s: string value of the ability name. */
+                            __('The ability %s was not found.'),
+                            '<code>' . esc_html($ability_name) . '</code>'
+                        ),
+                        '7.0.0'
+                    );
+                    continue;
+                }
+            }
 
-		foreach ( $abilities as $ability ) {
-			if ( is_string( $ability ) ) {
-				$ability_name = $ability;
-				$ability      = wp_get_ability( $ability );
-				if ( ! $ability ) {
-					_doing_it_wrong(
-						__METHOD__,
-						sprintf(
-							/* translators: %s: string value of the ability name. */
-							__( 'The ability %s was not found.' ),
-							'<code>' . esc_html( $ability_name ) . '</code>'
-						),
-						'7.0.0'
-					);
-					continue;
-				}
-			}
+            // This is only here as a sanity check, the method signature should ensure this already.
+            if (! $ability instanceof WP_Ability) {
+                continue;
+            }
 
-			// This is only here as a sanity check, the method signature should ensure this already.
-			if ( ! $ability instanceof WP_Ability ) {
-				continue;
-			}
+            $function_name = WP_AI_Client_Ability_Function_Resolver::ability_name_to_function_name($ability->get_name());
+            $input_schema  = $ability->get_input_schema();
 
-			$function_name = WP_AI_Client_Ability_Function_Resolver::ability_name_to_function_name( $ability->get_name() );
-			$input_schema  = $ability->get_input_schema();
+            $declarations[] = new FunctionDeclaration(
+                $function_name,
+                $ability->get_description(),
+                ! empty($input_schema) ? $input_schema : null
+            );
+        }
 
-			$declarations[] = new FunctionDeclaration(
-				$function_name,
-				$ability->get_description(),
-				! empty( $input_schema ) ? $input_schema : null
-			);
-		}
+        if (! empty($declarations)) {
+            return $this->using_function_declarations(...$declarations);
+        }
 
-		if ( ! empty( $declarations ) ) {
-			return $this->using_function_declarations( ...$declarations );
-		}
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * Magic method to proxy snake_case method calls to their PHP AI Client camelCase counterparts.
+     *
+     * This allows WordPress developers to use snake_case naming conventions. It catches
+     * any exceptions thrown, stores them, and returns a WP_Error when a terminate method
+     * is called.
+     *
+     * @since 7.0.0
+     *
+     * @param string            $name      The method name in snake_case.
+     * @param array<int, mixed> $arguments The method arguments.
+     * @return mixed The result of the method call.
+     */
+    public function __call(string $name, array $arguments)
+    {
+        /*
+         * If an error occurred in a previous method call, either return the error for terminate methods,
+         * or return the same instance for other methods to maintain the fluent interface.
+         */
+        if (null !== $this->error) {
+            if (self::is_generating_method($name)) {
+                return $this->error;
+            }
+            if (self::is_support_check_method($name)) {
+                return false;
+            }
+            return $this;
+        }
 
-	/**
-	 * Magic method to proxy snake_case method calls to their PHP AI Client camelCase counterparts.
-	 *
-	 * This allows WordPress developers to use snake_case naming conventions. It catches
-	 * any exceptions thrown, stores them, and returns a WP_Error when a terminate method
-	 * is called.
-	 *
-	 * @since 7.0.0
-	 *
-	 * @param string            $name      The method name in snake_case.
-	 * @param array<int, mixed> $arguments The method arguments.
-	 * @return mixed The result of the method call.
-	 */
-	public function __call( string $name, array $arguments ) {
-		/*
-		 * If an error occurred in a previous method call, either return the error for terminate methods,
-		 * or return the same instance for other methods to maintain the fluent interface.
-		 */
-		if ( null !== $this->error ) {
-			if ( self::is_generating_method( $name ) ) {
-				return $this->error;
-			}
-			if ( self::is_support_check_method( $name ) ) {
-				return false;
-			}
-			return $this;
-		}
+        // Check if the prompt should be prevented for is_supported* and generate_*/convert_text_to_speech* methods.
+        if (self::is_support_check_method($name) || self::is_generating_method($name)) {
+            /**
+             * Filters whether to prevent the prompt from being executed.
+             *
+             * @since 7.0.0
+             *
+             * @param bool                        $prevent Whether to prevent the prompt. Default false.
+             * @param WP_AI_Client_Prompt_Builder $builder A clone of the prompt builder instance (read-only).
+             */
+            $prevent = (bool) apply_filters('wp_ai_client_prevent_prompt', false, clone $this);
 
-		// Check if the prompt should be prevented for is_supported* and generate_*/convert_text_to_speech* methods.
-		if ( self::is_support_check_method( $name ) || self::is_generating_method( $name ) ) {
-			/**
-			 * Filters whether to prevent the prompt from being executed.
-			 *
-			 * @since 7.0.0
-			 *
-			 * @param bool                        $prevent Whether to prevent the prompt. Default false.
-			 * @param WP_AI_Client_Prompt_Builder $builder A clone of the prompt builder instance (read-only).
-			 */
-			$prevent = (bool) apply_filters( 'wp_ai_client_prevent_prompt', false, clone $this );
+            if ($prevent) {
+                // For is_supported* methods, return false.
+                if (self::is_support_check_method($name)) {
+                    return false;
+                }
 
-			if ( $prevent ) {
-				// For is_supported* methods, return false.
-				if ( self::is_support_check_method( $name ) ) {
-					return false;
-				}
+                // For generate_* and convert_text_to_speech* methods, create a WP_Error.
+                $this->error = new WP_Error(
+                    'prompt_prevented',
+                    __('Prompt execution was prevented by a filter.'),
+                    [
+                        'exception_class' => 'WP_AI_Client_Prompt_Prevented',
+                    ]
+                );
 
-				// For generate_* and convert_text_to_speech* methods, create a WP_Error.
-				$this->error = new WP_Error(
-					'prompt_prevented',
-					__( 'Prompt execution was prevented by a filter.' ),
-					array(
-						'exception_class' => 'WP_AI_Client_Prompt_Prevented',
-					)
-				);
+                if (self::is_generating_method($name)) {
+                    return $this->error;
+                }
+                return $this;
+            }
+        }
 
-				if ( self::is_generating_method( $name ) ) {
-					return $this->error;
-				}
-				return $this;
-			}
-		}
+        try {
+            $callable = $this->get_builder_callable($name);
+            $result   = $callable(...$arguments);
 
-		try {
-			$callable = $this->get_builder_callable( $name );
-			$result   = $callable( ...$arguments );
+            // If the result is a PromptBuilder, return the current instance to allow method chaining.
+            if ($result instanceof PromptBuilder) {
+                return $this;
+            }
 
-			// If the result is a PromptBuilder, return the current instance to allow method chaining.
-			if ( $result instanceof PromptBuilder ) {
-				return $this;
-			}
+            return $result;
+        } catch (Exception $e) {
+            $this->error = new WP_Error(
+                'prompt_builder_error',
+                $e->getMessage(),
+                [
+                    'exception_class' => get_class($e),
+                ]
+            );
 
-			return $result;
-		} catch ( Exception $e ) {
-			$this->error = new WP_Error(
-				'prompt_builder_error',
-				$e->getMessage(),
-				array(
-					'exception_class' => get_class( $e ),
-				)
-			);
+            if (self::is_generating_method($name)) {
+                return $this->error;
+            }
+            return $this;
+        }
+    }
 
-			if ( self::is_generating_method( $name ) ) {
-				return $this->error;
-			}
-			return $this;
-		}
-	}
+    /**
+     * Checks if a method name is a support check method (is_supported*).
+     *
+     * @since 7.0.0
+     *
+     * @param string $name The method name.
+     * @return bool True if the method is a support check method, false otherwise.
+     */
+    private static function is_support_check_method(string $name): bool
+    {
+        return isset(self::$support_check_methods[ $name ]);
+    }
 
-	/**
-	 * Checks if a method name is a support check method (is_supported*).
-	 *
-	 * @since 7.0.0
-	 *
-	 * @param string $name The method name.
-	 * @return bool True if the method is a support check method, false otherwise.
-	 */
-	private static function is_support_check_method( string $name ): bool {
-		return isset( self::$support_check_methods[ $name ] );
-	}
+    /**
+     * Checks if a method name is a generating method (generate_*, convert_text_to_speech*).
+     *
+     * @since 7.0.0
+     *
+     * @param string $name The method name.
+     * @return bool True if the method is a generating method, false otherwise.
+     */
+    private static function is_generating_method(string $name): bool
+    {
+        return isset(self::$generating_methods[ $name ]);
+    }
 
-	/**
-	 * Checks if a method name is a generating method (generate_*, convert_text_to_speech*).
-	 *
-	 * @since 7.0.0
-	 *
-	 * @param string $name The method name.
-	 * @return bool True if the method is a generating method, false otherwise.
-	 */
-	private static function is_generating_method( string $name ): bool {
-		return isset( self::$generating_methods[ $name ] );
-	}
+    /**
+     * Retrieves a callable for a given PHP AI Client SDK prompt builder method name.
+     *
+     * @since 7.0.0
+     *
+     * @param string $name The method name in snake_case.
+     * @return callable The callable for the specified method.
+     *
+     * @throws BadMethodCallException If the method does not exist.
+     */
+    protected function get_builder_callable(string $name): callable
+    {
+        $camel_case_name = $this->snake_to_camel_case($name);
 
-	/**
-	 * Retrieves a callable for a given PHP AI Client SDK prompt builder method name.
-	 *
-	 * @since 7.0.0
-	 *
-	 * @param string $name The method name in snake_case.
-	 * @return callable The callable for the specified method.
-	 *
-	 * @throws BadMethodCallException If the method does not exist.
-	 */
-	protected function get_builder_callable( string $name ): callable {
-		$camel_case_name = $this->snake_to_camel_case( $name );
+        if (! is_callable([ $this->builder, $camel_case_name ])) {
+            throw new BadMethodCallException(
+                sprintf(
+                    /* translators: 1: Method name. 2: Class name. */
+                    __('Method %1$s does not exist on %2$s.'),
+                    $name, // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+                    get_class($this->builder) // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+                )
+            );
+        }
 
-		if ( ! is_callable( array( $this->builder, $camel_case_name ) ) ) {
-			throw new BadMethodCallException(
-				sprintf(
-					/* translators: 1: Method name. 2: Class name. */
-					__( 'Method %1$s does not exist on %2$s.' ),
-					$name, // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-					get_class( $this->builder ) // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-				)
-			);
-		}
+        return [ $this->builder, $camel_case_name ];
+    }
 
-		return array( $this->builder, $camel_case_name );
-	}
+    /**
+     * Converts snake_case to camelCase.
+     *
+     * @since 7.0.0
+     *
+     * @param string $snake_case The snake_case string.
+     * @return string The camelCase string.
+     */
+    private function snake_to_camel_case(string $snake_case): string
+    {
+        $parts = explode('_', $snake_case);
 
-	/**
-	 * Converts snake_case to camelCase.
-	 *
-	 * @since 7.0.0
-	 *
-	 * @param string $snake_case The snake_case string.
-	 * @return string The camelCase string.
-	 */
-	private function snake_to_camel_case( string $snake_case ): string {
-		$parts = explode( '_', $snake_case );
+        $camel_case  = $parts[0];
+        $parts_count = count($parts);
+        for ($i = 1; $i < $parts_count; $i++) {
+            $camel_case .= ucfirst($parts[ $i ]);
+        }
 
-		$camel_case  = $parts[0];
-		$parts_count = count( $parts );
-		for ( $i = 1; $i < $parts_count; $i++ ) {
-			$camel_case .= ucfirst( $parts[ $i ] );
-		}
-
-		return $camel_case;
-	}
+        return $camel_case;
+    }
 }

@@ -11,12 +11,12 @@ require_once __DIR__ . '/admin.php';
 
 $action = ! empty( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : '';
 
-$tabs = array(
+$tabs = [
 	/* translators: Tab heading for Site Health Status page. */
 	''      => _x( 'Status', 'Site Health' ),
 	/* translators: Tab heading for Site Health Info page. */
 	'debug' => _x( 'Info', 'Site Health' ),
-);
+];
 
 /**
  * Filters the extra tabs for the Site Health navigation bar.
@@ -30,11 +30,11 @@ $tabs = array(
  */
 $tabs = apply_filters( 'site_health_navigation_tabs', $tabs );
 
-$wrapper_classes = array(
+$wrapper_classes = [
 	'health-check-tabs-wrapper',
 	'hide-if-no-js',
 	'tab-count-' . count( $tabs ),
-);
+];
 
 $current_tab = $_GET['tab'] ?? '';
 
@@ -75,14 +75,14 @@ if ( 'update_https' === $action ) {
 $health_check_site_status = WP_Site_Health::get_instance();
 
 get_current_screen()->add_help_tab(
-	array(
+	[
 		'id'      => 'overview',
 		'title'   => __( 'Overview' ),
 		'content' =>
 				'<p>' . __( 'This screen allows you to obtain a health diagnosis of your site, and displays an overall rating of the status of your installation.' ) . '</p>' .
 				'<p>' . __( 'In the Status tab, you can see critical information about your WordPress configuration, along with anything else that requires your attention.' ) . '</p>' .
 				'<p>' . __( 'In the Info tab, you will find all the details about the configuration of your WordPress site, server, and database. There is also an export feature that allows you to copy all of the information about your site to the clipboard, to help solve problems on your site when obtaining support.' ) . '</p>',
-	)
+	]
 );
 
 get_current_screen()->set_help_sidebar(
@@ -107,20 +107,20 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 		if ( $_GET['https_updated'] ) {
 			wp_admin_notice(
 				__( 'Site URLs switched to HTTPS.' ),
-				array(
+				[
 					'type'        => 'success',
 					'id'          => 'message',
 					'dismissible' => true,
-				)
+				]
 			);
 		} else {
 			wp_admin_notice(
 				__( 'Site URLs could not be switched to HTTPS.' ),
-				array(
+				[
 					'type'        => 'error',
 					'id'          => 'message',
 					'dismissible' => true,
-				)
+				]
 			);
 		}
 	}
@@ -155,9 +155,9 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 				'<a href="%s" class="health-check-tab %s">%s</a>',
 				esc_url(
 					add_query_arg(
-						array(
+						[
 							'tab' => $slug,
-						),
+						],
 						admin_url( 'site-health.php' )
 					)
 				),
@@ -186,9 +186,9 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 							'<a href="%s" class="health-check-tab %s">%s</a>',
 							esc_url(
 								add_query_arg(
-									array(
+									[
 										'tab' => $slug,
-									),
+									],
 									admin_url( 'site-health.php' )
 								)
 							),
@@ -221,104 +221,109 @@ if ( isset( $_GET['tab'] ) && ! empty( $_GET['tab'] ) ) {
 
 	require_once ABSPATH . 'wp-admin/admin-footer.php';
 	return;
-} else {
-	wp_admin_notice(
-		__( 'The Site Health check requires JavaScript.' ),
-		array(
-			'type'               => 'error',
-			'additional_classes' => array( 'hide-if-js' ),
-		)
-	);
-	?>
-
-<div class="health-check-body health-check-status-tab hide-if-no-js">
-	<div class="site-status-all-clear hide">
-		<p class="icon">
-			<span class="dashicons dashicons-smiley" aria-hidden="true"></span>
-		</p>
-
-		<p class="encouragement">
-			<?php _e( 'Great job!' ); ?>
-		</p>
-
-		<p>
-			<?php _e( 'Everything is running smoothly here.' ); ?>
-		</p>
-	</div>
-
-	<div class="site-status-has-issues">
-		<h2>
-			<?php _e( 'Site Health Status' ); ?>
-		</h2>
-
-		<p><?php _e( 'The site health check shows information about your WordPress configuration and items that may need your attention.' ); ?></p>
-
-		<div class="site-health-issues-wrapper hidden" id="health-check-issues-critical">
-			<h3 class="site-health-issue-count-title">
-				<?php
-					/* translators: %s: Number of critical issues found. */
-					printf( _n( '%s critical issue', '%s critical issues', 0 ), '<span class="issue-count">0</span>' );
-				?>
-			</h3>
-
-			<p><?php _e( 'Critical issues are items that may have a high impact on your site&#8217;s performance or security. Resolving these issues should be prioritized.' ); ?></p>
-
-			<div id="health-check-site-status-critical" class="health-check-accordion issues"></div>
-		</div>
-
-		<div class="site-health-issues-wrapper hidden" id="health-check-issues-recommended">
-			<h3 class="site-health-issue-count-title">
-				<?php
-					/* translators: %s: Number of recommended improvements. */
-					printf( _n( '%s recommended improvement', '%s recommended improvements', 0 ), '<span class="issue-count">0</span>' );
-				?>
-			</h3>
-
-			<p><?php _e( 'Recommended items are considered beneficial to your site, although not as important to prioritize as a critical issue. They may include improvements in areas such as security, performance, and user experience.' ); ?></p>
-
-			<div id="health-check-site-status-recommended" class="health-check-accordion issues"></div>
-		</div>
-	</div>
-
-	<div class="site-health-view-more">
-		<button type="button" class="button site-health-view-passed" aria-expanded="false" aria-controls="health-check-issues-good">
-			<?php _e( 'Passed tests' ); ?>
-			<span class="icon"></span>
-		</button>
-	</div>
-
-	<div class="site-health-issues-wrapper hidden" id="health-check-issues-good">
-		<h3 class="site-health-issue-count-title">
-			<?php
-				/* translators: %s: Number of items with no issues. */
-				printf( _n( '%s item with no issues detected', '%s items with no issues detected', 0 ), '<span class="issue-count">0</span>' );
-			?>
-		</h3>
-
-		<div id="health-check-site-status-good" class="health-check-accordion issues"></div>
-	</div>
-</div>
-
-<script id="tmpl-health-check-issue" type="text/template">
-	<h4 class="health-check-accordion-heading">
-		<button aria-expanded="false" class="health-check-accordion-trigger" aria-controls="health-check-accordion-block-{{ data.test }}" type="button">
-			<span class="title">{{ data.label }}</span>
-			<# if ( data.badge ) { #>
-				<span class="badge {{ data.badge.color }}">{{ data.badge.label }}</span>
-			<# } #>
-			<span class="icon"></span>
-		</button>
-	</h4>
-	<div id="health-check-accordion-block-{{ data.test }}" class="health-check-accordion-panel" hidden="hidden">
-		{{{ data.description }}}
-		<# if ( data.actions ) { #>
-			<div class="actions">
-				{{{ data.actions }}}
-			</div>
-		<# } #>
-	</div>
-</script>
-
-	<?php
 }
+                    wp_admin_notice(
+                		__( 'The Site Health check requires JavaScript.' ),
+                		[
+                			'type'               => 'error',
+                			'additional_classes' => [ 'hide-if-js' ],
+                		]
+                	);
+                    
+                <div class="health-check-body health-check-status-tab hide-if-no-js">
+                	<div class="site-status-all-clear hide">
+                		<p class="icon">
+                			<span class="dashicons dashicons-smiley" aria-hidden="true"></span>
+                		</p>
+                
+                		<p class="encouragement">
+                			
+                    _e( 'Great job!' );
+                    		</p>
+                
+                		<p>
+                			
+                    _e( 'Everything is running smoothly here.' );
+                    		</p>
+                	</div>
+                
+                	<div class="site-status-has-issues">
+                		<h2>
+                			
+                    _e( 'Site Health Status' );
+                    		</h2>
+                
+                		<p>
+                    _e( 'The site health check shows information about your WordPress configuration and items that may need your attention.' );
+                    </p>
+                
+                		<div class="site-health-issues-wrapper hidden" id="health-check-issues-critical">
+                			<h3 class="site-health-issue-count-title">
+                				
+                    /* translators: %s: Number of critical issues found. */
+                    printf( _n( '%s critical issue', '%s critical issues', 0 ), '<span class="issue-count">0</span>' );
+                    			</h3>
+    
+    			<p>
+                    _e( 'Critical issues are items that may have a high impact on your site&#8217;s performance or security. Resolving these issues should be prioritized.' );
+                    </p>
+    
+    			<div id="health-check-site-status-critical" class="health-check-accordion issues"></div>
+    		</div>
+    
+    		<div class="site-health-issues-wrapper hidden" id="health-check-issues-recommended">
+    			<h3 class="site-health-issue-count-title">
+    				
+                    /* translators: %s: Number of recommended improvements. */
+                    printf( _n( '%s recommended improvement', '%s recommended improvements', 0 ), '<span class="issue-count">0</span>' );
+                    			</h3>
+    
+    			<p>
+                    _e( 'Recommended items are considered beneficial to your site, although not as important to prioritize as a critical issue. They may include improvements in areas such as security, performance, and user experience.' );
+                    </p>
+    
+    			<div id="health-check-site-status-recommended" class="health-check-accordion issues"></div>
+    		</div>
+    	</div>
+    
+    	<div class="site-health-view-more">
+    		<button type="button" class="button site-health-view-passed" aria-expanded="false" aria-controls="health-check-issues-good">
+    			
+                    _e( 'Passed tests' );
+                    			<span class="icon"></span>
+    		</button>
+    	</div>
+    
+    	<div class="site-health-issues-wrapper hidden" id="health-check-issues-good">
+    		<h3 class="site-health-issue-count-title">
+    			
+                    /* translators: %s: Number of items with no issues. */
+                    printf( _n( '%s item with no issues detected', '%s items with no issues detected', 0 ), '<span class="issue-count">0</span>' );
+                    		</h3>
+        
+        		<div id="health-check-site-status-good" class="health-check-accordion issues"></div>
+        	</div>
+        </div>
+        
+        <script id="tmpl-health-check-issue" type="text/template">
+        	<h4 class="health-check-accordion-heading">
+        		<button aria-expanded="false" class="health-check-accordion-trigger" aria-controls="health-check-accordion-block-{{ data.test }}" type="button">
+        			<span class="title">{{ data.label }}</span>
+        			<# if ( data.badge ) { #>
+        				<span class="badge {{ data.badge.color }}">{{ data.badge.label }}</span>
+        			<# } #>
+        			<span class="icon"></span>
+        		</button>
+        	</h4>
+        	<div id="health-check-accordion-block-{{ data.test }}" class="health-check-accordion-panel" hidden="hidden">
+        		{{{ data.description }}}
+        		<# if ( data.actions ) { #>
+        			<div class="actions">
+        				{{{ data.actions }}}
+        			</div>
+        		<# } #>
+        	</div>
+        </script>
+        
+        	
 require_once ABSPATH . 'wp-admin/admin-footer.php';

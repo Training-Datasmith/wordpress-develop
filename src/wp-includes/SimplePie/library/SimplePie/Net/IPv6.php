@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Net\IPv6;
 
-class_exists('SimplePie\Net\IPv6');
+class_exists(\SimplePie\Net\IPv6::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Net_IPv6" class is deprecated since SimplePie 1.7.0, use "SimplePie\Net\IPv6" instead.'), \E_USER_DEPRECATED);
 

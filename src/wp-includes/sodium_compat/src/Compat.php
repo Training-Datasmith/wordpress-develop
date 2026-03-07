@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Libsodium compatibility layer
  *
@@ -47,113 +49,113 @@ class ParagonIE_Sodium_Compat
      */
     public static $fastMult = false;
 
-    const LIBRARY_MAJOR_VERSION = 9;
-    const LIBRARY_MINOR_VERSION = 1;
-    const LIBRARY_VERSION_MAJOR = 9;
-    const LIBRARY_VERSION_MINOR = 1;
-    const VERSION_STRING = 'polyfill-1.0.8';
+    public const LIBRARY_MAJOR_VERSION = 9;
+    public const LIBRARY_MINOR_VERSION = 1;
+    public const LIBRARY_VERSION_MAJOR = 9;
+    public const LIBRARY_VERSION_MINOR = 1;
+    public const VERSION_STRING = 'polyfill-1.0.8';
 
     // From libsodium
-    const BASE64_VARIANT_ORIGINAL = 1;
-    const BASE64_VARIANT_ORIGINAL_NO_PADDING = 3;
-    const BASE64_VARIANT_URLSAFE = 5;
-    const BASE64_VARIANT_URLSAFE_NO_PADDING = 7;
-    const CRYPTO_AEAD_AES256GCM_KEYBYTES = 32;
-    const CRYPTO_AEAD_AES256GCM_NSECBYTES = 0;
-    const CRYPTO_AEAD_AES256GCM_NPUBBYTES = 12;
-    const CRYPTO_AEAD_AES256GCM_ABYTES = 16;
-    const CRYPTO_AEAD_AEGIS128L_KEYBYTES = 16;
-    const CRYPTO_AEAD_AEGIS128L_NSECBYTES = 0;
-    const CRYPTO_AEAD_AEGIS128L_NPUBBYTES = 16;
-    const CRYPTO_AEAD_AEGIS128L_ABYTES = 32;
-    const CRYPTO_AEAD_AEGIS256_KEYBYTES = 32;
-    const CRYPTO_AEAD_AEGIS256_NSECBYTES = 0;
-    const CRYPTO_AEAD_AEGIS256_NPUBBYTES = 32;
-    const CRYPTO_AEAD_AEGIS256_ABYTES = 32;
-    const CRYPTO_AEAD_CHACHA20POLY1305_KEYBYTES = 32;
-    const CRYPTO_AEAD_CHACHA20POLY1305_NSECBYTES = 0;
-    const CRYPTO_AEAD_CHACHA20POLY1305_NPUBBYTES = 8;
-    const CRYPTO_AEAD_CHACHA20POLY1305_ABYTES = 16;
-    const CRYPTO_AEAD_CHACHA20POLY1305_IETF_KEYBYTES = 32;
-    const CRYPTO_AEAD_CHACHA20POLY1305_IETF_NSECBYTES = 0;
-    const CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES = 12;
-    const CRYPTO_AEAD_CHACHA20POLY1305_IETF_ABYTES = 16;
-    const CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES = 32;
-    const CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NSECBYTES = 0;
-    const CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES = 24;
-    const CRYPTO_AEAD_XCHACHA20POLY1305_IETF_ABYTES = 16;
-    const CRYPTO_AUTH_BYTES = 32;
-    const CRYPTO_AUTH_KEYBYTES = 32;
-    const CRYPTO_BOX_SEALBYTES = 16;
-    const CRYPTO_BOX_SECRETKEYBYTES = 32;
-    const CRYPTO_BOX_PUBLICKEYBYTES = 32;
-    const CRYPTO_BOX_KEYPAIRBYTES = 64;
-    const CRYPTO_BOX_MACBYTES = 16;
-    const CRYPTO_BOX_NONCEBYTES = 24;
-    const CRYPTO_BOX_SEEDBYTES = 32;
-    const CRYPTO_CORE_RISTRETTO255_BYTES = 32;
-    const CRYPTO_CORE_RISTRETTO255_SCALARBYTES = 32;
-    const CRYPTO_CORE_RISTRETTO255_HASHBYTES = 64;
-    const CRYPTO_CORE_RISTRETTO255_NONREDUCEDSCALARBYTES = 64;
-    const CRYPTO_KDF_BYTES_MIN = 16;
-    const CRYPTO_KDF_BYTES_MAX = 64;
-    const CRYPTO_KDF_CONTEXTBYTES = 8;
-    const CRYPTO_KDF_KEYBYTES = 32;
-    const CRYPTO_KX_BYTES = 32;
-    const CRYPTO_KX_PRIMITIVE = 'x25519blake2b';
-    const CRYPTO_KX_SEEDBYTES = 32;
-    const CRYPTO_KX_KEYPAIRBYTES = 64;
-    const CRYPTO_KX_PUBLICKEYBYTES = 32;
-    const CRYPTO_KX_SECRETKEYBYTES = 32;
-    const CRYPTO_KX_SESSIONKEYBYTES = 32;
-    const CRYPTO_GENERICHASH_BYTES = 32;
-    const CRYPTO_GENERICHASH_BYTES_MIN = 16;
-    const CRYPTO_GENERICHASH_BYTES_MAX = 64;
-    const CRYPTO_GENERICHASH_KEYBYTES = 32;
-    const CRYPTO_GENERICHASH_KEYBYTES_MIN = 16;
-    const CRYPTO_GENERICHASH_KEYBYTES_MAX = 64;
-    const CRYPTO_PWHASH_SALTBYTES = 16;
-    const CRYPTO_PWHASH_STRPREFIX = '$argon2id$';
-    const CRYPTO_PWHASH_ALG_ARGON2I13 = 1;
-    const CRYPTO_PWHASH_ALG_ARGON2ID13 = 2;
-    const CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE = 33554432;
-    const CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE = 4;
-    const CRYPTO_PWHASH_MEMLIMIT_MODERATE = 134217728;
-    const CRYPTO_PWHASH_OPSLIMIT_MODERATE = 6;
-    const CRYPTO_PWHASH_MEMLIMIT_SENSITIVE = 536870912;
-    const CRYPTO_PWHASH_OPSLIMIT_SENSITIVE = 8;
-    const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_SALTBYTES = 32;
-    const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_STRPREFIX = '$7$';
-    const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_OPSLIMIT_INTERACTIVE = 534288;
-    const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_MEMLIMIT_INTERACTIVE = 16777216;
-    const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_OPSLIMIT_SENSITIVE = 33554432;
-    const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_MEMLIMIT_SENSITIVE = 1073741824;
-    const CRYPTO_SCALARMULT_BYTES = 32;
-    const CRYPTO_SCALARMULT_SCALARBYTES = 32;
-    const CRYPTO_SCALARMULT_RISTRETTO255_BYTES = 32;
-    const CRYPTO_SCALARMULT_RISTRETTO255_SCALARBYTES = 32;
-    const CRYPTO_SHORTHASH_BYTES = 8;
-    const CRYPTO_SHORTHASH_KEYBYTES = 16;
-    const CRYPTO_SECRETBOX_KEYBYTES = 32;
-    const CRYPTO_SECRETBOX_MACBYTES = 16;
-    const CRYPTO_SECRETBOX_NONCEBYTES = 24;
-    const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_ABYTES = 17;
-    const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_HEADERBYTES = 24;
-    const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_KEYBYTES = 32;
-    const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_PUSH = 0;
-    const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_PULL = 1;
-    const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_REKEY = 2;
-    const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_FINAL = 3;
-    const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_MESSAGEBYTES_MAX = 0x3fffffff80;
-    const CRYPTO_SIGN_BYTES = 64;
-    const CRYPTO_SIGN_SEEDBYTES = 32;
-    const CRYPTO_SIGN_PUBLICKEYBYTES = 32;
-    const CRYPTO_SIGN_SECRETKEYBYTES = 64;
-    const CRYPTO_SIGN_KEYPAIRBYTES = 96;
-    const CRYPTO_STREAM_KEYBYTES = 32;
-    const CRYPTO_STREAM_NONCEBYTES = 24;
-    const CRYPTO_STREAM_XCHACHA20_KEYBYTES = 32;
-    const CRYPTO_STREAM_XCHACHA20_NONCEBYTES = 24;
+    public const BASE64_VARIANT_ORIGINAL = 1;
+    public const BASE64_VARIANT_ORIGINAL_NO_PADDING = 3;
+    public const BASE64_VARIANT_URLSAFE = 5;
+    public const BASE64_VARIANT_URLSAFE_NO_PADDING = 7;
+    public const CRYPTO_AEAD_AES256GCM_KEYBYTES = 32;
+    public const CRYPTO_AEAD_AES256GCM_NSECBYTES = 0;
+    public const CRYPTO_AEAD_AES256GCM_NPUBBYTES = 12;
+    public const CRYPTO_AEAD_AES256GCM_ABYTES = 16;
+    public const CRYPTO_AEAD_AEGIS128L_KEYBYTES = 16;
+    public const CRYPTO_AEAD_AEGIS128L_NSECBYTES = 0;
+    public const CRYPTO_AEAD_AEGIS128L_NPUBBYTES = 16;
+    public const CRYPTO_AEAD_AEGIS128L_ABYTES = 32;
+    public const CRYPTO_AEAD_AEGIS256_KEYBYTES = 32;
+    public const CRYPTO_AEAD_AEGIS256_NSECBYTES = 0;
+    public const CRYPTO_AEAD_AEGIS256_NPUBBYTES = 32;
+    public const CRYPTO_AEAD_AEGIS256_ABYTES = 32;
+    public const CRYPTO_AEAD_CHACHA20POLY1305_KEYBYTES = 32;
+    public const CRYPTO_AEAD_CHACHA20POLY1305_NSECBYTES = 0;
+    public const CRYPTO_AEAD_CHACHA20POLY1305_NPUBBYTES = 8;
+    public const CRYPTO_AEAD_CHACHA20POLY1305_ABYTES = 16;
+    public const CRYPTO_AEAD_CHACHA20POLY1305_IETF_KEYBYTES = 32;
+    public const CRYPTO_AEAD_CHACHA20POLY1305_IETF_NSECBYTES = 0;
+    public const CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES = 12;
+    public const CRYPTO_AEAD_CHACHA20POLY1305_IETF_ABYTES = 16;
+    public const CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES = 32;
+    public const CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NSECBYTES = 0;
+    public const CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES = 24;
+    public const CRYPTO_AEAD_XCHACHA20POLY1305_IETF_ABYTES = 16;
+    public const CRYPTO_AUTH_BYTES = 32;
+    public const CRYPTO_AUTH_KEYBYTES = 32;
+    public const CRYPTO_BOX_SEALBYTES = 16;
+    public const CRYPTO_BOX_SECRETKEYBYTES = 32;
+    public const CRYPTO_BOX_PUBLICKEYBYTES = 32;
+    public const CRYPTO_BOX_KEYPAIRBYTES = 64;
+    public const CRYPTO_BOX_MACBYTES = 16;
+    public const CRYPTO_BOX_NONCEBYTES = 24;
+    public const CRYPTO_BOX_SEEDBYTES = 32;
+    public const CRYPTO_CORE_RISTRETTO255_BYTES = 32;
+    public const CRYPTO_CORE_RISTRETTO255_SCALARBYTES = 32;
+    public const CRYPTO_CORE_RISTRETTO255_HASHBYTES = 64;
+    public const CRYPTO_CORE_RISTRETTO255_NONREDUCEDSCALARBYTES = 64;
+    public const CRYPTO_KDF_BYTES_MIN = 16;
+    public const CRYPTO_KDF_BYTES_MAX = 64;
+    public const CRYPTO_KDF_CONTEXTBYTES = 8;
+    public const CRYPTO_KDF_KEYBYTES = 32;
+    public const CRYPTO_KX_BYTES = 32;
+    public const CRYPTO_KX_PRIMITIVE = 'x25519blake2b';
+    public const CRYPTO_KX_SEEDBYTES = 32;
+    public const CRYPTO_KX_KEYPAIRBYTES = 64;
+    public const CRYPTO_KX_PUBLICKEYBYTES = 32;
+    public const CRYPTO_KX_SECRETKEYBYTES = 32;
+    public const CRYPTO_KX_SESSIONKEYBYTES = 32;
+    public const CRYPTO_GENERICHASH_BYTES = 32;
+    public const CRYPTO_GENERICHASH_BYTES_MIN = 16;
+    public const CRYPTO_GENERICHASH_BYTES_MAX = 64;
+    public const CRYPTO_GENERICHASH_KEYBYTES = 32;
+    public const CRYPTO_GENERICHASH_KEYBYTES_MIN = 16;
+    public const CRYPTO_GENERICHASH_KEYBYTES_MAX = 64;
+    public const CRYPTO_PWHASH_SALTBYTES = 16;
+    public const CRYPTO_PWHASH_STRPREFIX = '$argon2id$';
+    public const CRYPTO_PWHASH_ALG_ARGON2I13 = 1;
+    public const CRYPTO_PWHASH_ALG_ARGON2ID13 = 2;
+    public const CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE = 33554432;
+    public const CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE = 4;
+    public const CRYPTO_PWHASH_MEMLIMIT_MODERATE = 134217728;
+    public const CRYPTO_PWHASH_OPSLIMIT_MODERATE = 6;
+    public const CRYPTO_PWHASH_MEMLIMIT_SENSITIVE = 536870912;
+    public const CRYPTO_PWHASH_OPSLIMIT_SENSITIVE = 8;
+    public const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_SALTBYTES = 32;
+    public const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_STRPREFIX = '$7$';
+    public const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_OPSLIMIT_INTERACTIVE = 534288;
+    public const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_MEMLIMIT_INTERACTIVE = 16777216;
+    public const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_OPSLIMIT_SENSITIVE = 33554432;
+    public const CRYPTO_PWHASH_SCRYPTSALSA208SHA256_MEMLIMIT_SENSITIVE = 1073741824;
+    public const CRYPTO_SCALARMULT_BYTES = 32;
+    public const CRYPTO_SCALARMULT_SCALARBYTES = 32;
+    public const CRYPTO_SCALARMULT_RISTRETTO255_BYTES = 32;
+    public const CRYPTO_SCALARMULT_RISTRETTO255_SCALARBYTES = 32;
+    public const CRYPTO_SHORTHASH_BYTES = 8;
+    public const CRYPTO_SHORTHASH_KEYBYTES = 16;
+    public const CRYPTO_SECRETBOX_KEYBYTES = 32;
+    public const CRYPTO_SECRETBOX_MACBYTES = 16;
+    public const CRYPTO_SECRETBOX_NONCEBYTES = 24;
+    public const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_ABYTES = 17;
+    public const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_HEADERBYTES = 24;
+    public const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_KEYBYTES = 32;
+    public const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_PUSH = 0;
+    public const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_PULL = 1;
+    public const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_REKEY = 2;
+    public const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_FINAL = 3;
+    public const CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_MESSAGEBYTES_MAX = 0x3fffffff80;
+    public const CRYPTO_SIGN_BYTES = 64;
+    public const CRYPTO_SIGN_SEEDBYTES = 32;
+    public const CRYPTO_SIGN_PUBLICKEYBYTES = 32;
+    public const CRYPTO_SIGN_SECRETKEYBYTES = 64;
+    public const CRYPTO_SIGN_KEYPAIRBYTES = 96;
+    public const CRYPTO_STREAM_KEYBYTES = 32;
+    public const CRYPTO_STREAM_NONCEBYTES = 24;
+    public const CRYPTO_STREAM_XCHACHA20_KEYBYTES = 32;
+    public const CRYPTO_STREAM_XCHACHA20_NONCEBYTES = 24;
 
     /**
      * Add two numbers (little-endian unsigned), storing the value in the first
@@ -2150,7 +2152,7 @@ class ParagonIE_Sodium_Compat
         self::crypto_generichash_update($h, $pk);
         self::crypto_generichash_update($h, $serverPublicKey);
         $sessionKeys = self::crypto_generichash_final($h, self::CRYPTO_KX_SESSIONKEYBYTES * 2);
-        return array(
+        return [
             ParagonIE_Sodium_Core_Util::substr(
                 $sessionKeys,
                 0,
@@ -2160,8 +2162,8 @@ class ParagonIE_Sodium_Compat
                 $sessionKeys,
                 self::CRYPTO_KX_SESSIONKEYBYTES,
                 self::CRYPTO_KX_SESSIONKEYBYTES
-            )
-        );
+            ),
+        ];
     }
 
     /**
@@ -2195,7 +2197,7 @@ class ParagonIE_Sodium_Compat
         self::crypto_generichash_update($h, $clientPublicKey);
         self::crypto_generichash_update($h, $pk);
         $sessionKeys = self::crypto_generichash_final($h, self::CRYPTO_KX_SESSIONKEYBYTES * 2);
-        return array(
+        return [
             ParagonIE_Sodium_Core_Util::substr(
                 $sessionKeys,
                 self::CRYPTO_KX_SESSIONKEYBYTES,
@@ -2205,8 +2207,8 @@ class ParagonIE_Sodium_Compat
                 $sessionKeys,
                 0,
                 self::CRYPTO_KX_SESSIONKEYBYTES
-            )
-        );
+            ),
+        ];
     }
 
     /**
@@ -2262,7 +2264,7 @@ class ParagonIE_Sodium_Compat
     ) {
         ParagonIE_Sodium_Core_Util::declareScalarType($outlen, 'int', 1);
         ParagonIE_Sodium_Core_Util::declareScalarType($passwd, 'string', 2);
-        ParagonIE_Sodium_Core_Util::declareScalarType($salt,  'string', 3);
+        ParagonIE_Sodium_Core_Util::declareScalarType($salt, 'string', 3);
         ParagonIE_Sodium_Core_Util::declareScalarType($opslimit, 'int', 4);
         ParagonIE_Sodium_Core_Util::declareScalarType($memlimit, 'int', 5);
 
@@ -2415,7 +2417,7 @@ class ParagonIE_Sodium_Compat
     ) {
         ParagonIE_Sodium_Core_Util::declareScalarType($outlen, 'int', 1);
         ParagonIE_Sodium_Core_Util::declareScalarType($passwd, 'string', 2);
-        ParagonIE_Sodium_Core_Util::declareScalarType($salt,  'string', 3);
+        ParagonIE_Sodium_Core_Util::declareScalarType($salt, 'string', 3);
         ParagonIE_Sodium_Core_Util::declareScalarType($opslimit, 'int', 4);
         ParagonIE_Sodium_Core_Util::declareScalarType($memlimit, 'int', 5);
 
@@ -2791,7 +2793,7 @@ class ParagonIE_Sodium_Compat
             throw new SodiumException('Argument 3 must be CRYPTO_SECRETBOX_KEYBYTES long.');
         }
         if (ParagonIE_Sodium_Core_Util::strlen($ciphertext) < self::CRYPTO_SECRETBOX_MACBYTES) {
-            throw new SodiumException("Ciphertext must be at least CRYPTO_SECRETBOX_MACBYTES long");
+            throw new SodiumException('Ciphertext must be at least CRYPTO_SECRETBOX_MACBYTES long');
         }
 
         if (PHP_INT_SIZE === 4) {
@@ -3089,7 +3091,7 @@ class ParagonIE_Sodium_Compat
         #[\SensitiveParameter]
         $sk,
         $pk
-    )  {
+    ) {
         ParagonIE_Sodium_Core_Util::declareScalarType($sk, 'string', 1);
         ParagonIE_Sodium_Core_Util::declareScalarType($pk, 'string', 1);
         $sk = (string) $sk;
@@ -3499,7 +3501,6 @@ class ParagonIE_Sodium_Compat
     {
         return random_bytes(self::CRYPTO_STREAM_KEYBYTES);
     }
-
 
     /**
      * Expand a key and nonce into a keystream of pseudorandom bytes.
@@ -3914,20 +3915,21 @@ class ParagonIE_Sodium_Compat
                 }
                 /** @var int $k */
                 $k -= $st;
-                $st = (int) (~(
+                $st = (int) (
+                    ~(
+                        (
                             (
-                                (
-                                    ($k >> 48)
+                                ($k >> 48)
                                         |
                                     ($k >> 32)
                                         |
                                     ($k >> 16)
                                         |
                                     $k
-                                ) - 1
-                            ) >> 16
-                        )
-                    ) & 1;
+                            ) - 1
+                        ) >> 16
+                    )
+                ) & 1;
                 $i += $st;
             }
         }
@@ -3937,7 +3939,7 @@ class ParagonIE_Sodium_Compat
         for ($i = 0; $i < $blockSize; ++$i) {
             # barrier_mask = (unsigned char)
             #     (((i ^ xpadlen) - 1U) >> ((sizeof(size_t) - 1U) * CHAR_BIT));
-            $barrier_mask = (($i ^ $xpadlen) -1) >> ((PHP_INT_SIZE << 3) - 1);
+            $barrier_mask = (($i ^ $xpadlen) - 1) >> ((PHP_INT_SIZE << 3) - 1);
             # tail[-i] = (tail[-i] & mask) | (0x80 & barrier_mask);
             $padded[$tail - $i] = ParagonIE_Sodium_Core_Util::intToChr(
                 (ParagonIE_Sodium_Core_Util::chrToInt($padded[$tail - $i]) & $mask)
@@ -4062,7 +4064,7 @@ class ParagonIE_Sodium_Compat
             return (string) call_user_func('\\Sodium\\randombytes_buf', $numBytes);
         }
         if ($numBytes < 0) {
-            throw new SodiumException("Number of bytes must be a positive integer");
+            throw new SodiumException('Number of bytes must be a positive integer');
         }
         return random_bytes($numBytes);
     }

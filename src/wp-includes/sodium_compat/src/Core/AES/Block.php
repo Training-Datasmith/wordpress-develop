@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core_AES_Block', false)) {
     return;
 }
@@ -12,7 +14,7 @@ class ParagonIE_Sodium_Core_AES_Block extends SplFixedArray
     /**
      * @var array<int, int>
      */
-    protected $values = array();
+    protected $values = [];
 
     /**
      * @var int
@@ -70,7 +72,6 @@ class ParagonIE_Sodium_Core_AES_Block extends SplFixedArray
         }
         return $obj;
     }
-
 
     /**
      * @internal You should not use this directly from another application
@@ -150,11 +151,11 @@ class ParagonIE_Sodium_Core_AES_Block extends SplFixedArray
      */
     public function __debugInfo()
     {
-        $out = array();
+        $out = [];
         foreach ($this->values as $v) {
             $out[] = str_pad(dechex($v), 8, '0', STR_PAD_LEFT);
         }
-        return array(implode(', ', $out));
+        return [implode(', ', $out)];
         /*
          return array(implode(', ', $this->values));
          */

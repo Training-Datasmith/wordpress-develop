@@ -1,10 +1,12 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Models\TextGeneration\Contracts;
 
 use WordPress\AiClient\Messages\DTO\Message;
 use WordPress\AiClient\Results\DTO\GenerativeAiResult;
+
 /**
  * Interface for models that support text generation.
  *

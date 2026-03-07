@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core_ChaCha20_IetfCtx', false)) {
     return;
 }

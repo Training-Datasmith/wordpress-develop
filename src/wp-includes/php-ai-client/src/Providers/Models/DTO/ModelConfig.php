@@ -1,6 +1,7 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Models\DTO;
 
 use WordPress\AiClient\Common\AbstractDataTransferObject;
@@ -10,6 +11,7 @@ use WordPress\AiClient\Files\Enums\MediaOrientationEnum;
 use WordPress\AiClient\Messages\Enums\ModalityEnum;
 use WordPress\AiClient\Tools\DTO\FunctionDeclaration;
 use WordPress\AiClient\Tools\DTO\WebSearch;
+
 /**
  * Represents configuration for an AI model.
  *
@@ -813,7 +815,7 @@ class ModelConfig extends AbstractDataTransferObject
     {
         $config = new self();
         if (isset($array[self::KEY_OUTPUT_MODALITIES])) {
-            $config->setOutputModalities(array_map(static fn(string $modality): ModalityEnum => ModalityEnum::from($modality), $array[self::KEY_OUTPUT_MODALITIES]));
+            $config->setOutputModalities(array_map(static fn (string $modality): ModalityEnum => ModalityEnum::from($modality), $array[self::KEY_OUTPUT_MODALITIES]));
         }
         if (isset($array[self::KEY_SYSTEM_INSTRUCTION])) {
             $config->setSystemInstruction($array[self::KEY_SYSTEM_INSTRUCTION]);

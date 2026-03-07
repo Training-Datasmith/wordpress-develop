@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Tests specific to `upload_is_user_over_quota()` in multisite.
  *
@@ -9,112 +11,125 @@
  * @group ms-required
  * @group multisite
  */
-class Tests_Multisite_UploadIsUserOverQuota extends WP_UnitTestCase {
+class Tests_Multisite_UploadIsUserOverQuota extends WP_UnitTestCase
+{
+    public function set_up()
+    {
+        parent::set_up();
+        update_site_option('upload_space_check_disabled', false);
+    }
 
-	public function set_up() {
-		parent::set_up();
-		update_site_option( 'upload_space_check_disabled', false );
-	}
+    public function test_upload_is_user_over_quota_allowed_0_used_5()
+    {
+        add_filter('get_space_allowed', '__return_zero');
+        add_filter('pre_get_space_used', [ $this, '_filter_space_5' ]);
+        $result = upload_is_user_over_quota(false);
+        remove_filter('get_space_allowed', '__return_zero');
+        remove_filter('pre_get_space_used', [ $this, '_filter_space_5' ]);
 
-	public function test_upload_is_user_over_quota_allowed_0_used_5() {
-		add_filter( 'get_space_allowed', '__return_zero' );
-		add_filter( 'pre_get_space_used', array( $this, '_filter_space_5' ) );
-		$result = upload_is_user_over_quota( false );
-		remove_filter( 'get_space_allowed', '__return_zero' );
-		remove_filter( 'pre_get_space_used', array( $this, '_filter_space_5' ) );
+        $this->assertTrue($result);
+    }
 
-		$this->assertTrue( $result );
-	}
+    public function test_upload_is_user_over_quota_allowed_0_used_0()
+    {
+        add_filter('get_space_allowed', '__return_zero');
+        add_filter('pre_get_space_used', '__return_zero');
+        $result = upload_is_user_over_quota(false);
+        remove_filter('get_space_allowed', '__return_zero');
+        remove_filter('pre_get_space_used', '__return_zero');
 
-	public function test_upload_is_user_over_quota_allowed_0_used_0() {
-		add_filter( 'get_space_allowed', '__return_zero' );
-		add_filter( 'pre_get_space_used', '__return_zero' );
-		$result = upload_is_user_over_quota( false );
-		remove_filter( 'get_space_allowed', '__return_zero' );
-		remove_filter( 'pre_get_space_used', '__return_zero' );
+        $this->assertFalse($result);
+    }
 
-		$this->assertFalse( $result );
-	}
+    public function test_upload_is_user_over_quota_allowed_0_used_100()
+    {
+        add_filter('get_space_allowed', '__return_zero');
+        add_filter('pre_get_space_used', [ $this, '_filter_space_100' ]);
+        $result = upload_is_user_over_quota(false);
+        remove_filter('get_space_allowed', '__return_zero');
+        remove_filter('pre_get_space_used', [ $this, '_filter_space_100' ]);
 
-	public function test_upload_is_user_over_quota_allowed_0_used_100() {
-		add_filter( 'get_space_allowed', '__return_zero' );
-		add_filter( 'pre_get_space_used', array( $this, '_filter_space_100' ) );
-		$result = upload_is_user_over_quota( false );
-		remove_filter( 'get_space_allowed', '__return_zero' );
-		remove_filter( 'pre_get_space_used', array( $this, '_filter_space_100' ) );
+        $this->assertTrue($result);
+    }
 
-		$this->assertTrue( $result );
-	}
+    public function test_upload_is_user_over_quota_allowed_100_used_0()
+    {
+        add_filter('get_space_allowed', [ $this, '_filter_space_100' ]);
+        add_filter('pre_get_space_used', '__return_zero');
+        $result = upload_is_user_over_quota(false);
+        remove_filter('get_space_allowed', [ $this, '_filter_space_100' ]);
+        remove_filter('pre_get_space_used', '__return_zero');
 
-	public function test_upload_is_user_over_quota_allowed_100_used_0() {
-		add_filter( 'get_space_allowed', array( $this, '_filter_space_100' ) );
-		add_filter( 'pre_get_space_used', '__return_zero' );
-		$result = upload_is_user_over_quota( false );
-		remove_filter( 'get_space_allowed', array( $this, '_filter_space_100' ) );
-		remove_filter( 'pre_get_space_used', '__return_zero' );
+        $this->assertFalse($result);
+    }
 
-		$this->assertFalse( $result );
-	}
+    public function test_upload_is_user_over_quota_allowed_100_used_100()
+    {
+        add_filter('get_space_allowed', [ $this, '_filter_space_100' ]);
+        add_filter('pre_get_space_used', [ $this, '_filter_space_100' ]);
+        $result = upload_is_user_over_quota(false);
+        remove_filter('get_space_allowed', [ $this, '_filter_space_100' ]);
+        remove_filter('pre_get_space_used', [ $this, '_filter_space_100' ]);
 
-	public function test_upload_is_user_over_quota_allowed_100_used_100() {
-		add_filter( 'get_space_allowed', array( $this, '_filter_space_100' ) );
-		add_filter( 'pre_get_space_used', array( $this, '_filter_space_100' ) );
-		$result = upload_is_user_over_quota( false );
-		remove_filter( 'get_space_allowed', array( $this, '_filter_space_100' ) );
-		remove_filter( 'pre_get_space_used', array( $this, '_filter_space_100' ) );
+        $this->assertFalse($result);
+    }
 
-		$this->assertFalse( $result );
-	}
+    public function test_upload_is_user_over_quota_allowed_100_used_200()
+    {
+        add_filter('get_space_allowed', [ $this, '_filter_space_100' ]);
+        add_filter('pre_get_space_used', [ $this, '_filter_space_200' ]);
+        $result = upload_is_user_over_quota(false);
+        remove_filter('get_space_allowed', [ $this, '_filter_space_100' ]);
+        remove_filter('pre_get_space_used', [ $this, '_filter_space_200' ]);
 
-	public function test_upload_is_user_over_quota_allowed_100_used_200() {
-		add_filter( 'get_space_allowed', array( $this, '_filter_space_100' ) );
-		add_filter( 'pre_get_space_used', array( $this, '_filter_space_200' ) );
-		$result = upload_is_user_over_quota( false );
-		remove_filter( 'get_space_allowed', array( $this, '_filter_space_100' ) );
-		remove_filter( 'pre_get_space_used', array( $this, '_filter_space_200' ) );
+        $this->assertTrue($result);
+    }
 
-		$this->assertTrue( $result );
-	}
+    public function test_upload_is_user_over_quota_allowed_negative_used_100()
+    {
+        add_filter('get_space_allowed', [ $this, '_filter_space_negative' ]);
+        add_filter('pre_get_space_used', [ $this, '_filter_space_100' ]);
+        $result = upload_is_user_over_quota(false);
+        remove_filter('get_space_allowed', [ $this, '_filter_space_negative' ]);
+        remove_filter('pre_get_space_used', [ $this, '_filter_space_100' ]);
 
-	public function test_upload_is_user_over_quota_allowed_negative_used_100() {
-		add_filter( 'get_space_allowed', array( $this, '_filter_space_negative' ) );
-		add_filter( 'pre_get_space_used', array( $this, '_filter_space_100' ) );
-		$result = upload_is_user_over_quota( false );
-		remove_filter( 'get_space_allowed', array( $this, '_filter_space_negative' ) );
-		remove_filter( 'pre_get_space_used', array( $this, '_filter_space_100' ) );
+        $this->assertTrue($result);
+    }
 
-		$this->assertTrue( $result );
-	}
+    /**
+     * When the upload space check is disabled, using more than the available
+     * quota is allowed.
+     */
+    public function test_upload_is_user_over_check_disabled()
+    {
+        update_site_option('upload_space_check_disabled', true);
 
-	/**
-	 * When the upload space check is disabled, using more than the available
-	 * quota is allowed.
-	 */
-	public function test_upload_is_user_over_check_disabled() {
-		update_site_option( 'upload_space_check_disabled', true );
+        add_filter('get_space_allowed', [ $this, '_filter_space_100' ]);
+        add_filter('pre_get_space_used', [ $this, '_filter_space_200' ]);
+        $result = upload_is_user_over_quota(false);
+        remove_filter('get_space_allowed', [ $this, '_filter_space_100' ]);
+        remove_filter('pre_get_space_used', [ $this, '_filter_space_200' ]);
 
-		add_filter( 'get_space_allowed', array( $this, '_filter_space_100' ) );
-		add_filter( 'pre_get_space_used', array( $this, '_filter_space_200' ) );
-		$result = upload_is_user_over_quota( false );
-		remove_filter( 'get_space_allowed', array( $this, '_filter_space_100' ) );
-		remove_filter( 'pre_get_space_used', array( $this, '_filter_space_200' ) );
+        $this->assertFalse($result);
+    }
 
-		$this->assertFalse( $result );
-	}
+    public function _filter_space_5()
+    {
+        return 5;
+    }
 
-	public function _filter_space_5() {
-		return 5;
-	}
+    public function _filter_space_100()
+    {
+        return 100;
+    }
 
-	public function _filter_space_100() {
-		return 100;
-	}
+    public function _filter_space_200()
+    {
+        return 200;
+    }
 
-	public function _filter_space_200() {
-		return 200;
-	}
-
-	public function _filter_space_negative() {
-		return -1;
-	}
+    public function _filter_space_negative()
+    {
+        return -1;
+    }
 }

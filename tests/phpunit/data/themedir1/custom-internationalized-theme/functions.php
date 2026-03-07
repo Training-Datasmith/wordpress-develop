@@ -1,10 +1,13 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Dummy theme.
  */
 
-load_theme_textdomain( 'custom-internationalized-theme', get_template_directory() . '/languages' );
+load_theme_textdomain('custom-internationalized-theme', get_template_directory() . '/languages');
 
-function custom_i18n_theme_test() {
-	return __( 'This is a dummy theme', 'custom-internationalized-theme' );
+function custom_i18n_theme_test()
+{
+    return __('This is a dummy theme', 'custom-internationalized-theme');
 }

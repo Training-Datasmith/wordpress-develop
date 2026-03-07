@@ -20,63 +20,65 @@
  *
  * @since Twenty Thirteen 1.0
  */
-function twentythirteen_custom_header_setup() {
-	$args = array(
-		// Text color and image (empty to use none).
-		'default-text-color'     => '220e10',
-		'default-image'          => '%s/images/headers/circle.png',
+function twentythirteen_custom_header_setup(): void
+{
+    $args = [
+        // Text color and image (empty to use none).
+        'default-text-color'     => '220e10',
+        'default-image'          => '%s/images/headers/circle.png',
 
-		// Set height and width, with a maximum value for the width.
-		'height'                 => 230,
-		'width'                  => 1600,
+        // Set height and width, with a maximum value for the width.
+        'height'                 => 230,
+        'width'                  => 1600,
 
-		// Callbacks for styling the header and the admin preview.
-		'wp-head-callback'       => 'twentythirteen_header_style',
-		'admin-head-callback'    => 'twentythirteen_admin_header_style',
-		'admin-preview-callback' => 'twentythirteen_admin_header_image',
-	);
+        // Callbacks for styling the header and the admin preview.
+        'wp-head-callback'       => 'twentythirteen_header_style',
+        'admin-head-callback'    => 'twentythirteen_admin_header_style',
+        'admin-preview-callback' => 'twentythirteen_admin_header_image',
+    ];
 
-	add_theme_support( 'custom-header', $args );
+    add_theme_support('custom-header', $args);
 
-	/*
-	 * Default custom headers packaged with the theme.
-	 * %s is a placeholder for the theme template directory URI.
-	 */
-	register_default_headers(
-		array(
-			'circle'  => array(
-				'url'           => '%s/images/headers/circle.png',
-				'thumbnail_url' => '%s/images/headers/circle-thumbnail.png',
-				'description'   => _x( 'Circle', 'header image description', 'twentythirteen' ),
-			),
-			'diamond' => array(
-				'url'           => '%s/images/headers/diamond.png',
-				'thumbnail_url' => '%s/images/headers/diamond-thumbnail.png',
-				'description'   => _x( 'Diamond', 'header image description', 'twentythirteen' ),
-			),
-			'star'    => array(
-				'url'           => '%s/images/headers/star.png',
-				'thumbnail_url' => '%s/images/headers/star-thumbnail.png',
-				'description'   => _x( 'Star', 'header image description', 'twentythirteen' ),
-			),
-		)
-	);
+    /*
+     * Default custom headers packaged with the theme.
+     * %s is a placeholder for the theme template directory URI.
+     */
+    register_default_headers(
+        [
+            'circle'  => [
+                'url'           => '%s/images/headers/circle.png',
+                'thumbnail_url' => '%s/images/headers/circle-thumbnail.png',
+                'description'   => _x('Circle', 'header image description', 'twentythirteen'),
+            ],
+            'diamond' => [
+                'url'           => '%s/images/headers/diamond.png',
+                'thumbnail_url' => '%s/images/headers/diamond-thumbnail.png',
+                'description'   => _x('Diamond', 'header image description', 'twentythirteen'),
+            ],
+            'star'    => [
+                'url'           => '%s/images/headers/star.png',
+                'thumbnail_url' => '%s/images/headers/star-thumbnail.png',
+                'description'   => _x('Star', 'header image description', 'twentythirteen'),
+            ],
+        ]
+    );
 }
-add_action( 'after_setup_theme', 'twentythirteen_custom_header_setup', 11 );
+add_action('after_setup_theme', 'twentythirteen_custom_header_setup', 11);
 
 /**
  * Loads our special font CSS files.
  *
  * @since Twenty Thirteen 1.0
  */
-function twentythirteen_custom_header_fonts() {
-	// Add Source Sans Pro and Bitter fonts.
-	wp_enqueue_style( 'twentythirteen-fonts', twentythirteen_fonts_url(), array(), null );
+function twentythirteen_custom_header_fonts(): void
+{
+    // Add Source Sans Pro and Bitter fonts.
+    wp_enqueue_style('twentythirteen-fonts', twentythirteen_fonts_url(), [], null);
 
-	// Add Genericons font.
-	wp_enqueue_style( 'genericons', get_template_directory_uri() . '/genericons/genericons.css', array(), '20251101' );
+    // Add Genericons font.
+    wp_enqueue_style('genericons', get_template_directory_uri() . '/genericons/genericons.css', [], '20251101');
 }
-add_action( 'admin_print_styles-appearance_page_custom-header', 'twentythirteen_custom_header_fonts' );
+add_action('admin_print_styles-appearance_page_custom-header', 'twentythirteen_custom_header_fonts');
 
 /**
  * Styles the header text displayed on the blog.
@@ -85,21 +87,22 @@ add_action( 'admin_print_styles-appearance_page_custom-header', 'twentythirteen_
  *
  * @since Twenty Thirteen 1.0
  */
-function twentythirteen_header_style() {
-	$header_image = get_header_image();
-	$text_color   = get_header_textcolor();
+function twentythirteen_header_style(): void
+{
+    $header_image = get_header_image();
+    $text_color   = get_header_textcolor();
 
-	// If no custom options for text are set, let's bail.
-	if ( empty( $header_image ) && get_theme_support( 'custom-header', 'default-text-color' ) === $text_color ) {
-		return;
-	}
+    // If no custom options for text are set, let's bail.
+    if (empty($header_image) && get_theme_support('custom-header', 'default-text-color') === $text_color) {
+        return;
+    }
 
-	// If we get this far, we have custom styles.
-	?>
+    // If we get this far, we have custom styles.
+    ?>
 	<style id="twentythirteen-header-css">
 	<?php
-	if ( ! empty( $header_image ) ) :
-		?>
+    if (! empty($header_image)) :
+        ?>
 	.site-header {
 		background: url(<?php header_image(); ?>) no-repeat scroll top;
 		background-size: 1600px auto;
@@ -115,31 +118,31 @@ function twentythirteen_header_style() {
 		}
 	}
 		<?php
-		endif;
+    endif;
 
-		// Has the text been hidden?
-	if ( ! display_header_text() ) :
-		?>
+    // Has the text been hidden?
+    if (! display_header_text()) :
+        ?>
 	.site-title,
 	.site-description {
 		position: absolute;
 		clip-path: inset(50%);
 	}
 		<?php
-		if ( empty( $header_image ) ) :
-			?>
+        if (empty($header_image)) :
+            ?>
 	.site-header .home-link {
 	min-height: 0;
 	}
 			<?php
-		endif;
+        endif;
 
-		// If the user has set a custom color for the text, use that.
-		elseif ( get_theme_support( 'custom-header', 'default-text-color' ) !== $text_color ) :
-			?>
+        // If the user has set a custom color for the text, use that.
+    elseif (get_theme_support('custom-header', 'default-text-color') !== $text_color) :
+        ?>
 		.site-title,
 		.site-description {
-			color: #<?php echo esc_attr( $text_color ); ?>;
+			color: #<?php echo esc_attr($text_color); ?>;
 		}
 	<?php endif; ?>
 	</style>
@@ -151,9 +154,10 @@ function twentythirteen_header_style() {
  *
  * @since Twenty Thirteen 1.0
  */
-function twentythirteen_admin_header_style() {
-	$header_image = get_header_image();
-	?>
+function twentythirteen_admin_header_style(): void
+{
+    $header_image = get_header_image();
+    ?>
 	<style id="twentythirteen-admin-header-css">
 	.appearance_page_custom-header #headimg {
 		border: none;
@@ -161,10 +165,10 @@ function twentythirteen_admin_header_style() {
 		-moz-box-sizing:    border-box;
 		box-sizing:         border-box;
 		<?php
-		if ( ! empty( $header_image ) ) {
-			echo 'background: url(' . esc_url( $header_image ) . ') no-repeat scroll top; background-size: 1600px auto;';
-		}
-		?>
+        if (! empty($header_image)) {
+            echo 'background: url(' . esc_url($header_image) . ') no-repeat scroll top; background-size: 1600px auto;';
+        }
+    ?>
 		padding: 0 20px;
 	}
 	#headimg .home-link {
@@ -174,13 +178,13 @@ function twentythirteen_admin_header_style() {
 		margin: 0 auto;
 		max-width: 1040px;
 		<?php
-		if ( ! empty( $header_image ) || display_header_text() ) {
-			echo 'min-height: 230px;';
-		}
-		?>
+    if (! empty($header_image) || display_header_text()) {
+        echo 'min-height: 230px;';
+    }
+    ?>
 		width: 100%;
 	}
-	<?php if ( ! display_header_text() ) : ?>
+	<?php if (! display_header_text()) : ?>
 	#headimg h1,
 	#headimg h2 {
 		position: absolute !important;
@@ -218,16 +222,17 @@ function twentythirteen_admin_header_style() {
  *
  * @since Twenty Thirteen 1.0
  */
-function twentythirteen_admin_header_image() {
-	$style = 'color: #' . get_header_textcolor() . ';';
-	if ( ! display_header_text() ) {
-		$style = 'display: none;';
-	}
-	?>
-	<div id="headimg" style="background: url(<?php echo esc_url( get_header_image() ); ?>) no-repeat scroll top; background-size: 1600px auto;">
+function twentythirteen_admin_header_image(): void
+{
+    $style = 'color: #' . get_header_textcolor() . ';';
+    if (! display_header_text()) {
+        $style = 'display: none;';
+    }
+    ?>
+	<div id="headimg" style="background: url(<?php echo esc_url(get_header_image()); ?>) no-repeat scroll top; background-size: 1600px auto;">
 		<div class="home-link">
-			<h1 class="displaying-header-text"><a id="name" style="<?php echo esc_attr( $style ); ?>" onclick="return false;" href="#" tabindex="-1"><?php bloginfo( 'name' ); ?></a></h1>
-			<h2 id="desc" class="displaying-header-text" style="<?php echo esc_attr( $style ); ?>"><?php bloginfo( 'description' ); ?></h2>
+			<h1 class="displaying-header-text"><a id="name" style="<?php echo esc_attr($style); ?>" onclick="return false;" href="#" tabindex="-1"><?php bloginfo('name'); ?></a></h1>
+			<h2 id="desc" class="displaying-header-text" style="<?php echo esc_attr($style); ?>"><?php bloginfo('description'); ?></h2>
 		</div>
 	</div>
 	<?php

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (!defined('SODIUM_COMPAT_AEGIS_C0')) {
     define('SODIUM_COMPAT_AEGIS_C0', "\x00\x01\x01\x02\x03\x05\x08\x0d\x15\x22\x37\x59\x90\xe9\x79\x62");
 }
@@ -101,10 +103,10 @@ class ParagonIE_Sodium_Core_AEGIS128L extends ParagonIE_Sodium_Core_AES
             $msg_len << 3
         );
         // return ct and tag
-        return array(
+        return [
             self::substr($ct, 0, $msg_len),
-            $tag
-        );
+            $tag,
+        ];
     }
 
     /**

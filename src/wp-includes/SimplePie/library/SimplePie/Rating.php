@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Rating;
 
-class_exists('SimplePie\Rating');
+class_exists(\SimplePie\Rating::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Rating" class is deprecated since SimplePie 1.7.0, use "SimplePie\Rating" instead.'), \E_USER_DEPRECATED);
 

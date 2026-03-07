@@ -53,11 +53,6 @@ class Category
 
     /**
      * Constructor, used to input the data
-     *
-     * @param string|null $term
-     * @param string|null $scheme
-     * @param string|null $label
-     * @param string|null $type
      */
     public function __construct(?string $term = null, ?string $scheme = null, ?string $label = null, ?string $type = null)
     {
@@ -69,10 +64,8 @@ class Category
 
     /**
      * String-ified version
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         // There is no $this->data here
         return md5(serialize($this));
@@ -101,7 +94,6 @@ class Category
     /**
      * Get the human readable label
      *
-     * @param bool $strict
      * @return string|null
      */
     public function get_label(bool $strict = false)
@@ -123,4 +115,4 @@ class Category
     }
 }
 
-class_alias('SimplePie\Category', 'SimplePie_Category');
+class_alias(\SimplePie\Category::class, 'SimplePie_Category');

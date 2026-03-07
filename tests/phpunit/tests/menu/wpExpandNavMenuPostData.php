@@ -1,105 +1,111 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @group menu
  * @ticket 36590
  */
-class Tests_Menu_WpExpandNavMenuPostData extends WP_UnitTestCase {
-	public function test_unnested_data_should_expand() {
-		require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
+class Tests_Menu_WpExpandNavMenuPostData extends WP_UnitTestCase
+{
+    public function test_unnested_data_should_expand()
+    {
+        require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
 
-		if ( empty( $_POST ) ) {
-			$_POST = array();
-		}
+        if (empty($_POST)) {
+            $_POST = [];
+        }
 
-		$data                   = array();
-		$data[0]                = new StdClass();
-		$data[0]->name          = 'yesorno';
-		$data[0]->value         = 'yes';
-		$_POST['nav-menu-data'] = addslashes( json_encode( $data ) );
+        $data                   = [];
+        $data[0]                = new StdClass();
+        $data[0]->name          = 'yesorno';
+        $data[0]->value         = 'yes';
+        $_POST['nav-menu-data'] = addslashes(json_encode($data));
 
-		_wp_expand_nav_menu_post_data();
+        _wp_expand_nav_menu_post_data();
 
-		$expected = array(
-			'nav-menu-data' => $_POST['nav-menu-data'],
-			'yesorno'       => 'yes',
-		);
+        $expected = [
+            'nav-menu-data' => $_POST['nav-menu-data'],
+            'yesorno'       => 'yes',
+        ];
 
-		$this->assertSame( $expected, $_POST );
-	}
+        $this->assertSame($expected, $_POST);
+    }
 
-	public function test_multidimensional_nested_array_should_expand() {
-		require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
+    public function test_multidimensional_nested_array_should_expand()
+    {
+        require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
 
-		if ( empty( $_POST ) ) {
-			$_POST = array();
-		}
+        if (empty($_POST)) {
+            $_POST = [];
+        }
 
-		$data                   = array();
-		$data[0]                = new StdClass();
-		$data[0]->name          = 'would[1][do][the][trick]';
-		$data[0]->value         = 'yes';
-		$_POST['nav-menu-data'] = addslashes( json_encode( $data ) );
+        $data                   = [];
+        $data[0]                = new StdClass();
+        $data[0]->name          = 'would[1][do][the][trick]';
+        $data[0]->value         = 'yes';
+        $_POST['nav-menu-data'] = addslashes(json_encode($data));
 
-		_wp_expand_nav_menu_post_data();
+        _wp_expand_nav_menu_post_data();
 
-		$expected = array(
-			'nav-menu-data' => $_POST['nav-menu-data'],
-			'would'         => array(
-				1 => array(
-					'do' => array(
-						'the' => array(
-							'trick' => 'yes',
-						),
-					),
-				),
-			),
-		);
-		$this->assertSame( $expected, $_POST );
-	}
+        $expected = [
+            'nav-menu-data' => $_POST['nav-menu-data'],
+            'would'         => [
+                1 => [
+                    'do' => [
+                        'the' => [
+                            'trick' => 'yes',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->assertSame($expected, $_POST);
+    }
 
-	public function test_multidimensional_nested_array_should_expand_and_merge() {
-		require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
+    public function test_multidimensional_nested_array_should_expand_and_merge()
+    {
+        require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
 
-		if ( empty( $_POST ) ) {
-			$_POST = array();
-		}
+        if (empty($_POST)) {
+            $_POST = [];
+        }
 
-		$data                   = array();
-		$data[0]                = new StdClass();
-		$data[0]->name          = 'would[1][do][the][trick]';
-		$data[0]->value         = 'yes';
-		$data[1]                = new StdClass();
-		$data[1]->name          = 'would[2][do][the][trick]';
-		$data[1]->value         = 'yes';
-		$data[2]                = new StdClass();
-		$data[2]->name          = 'would[2][do][the][job]';
-		$data[2]->value         = 'yes';
-		$_POST['nav-menu-data'] = addslashes( json_encode( $data ) );
+        $data                   = [];
+        $data[0]                = new StdClass();
+        $data[0]->name          = 'would[1][do][the][trick]';
+        $data[0]->value         = 'yes';
+        $data[1]                = new StdClass();
+        $data[1]->name          = 'would[2][do][the][trick]';
+        $data[1]->value         = 'yes';
+        $data[2]                = new StdClass();
+        $data[2]->name          = 'would[2][do][the][job]';
+        $data[2]->value         = 'yes';
+        $_POST['nav-menu-data'] = addslashes(json_encode($data));
 
-		_wp_expand_nav_menu_post_data();
+        _wp_expand_nav_menu_post_data();
 
-		$expected = array(
-			'nav-menu-data' => $_POST['nav-menu-data'],
-			'would'         => array(
-				1 => array(
-					'do' => array(
-						'the' => array(
-							'trick' => 'yes',
-						),
-					),
-				),
-				2 => array(
-					'do' => array(
-						'the' => array(
-							'trick' => 'yes',
-							'job'   => 'yes',
-						),
-					),
-				),
-			),
-		);
+        $expected = [
+            'nav-menu-data' => $_POST['nav-menu-data'],
+            'would'         => [
+                1 => [
+                    'do' => [
+                        'the' => [
+                            'trick' => 'yes',
+                        ],
+                    ],
+                ],
+                2 => [
+                    'do' => [
+                        'the' => [
+                            'trick' => 'yes',
+                            'job'   => 'yes',
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
-		$this->assertSame( $expected, $_POST );
-	}
+        $this->assertSame($expected, $_POST);
+    }
 }

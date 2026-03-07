@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Conditionally declares a `readonly()` function, which was renamed
  * to `wp_readonly()` in WordPress 5.9.0.
@@ -31,7 +33,8 @@
  *                              Default true.
  * @return string HTML attribute or empty string.
  */
-function readonly( $readonly_value, $current = true, $display = true ) {
-	_deprecated_function( __FUNCTION__, '5.9.0', 'wp_readonly()' );
-	return wp_readonly( $readonly_value, $current, $display );
+function readonly($readonly_value, $current = true, $display = true)
+{
+    _deprecated_function(__FUNCTION__, '5.9.0', 'wp_readonly()');
+    return wp_readonly($readonly_value, $current, $display);
 }

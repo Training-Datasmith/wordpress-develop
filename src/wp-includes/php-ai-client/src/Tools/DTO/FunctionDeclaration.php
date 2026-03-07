@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Tools\DTO;
 
 use WordPress\AiClient\Common\AbstractDataTransferObject;
+
 /**
  * Represents a function declaration for AI models.
  *

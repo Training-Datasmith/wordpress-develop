@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Http\Exception;
 
 use WordPress\AiClient\Common\Exception\RuntimeException;
+
 /**
  * Exception class for HTTP response errors.
  *

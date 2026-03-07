@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Cache\Base;
 
-interface_exists('SimplePie\Cache\Base');
+interface_exists(\SimplePie\Cache\Base::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Cache_Base" class is deprecated since SimplePie 1.7.0, use "SimplePie\Cache\Base" instead.'), \E_USER_DEPRECATED);
 

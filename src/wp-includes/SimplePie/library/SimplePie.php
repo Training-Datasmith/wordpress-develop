@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\SimplePie as NamespacedSimplePie;
 
-class_exists('SimplePie\SimplePie');
+class_exists(\SimplePie\SimplePie::class);
 
 // @trigger_error(sprintf('Using the "SimplePie" class is deprecated since SimplePie 1.7.0, use "SimplePie\SimplePie" instead.'), \E_USER_DEPRECATED);
 

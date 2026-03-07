@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core_Curve25519', false)) {
     return;
 }
@@ -88,16 +90,26 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
     ) {
         $h = new ParagonIE_Sodium_Core_Curve25519_Fe();
         $b *= -1;
-        $x = (($f->e0 ^ $g->e0) & $b); $h->e0 = $f->e0 ^ $x;
-        $x = (($f->e1 ^ $g->e1) & $b); $h->e1 = $f->e1 ^ $x;
-        $x = (($f->e2 ^ $g->e2) & $b); $h->e2 = $f->e2 ^ $x;
-        $x = (($f->e3 ^ $g->e3) & $b); $h->e3 = $f->e3 ^ $x;
-        $x = (($f->e4 ^ $g->e4) & $b); $h->e4 = $f->e4 ^ $x;
-        $x = (($f->e5 ^ $g->e5) & $b); $h->e5 = $f->e5 ^ $x;
-        $x = (($f->e6 ^ $g->e6) & $b); $h->e6 = $f->e6 ^ $x;
-        $x = (($f->e7 ^ $g->e7) & $b); $h->e7 = $f->e7 ^ $x;
-        $x = (($f->e8 ^ $g->e8) & $b); $h->e8 = $f->e8 ^ $x;
-        $x = (($f->e9 ^ $g->e9) & $b); $h->e9 = $f->e9 ^ $x;
+        $x = (($f->e0 ^ $g->e0) & $b);
+        $h->e0 = $f->e0 ^ $x;
+        $x = (($f->e1 ^ $g->e1) & $b);
+        $h->e1 = $f->e1 ^ $x;
+        $x = (($f->e2 ^ $g->e2) & $b);
+        $h->e2 = $f->e2 ^ $x;
+        $x = (($f->e3 ^ $g->e3) & $b);
+        $h->e3 = $f->e3 ^ $x;
+        $x = (($f->e4 ^ $g->e4) & $b);
+        $h->e4 = $f->e4 ^ $x;
+        $x = (($f->e5 ^ $g->e5) & $b);
+        $h->e5 = $f->e5 ^ $x;
+        $x = (($f->e6 ^ $g->e6) & $b);
+        $h->e6 = $f->e6 ^ $x;
+        $x = (($f->e7 ^ $g->e7) & $b);
+        $h->e7 = $f->e7 ^ $x;
+        $x = (($f->e8 ^ $g->e8) & $b);
+        $h->e8 = $f->e8 ^ $x;
+        $x = (($f->e9 ^ $g->e9) & $b);
+        $h->e9 = $f->e9 ^ $x;
         return $h;
     }
 
@@ -255,7 +267,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         /**
          * @var array<int, int>
          */
-        $s = array(
+        $s = [
             (int) (($h0 >> 0) & 0xff),
             (int) (($h0 >> 8) & 0xff),
             (int) (($h0 >> 16) & 0xff),
@@ -287,8 +299,8 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
             (int) ((($h8 >> 20) | ($h9 << 6)) & 0xff),
             (int) (($h9 >> 2) & 0xff),
             (int) (($h9 >> 10) & 0xff),
-            (int) (($h9 >> 18) & 0xff)
-        );
+            (int) (($h9 >> 18) & 0xff),
+        ];
         return self::intArrayToString($s);
     }
 
@@ -385,88 +397,88 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $f5_2 = $f5 << 1;
         $f7_2 = $f7 << 1;
         $f9_2 = $f9 << 1;
-        $f0g0    = self::mul($f0,    $g0, 26);
-        $f0g1    = self::mul($f0,    $g1, 25);
-        $f0g2    = self::mul($f0,    $g2, 26);
-        $f0g3    = self::mul($f0,    $g3, 25);
-        $f0g4    = self::mul($f0,    $g4, 26);
-        $f0g5    = self::mul($f0,    $g5, 25);
-        $f0g6    = self::mul($f0,    $g6, 26);
-        $f0g7    = self::mul($f0,    $g7, 25);
-        $f0g8    = self::mul($f0,    $g8, 26);
-        $f0g9    = self::mul($f0,    $g9, 26);
-        $f1g0    = self::mul($f1,    $g0, 26);
-        $f1g1_2  = self::mul($f1_2,  $g1, 25);
-        $f1g2    = self::mul($f1,    $g2, 26);
-        $f1g3_2  = self::mul($f1_2,  $g3, 25);
-        $f1g4    = self::mul($f1,    $g4, 26);
-        $f1g5_2  = self::mul($f1_2,  $g5, 25);
-        $f1g6    = self::mul($f1,    $g6, 26);
-        $f1g7_2  = self::mul($f1_2,  $g7, 25);
-        $f1g8    = self::mul($f1,    $g8, 26);
+        $f0g0    = self::mul($f0, $g0, 26);
+        $f0g1    = self::mul($f0, $g1, 25);
+        $f0g2    = self::mul($f0, $g2, 26);
+        $f0g3    = self::mul($f0, $g3, 25);
+        $f0g4    = self::mul($f0, $g4, 26);
+        $f0g5    = self::mul($f0, $g5, 25);
+        $f0g6    = self::mul($f0, $g6, 26);
+        $f0g7    = self::mul($f0, $g7, 25);
+        $f0g8    = self::mul($f0, $g8, 26);
+        $f0g9    = self::mul($f0, $g9, 26);
+        $f1g0    = self::mul($f1, $g0, 26);
+        $f1g1_2  = self::mul($f1_2, $g1, 25);
+        $f1g2    = self::mul($f1, $g2, 26);
+        $f1g3_2  = self::mul($f1_2, $g3, 25);
+        $f1g4    = self::mul($f1, $g4, 26);
+        $f1g5_2  = self::mul($f1_2, $g5, 25);
+        $f1g6    = self::mul($f1, $g6, 26);
+        $f1g7_2  = self::mul($f1_2, $g7, 25);
+        $f1g8    = self::mul($f1, $g8, 26);
         $f1g9_38 = self::mul($g9_19, $f1_2, 26);
-        $f2g0    = self::mul($f2,    $g0, 26);
-        $f2g1    = self::mul($f2,    $g1, 25);
-        $f2g2    = self::mul($f2,    $g2, 26);
-        $f2g3    = self::mul($f2,    $g3, 25);
-        $f2g4    = self::mul($f2,    $g4, 26);
-        $f2g5    = self::mul($f2,    $g5, 25);
-        $f2g6    = self::mul($f2,    $g6, 26);
-        $f2g7    = self::mul($f2,    $g7, 25);
+        $f2g0    = self::mul($f2, $g0, 26);
+        $f2g1    = self::mul($f2, $g1, 25);
+        $f2g2    = self::mul($f2, $g2, 26);
+        $f2g3    = self::mul($f2, $g3, 25);
+        $f2g4    = self::mul($f2, $g4, 26);
+        $f2g5    = self::mul($f2, $g5, 25);
+        $f2g6    = self::mul($f2, $g6, 26);
+        $f2g7    = self::mul($f2, $g7, 25);
         $f2g8_19 = self::mul($g8_19, $f2, 26);
         $f2g9_19 = self::mul($g9_19, $f2, 26);
-        $f3g0    = self::mul($f3,    $g0, 26);
-        $f3g1_2  = self::mul($f3_2,  $g1, 25);
-        $f3g2    = self::mul($f3,    $g2, 26);
-        $f3g3_2  = self::mul($f3_2,  $g3, 25);
-        $f3g4    = self::mul($f3,    $g4, 26);
-        $f3g5_2  = self::mul($f3_2,  $g5, 25);
-        $f3g6    = self::mul($f3,    $g6, 26);
+        $f3g0    = self::mul($f3, $g0, 26);
+        $f3g1_2  = self::mul($f3_2, $g1, 25);
+        $f3g2    = self::mul($f3, $g2, 26);
+        $f3g3_2  = self::mul($f3_2, $g3, 25);
+        $f3g4    = self::mul($f3, $g4, 26);
+        $f3g5_2  = self::mul($f3_2, $g5, 25);
+        $f3g6    = self::mul($f3, $g6, 26);
         $f3g7_38 = self::mul($g7_19, $f3_2, 26);
         $f3g8_19 = self::mul($g8_19, $f3, 25);
         $f3g9_38 = self::mul($g9_19, $f3_2, 26);
-        $f4g0    = self::mul($f4,    $g0, 26);
-        $f4g1    = self::mul($f4,    $g1, 25);
-        $f4g2    = self::mul($f4,    $g2, 26);
-        $f4g3    = self::mul($f4,    $g3, 25);
-        $f4g4    = self::mul($f4,    $g4, 26);
-        $f4g5    = self::mul($f4,    $g5, 25);
+        $f4g0    = self::mul($f4, $g0, 26);
+        $f4g1    = self::mul($f4, $g1, 25);
+        $f4g2    = self::mul($f4, $g2, 26);
+        $f4g3    = self::mul($f4, $g3, 25);
+        $f4g4    = self::mul($f4, $g4, 26);
+        $f4g5    = self::mul($f4, $g5, 25);
         $f4g6_19 = self::mul($g6_19, $f4, 26);
         $f4g7_19 = self::mul($g7_19, $f4, 26);
         $f4g8_19 = self::mul($g8_19, $f4, 26);
         $f4g9_19 = self::mul($g9_19, $f4, 26);
-        $f5g0    = self::mul($f5,    $g0, 26);
-        $f5g1_2  = self::mul($f5_2,  $g1, 25);
-        $f5g2    = self::mul($f5,    $g2, 26);
-        $f5g3_2  = self::mul($f5_2,  $g3, 25);
-        $f5g4    = self::mul($f5,    $g4, 26);
+        $f5g0    = self::mul($f5, $g0, 26);
+        $f5g1_2  = self::mul($f5_2, $g1, 25);
+        $f5g2    = self::mul($f5, $g2, 26);
+        $f5g3_2  = self::mul($f5_2, $g3, 25);
+        $f5g4    = self::mul($f5, $g4, 26);
         $f5g5_38 = self::mul($g5_19, $f5_2, 26);
         $f5g6_19 = self::mul($g6_19, $f5, 25);
         $f5g7_38 = self::mul($g7_19, $f5_2, 26);
         $f5g8_19 = self::mul($g8_19, $f5, 25);
         $f5g9_38 = self::mul($g9_19, $f5_2, 26);
-        $f6g0    = self::mul($f6,    $g0, 26);
-        $f6g1    = self::mul($f6,    $g1, 25);
-        $f6g2    = self::mul($f6,    $g2, 26);
-        $f6g3    = self::mul($f6,    $g3, 25);
+        $f6g0    = self::mul($f6, $g0, 26);
+        $f6g1    = self::mul($f6, $g1, 25);
+        $f6g2    = self::mul($f6, $g2, 26);
+        $f6g3    = self::mul($f6, $g3, 25);
         $f6g4_19 = self::mul($g4_19, $f6, 26);
         $f6g5_19 = self::mul($g5_19, $f6, 26);
         $f6g6_19 = self::mul($g6_19, $f6, 26);
         $f6g7_19 = self::mul($g7_19, $f6, 26);
         $f6g8_19 = self::mul($g8_19, $f6, 26);
         $f6g9_19 = self::mul($g9_19, $f6, 26);
-        $f7g0    = self::mul($f7,    $g0, 26);
-        $f7g1_2  = self::mul($f7_2,  $g1, 25);
-        $f7g2    = self::mul($f7,    $g2, 26);
+        $f7g0    = self::mul($f7, $g0, 26);
+        $f7g1_2  = self::mul($f7_2, $g1, 25);
+        $f7g2    = self::mul($f7, $g2, 26);
         $f7g3_38 = self::mul($g3_19, $f7_2, 26);
         $f7g4_19 = self::mul($g4_19, $f7, 26);
         $f7g5_38 = self::mul($g5_19, $f7_2, 26);
         $f7g6_19 = self::mul($g6_19, $f7, 25);
         $f7g7_38 = self::mul($g7_19, $f7_2, 26);
         $f7g8_19 = self::mul($g8_19, $f7, 25);
-        $f7g9_38 = self::mul($g9_19,$f7_2, 26);
-        $f8g0    = self::mul($f8,    $g0, 26);
-        $f8g1    = self::mul($f8,    $g1, 25);
+        $f7g9_38 = self::mul($g9_19, $f7_2, 26);
+        $f8g0    = self::mul($f8, $g0, 26);
+        $f8g1    = self::mul($f8, $g1, 25);
         $f8g2_19 = self::mul($g2_19, $f8, 26);
         $f8g3_19 = self::mul($g3_19, $f8, 26);
         $f8g4_19 = self::mul($g4_19, $f8, 26);
@@ -475,7 +487,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $f8g7_19 = self::mul($g7_19, $f8, 26);
         $f8g8_19 = self::mul($g8_19, $f8, 26);
         $f8g9_19 = self::mul($g9_19, $f8, 26);
-        $f9g0    = self::mul($f9,    $g0, 26);
+        $f9g0    = self::mul($f9, $g0, 26);
         $f9g1_38 = self::mul($g1_19, $f9_2, 26);
         $f9g2_19 = self::mul($g2_19, $f9, 25);
         $f9g3_38 = self::mul($g3_19, $f9_2, 26);
@@ -622,61 +634,61 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $f7_38 = self::mul($f7, 38, 6);
         $f8_19 = self::mul($f8, 19, 5);
         $f9_38 = self::mul($f9, 38, 6);
-        $f0f0    = self::mul($f0,    $f0,    26);
-        $f0f1_2  = self::mul($f0_2,  $f1,    26);
-        $f0f2_2  = self::mul($f0_2,  $f2,    26);
-        $f0f3_2  = self::mul($f0_2,  $f3,    26);
-        $f0f4_2  = self::mul($f0_2,  $f4,    26);
-        $f0f5_2  = self::mul($f0_2,  $f5,    26);
-        $f0f6_2  = self::mul($f0_2,  $f6,    26);
-        $f0f7_2  = self::mul($f0_2,  $f7,    26);
-        $f0f8_2  = self::mul($f0_2,  $f8,    26);
-        $f0f9_2  = self::mul($f0_2,  $f9,    26);
-        $f1f1_2  = self::mul($f1_2,  $f1,    26);
-        $f1f2_2  = self::mul($f1_2,  $f2,    26);
-        $f1f3_4  = self::mul($f1_2,  $f3_2,  26);
-        $f1f4_2  = self::mul($f1_2,  $f4,    26);
-        $f1f5_4  = self::mul($f1_2,  $f5_2,  26);
-        $f1f6_2  = self::mul($f1_2,  $f6,    26);
-        $f1f7_4  = self::mul($f1_2,  $f7_2,  26);
-        $f1f8_2  = self::mul($f1_2,  $f8,    26);
-        $f1f9_76 = self::mul($f9_38, $f1_2,  27);
-        $f2f2    = self::mul($f2,    $f2,    27);
-        $f2f3_2  = self::mul($f2_2,  $f3,    27);
-        $f2f4_2  = self::mul($f2_2,  $f4,    27);
-        $f2f5_2  = self::mul($f2_2,  $f5,    27);
-        $f2f6_2  = self::mul($f2_2,  $f6,    27);
-        $f2f7_2  = self::mul($f2_2,  $f7,    27);
-        $f2f8_38 = self::mul($f8_19, $f2_2,  27);
-        $f2f9_38 = self::mul($f9_38, $f2,    26);
-        $f3f3_2  = self::mul($f3_2,  $f3,    26);
-        $f3f4_2  = self::mul($f3_2,  $f4,    26);
-        $f3f5_4  = self::mul($f3_2,  $f5_2,  26);
-        $f3f6_2  = self::mul($f3_2,  $f6,    26);
-        $f3f7_76 = self::mul($f7_38, $f3_2,  26);
-        $f3f8_38 = self::mul($f8_19, $f3_2,  26);
-        $f3f9_76 = self::mul($f9_38, $f3_2,  26);
-        $f4f4    = self::mul($f4,    $f4,    26);
-        $f4f5_2  = self::mul($f4_2,  $f5,    26);
-        $f4f6_38 = self::mul($f6_19, $f4_2,  27);
-        $f4f7_38 = self::mul($f7_38, $f4,    26);
-        $f4f8_38 = self::mul($f8_19, $f4_2,  27);
-        $f4f9_38 = self::mul($f9_38, $f4,    26);
-        $f5f5_38 = self::mul($f5_38, $f5,    26);
-        $f5f6_38 = self::mul($f6_19, $f5_2,  26);
-        $f5f7_76 = self::mul($f7_38, $f5_2,  26);
-        $f5f8_38 = self::mul($f8_19, $f5_2,  26);
-        $f5f9_76 = self::mul($f9_38, $f5_2,  26);
-        $f6f6_19 = self::mul($f6_19, $f6,    26);
-        $f6f7_38 = self::mul($f7_38, $f6,    26);
-        $f6f8_38 = self::mul($f8_19, $f6_2,  27);
-        $f6f9_38 = self::mul($f9_38, $f6,    26);
-        $f7f7_38 = self::mul($f7_38, $f7,    26);
-        $f7f8_38 = self::mul($f8_19, $f7_2,  26);
-        $f7f9_76 = self::mul($f9_38, $f7_2,  26);
-        $f8f8_19 = self::mul($f8_19, $f8,    26);
-        $f8f9_38 = self::mul($f9_38, $f8,    26);
-        $f9f9_38 = self::mul($f9_38, $f9,    26);
+        $f0f0    = self::mul($f0, $f0, 26);
+        $f0f1_2  = self::mul($f0_2, $f1, 26);
+        $f0f2_2  = self::mul($f0_2, $f2, 26);
+        $f0f3_2  = self::mul($f0_2, $f3, 26);
+        $f0f4_2  = self::mul($f0_2, $f4, 26);
+        $f0f5_2  = self::mul($f0_2, $f5, 26);
+        $f0f6_2  = self::mul($f0_2, $f6, 26);
+        $f0f7_2  = self::mul($f0_2, $f7, 26);
+        $f0f8_2  = self::mul($f0_2, $f8, 26);
+        $f0f9_2  = self::mul($f0_2, $f9, 26);
+        $f1f1_2  = self::mul($f1_2, $f1, 26);
+        $f1f2_2  = self::mul($f1_2, $f2, 26);
+        $f1f3_4  = self::mul($f1_2, $f3_2, 26);
+        $f1f4_2  = self::mul($f1_2, $f4, 26);
+        $f1f5_4  = self::mul($f1_2, $f5_2, 26);
+        $f1f6_2  = self::mul($f1_2, $f6, 26);
+        $f1f7_4  = self::mul($f1_2, $f7_2, 26);
+        $f1f8_2  = self::mul($f1_2, $f8, 26);
+        $f1f9_76 = self::mul($f9_38, $f1_2, 27);
+        $f2f2    = self::mul($f2, $f2, 27);
+        $f2f3_2  = self::mul($f2_2, $f3, 27);
+        $f2f4_2  = self::mul($f2_2, $f4, 27);
+        $f2f5_2  = self::mul($f2_2, $f5, 27);
+        $f2f6_2  = self::mul($f2_2, $f6, 27);
+        $f2f7_2  = self::mul($f2_2, $f7, 27);
+        $f2f8_38 = self::mul($f8_19, $f2_2, 27);
+        $f2f9_38 = self::mul($f9_38, $f2, 26);
+        $f3f3_2  = self::mul($f3_2, $f3, 26);
+        $f3f4_2  = self::mul($f3_2, $f4, 26);
+        $f3f5_4  = self::mul($f3_2, $f5_2, 26);
+        $f3f6_2  = self::mul($f3_2, $f6, 26);
+        $f3f7_76 = self::mul($f7_38, $f3_2, 26);
+        $f3f8_38 = self::mul($f8_19, $f3_2, 26);
+        $f3f9_76 = self::mul($f9_38, $f3_2, 26);
+        $f4f4    = self::mul($f4, $f4, 26);
+        $f4f5_2  = self::mul($f4_2, $f5, 26);
+        $f4f6_38 = self::mul($f6_19, $f4_2, 27);
+        $f4f7_38 = self::mul($f7_38, $f4, 26);
+        $f4f8_38 = self::mul($f8_19, $f4_2, 27);
+        $f4f9_38 = self::mul($f9_38, $f4, 26);
+        $f5f5_38 = self::mul($f5_38, $f5, 26);
+        $f5f6_38 = self::mul($f6_19, $f5_2, 26);
+        $f5f7_76 = self::mul($f7_38, $f5_2, 26);
+        $f5f8_38 = self::mul($f8_19, $f5_2, 26);
+        $f5f9_76 = self::mul($f9_38, $f5_2, 26);
+        $f6f6_19 = self::mul($f6_19, $f6, 26);
+        $f6f7_38 = self::mul($f7_38, $f6, 26);
+        $f6f8_38 = self::mul($f8_19, $f6_2, 27);
+        $f6f9_38 = self::mul($f9_38, $f6, 26);
+        $f7f7_38 = self::mul($f7_38, $f7, 26);
+        $f7f8_38 = self::mul($f8_19, $f7_2, 26);
+        $f7f9_76 = self::mul($f9_38, $f7_2, 26);
+        $f8f8_19 = self::mul($f8_19, $f8, 26);
+        $f8f9_38 = self::mul($f9_38, $f8, 26);
+        $f9f9_38 = self::mul($f9_38, $f9, 26);
         $h0 = $f0f0   + $f1f9_76 + $f2f8_38 + $f3f7_76 + $f4f6_38 + $f5f5_38;
         $h1 = $f0f1_2 + $f2f9_38 + $f3f8_38 + $f4f7_38 + $f5f6_38;
         $h2 = $f0f2_2 + $f1f1_2  + $f3f9_76 + $f4f8_38 + $f5f7_76 + $f6f6_19;
@@ -747,7 +759,6 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         );
     }
 
-
     /**
      * Square and double a field element
      *
@@ -795,32 +806,32 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $f0f7_2 = self::mul($f0_2, $f7, 24);
         $f0f8_2 = self::mul($f0_2, $f8, 24);
         $f0f9_2 = self::mul($f0_2, $f9, 24);
-        $f1f1_2 = self::mul($f1_2,  $f1, 24);
-        $f1f2_2 = self::mul($f1_2,  $f2, 24);
-        $f1f3_4 = self::mul($f1_2,  $f3_2, 24);
-        $f1f4_2 = self::mul($f1_2,  $f4, 24);
-        $f1f5_4 = self::mul($f1_2,  $f5_2, 24);
-        $f1f6_2 = self::mul($f1_2,  $f6, 24);
-        $f1f7_4 = self::mul($f1_2,  $f7_2, 24);
-        $f1f8_2 = self::mul($f1_2,  $f8, 24);
+        $f1f1_2 = self::mul($f1_2, $f1, 24);
+        $f1f2_2 = self::mul($f1_2, $f2, 24);
+        $f1f3_4 = self::mul($f1_2, $f3_2, 24);
+        $f1f4_2 = self::mul($f1_2, $f4, 24);
+        $f1f5_4 = self::mul($f1_2, $f5_2, 24);
+        $f1f6_2 = self::mul($f1_2, $f6, 24);
+        $f1f7_4 = self::mul($f1_2, $f7_2, 24);
+        $f1f8_2 = self::mul($f1_2, $f8, 24);
         $f1f9_76 = self::mul($f9_38, $f1_2, 24);
-        $f2f2 = self::mul($f2,  $f2, 24);
-        $f2f3_2 = self::mul($f2_2,  $f3, 24);
-        $f2f4_2 = self::mul($f2_2,  $f4, 24);
-        $f2f5_2 = self::mul($f2_2,  $f5, 24);
-        $f2f6_2 = self::mul($f2_2,  $f6, 24);
-        $f2f7_2 = self::mul($f2_2,  $f7, 24);
+        $f2f2 = self::mul($f2, $f2, 24);
+        $f2f3_2 = self::mul($f2_2, $f3, 24);
+        $f2f4_2 = self::mul($f2_2, $f4, 24);
+        $f2f5_2 = self::mul($f2_2, $f5, 24);
+        $f2f6_2 = self::mul($f2_2, $f6, 24);
+        $f2f7_2 = self::mul($f2_2, $f7, 24);
         $f2f8_38 = self::mul($f8_19, $f2_2, 25);
         $f2f9_38 = self::mul($f9_38, $f2, 24);
-        $f3f3_2 = self::mul($f3_2,  $f3, 24);
-        $f3f4_2 = self::mul($f3_2,  $f4, 24);
-        $f3f5_4 = self::mul($f3_2,  $f5_2, 24);
-        $f3f6_2 = self::mul($f3_2,  $f6, 24);
+        $f3f3_2 = self::mul($f3_2, $f3, 24);
+        $f3f4_2 = self::mul($f3_2, $f4, 24);
+        $f3f5_4 = self::mul($f3_2, $f5_2, 24);
+        $f3f6_2 = self::mul($f3_2, $f6, 24);
         $f3f7_76 = self::mul($f7_38, $f3_2, 24);
         $f3f8_38 = self::mul($f8_19, $f3_2, 24);
         $f3f9_76 = self::mul($f9_38, $f3_2, 24);
-        $f4f4 = self::mul($f4,  $f4, 24);
-        $f4f5_2 = self::mul($f4_2,  $f5, 24);
+        $f4f4 = self::mul($f4, $f4, 24);
+        $f4f5_2 = self::mul($f4_2, $f5, 24);
         $f4f6_38 = self::mul($f6_19, $f4_2, 25);
         $f4f7_38 = self::mul($f7_38, $f4, 24);
         $f4f8_38 = self::mul($f8_19, $f4_2, 25);
@@ -1170,7 +1181,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
             }
         }
         /** @var array<int, int> $r */
-        $r = array();
+        $r = [];
 
         /** @var int $i */
         for ($i = 0; $i < 256; ++$i) {
@@ -1566,9 +1577,9 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
             throw new InvalidArgumentException('Expected an integer.');
         }
         return new ParagonIE_Sodium_Core_Curve25519_Ge_Precomp(
-            self::fe_cmov($t->yplusx,  $u->yplusx,  $b),
+            self::fe_cmov($t->yplusx, $u->yplusx, $b),
             self::fe_cmov($t->yminusx, $u->yminusx, $b),
-            self::fe_cmov($t->xy2d,    $u->xy2d,    $b)
+            self::fe_cmov($t->xy2d, $u->xy2d, $b)
         );
     }
 
@@ -1585,10 +1596,10 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
     ) {
         $b &= 1;
         $ret = new ParagonIE_Sodium_Core_Curve25519_Ge_Cached();
-        $ret->YplusX  = self::fe_cmov($t->YplusX,  $u->YplusX,  $b);
+        $ret->YplusX  = self::fe_cmov($t->YplusX, $u->YplusX, $b);
         $ret->YminusX = self::fe_cmov($t->YminusX, $u->YminusX, $b);
-        $ret->Z       = self::fe_cmov($t->Z,       $u->Z,       $b);
-        $ret->T2d     = self::fe_cmov($t->T2d,     $u->T2d,     $b);
+        $ret->Z       = self::fe_cmov($t->Z, $u->Z, $b);
+        $ret->T2d     = self::fe_cmov($t->T2d, $u->T2d, $b);
         return $ret;
     }
 
@@ -1654,7 +1665,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
     {
         static $base = null;
         if ($base === null) {
-            $base = array();
+            $base = [];
             /** @var int $i */
             foreach (self::$base as $i => $bas) {
                 for ($j = 0; $j < 8; ++$j) {
@@ -1763,10 +1774,10 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $b
     ) {
         /** @var array<int, ParagonIE_Sodium_Core_Curve25519_Ge_Cached> $Ai */
-        $Ai = array();
+        $Ai = [];
 
         /** @var array<int, ParagonIE_Sodium_Core_Curve25519_Ge_Precomp> $Bi */
-        static $Bi = array();
+        static $Bi = [];
         if (!$Bi) {
             for ($i = 0; $i < 8; ++$i) {
                 $Bi[$i] = new ParagonIE_Sodium_Core_Curve25519_Ge_Precomp(
@@ -1838,7 +1849,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
                     $u,
                     $Ai[(int) floor($aslide[$i] / 2)]
                 );
-            # } else if (aslide[i] < 0) {
+                # } else if (aslide[i] < 0) {
             } elseif ($aslide[$i] < 0) {
                 # ge_p1p1_to_p3(&u,&t);
                 # ge_sub(&t,&u,&Ai[(-aslide[i])/2]);
@@ -1857,7 +1868,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
                 # ge_madd(&t,&u,&Bi[bslide[i]/2]);
                 $u = self::ge_p1p1_to_p3($t);
                 $t = self::ge_madd($t, $u, $Bi[$index]);
-            # } else if (bslide[i] < 0) {
+                # } else if (bslide[i] < 0) {
             } elseif ($bslide[$i] < 0) {
                 /** @var int $index */
                 $index = (int) floor(-$bslide[$i] / 2);
@@ -1888,7 +1899,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $e = array_fill(0, 64, 0);
 
         /** @var ParagonIE_Sodium_Core_Curve25519_Ge_Cached[] $pi */
-        $pi = array();
+        $pi = [];
 
         //        ge25519_p3_to_cached(&pi[1 - 1], p);   /* p */
         $pi[0] = self::ge_p3_to_cached($p);
@@ -1941,7 +1952,6 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $t8 = self::ge_p3_dbl($p4);
         $p8 = self::ge_p1p1_to_p3($t8);
         $pi[7] = self::ge_p3_to_cached($p8);
-
 
         //        for (i = 0; i < 32; ++i) {
         //            e[2 * i + 0] = (a[i] >> 0) & 15;
@@ -2024,7 +2034,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
     public static function ge_scalarmult_base($a)
     {
         /** @var array<int, int> $e */
-        $e = array();
+        $e = [];
         $r = new ParagonIE_Sodium_Core_Curve25519_Ge_P1p1();
 
         for ($i = 0; $i < 32; ++$i) {
@@ -2255,33 +2265,33 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $s14 += self::mul($s22, 136657, 18);
         $s15 -= self::mul($s22, 683901, 20);
 
-        $s9  += self::mul($s21,  666643, 20);
-        $s10 += self::mul($s21,  470296, 19);
-        $s11 += self::mul($s21,  654183, 20);
-        $s12 -= self::mul($s21,  997805, 20);
-        $s13 += self::mul($s21,  136657, 18);
-        $s14 -= self::mul($s21,  683901, 20);
+        $s9  += self::mul($s21, 666643, 20);
+        $s10 += self::mul($s21, 470296, 19);
+        $s11 += self::mul($s21, 654183, 20);
+        $s12 -= self::mul($s21, 997805, 20);
+        $s13 += self::mul($s21, 136657, 18);
+        $s14 -= self::mul($s21, 683901, 20);
 
-        $s8  += self::mul($s20,  666643, 20);
-        $s9  += self::mul($s20,  470296, 19);
-        $s10 += self::mul($s20,  654183, 20);
-        $s11 -= self::mul($s20,  997805, 20);
-        $s12 += self::mul($s20,  136657, 18);
-        $s13 -= self::mul($s20,  683901, 20);
+        $s8  += self::mul($s20, 666643, 20);
+        $s9  += self::mul($s20, 470296, 19);
+        $s10 += self::mul($s20, 654183, 20);
+        $s11 -= self::mul($s20, 997805, 20);
+        $s12 += self::mul($s20, 136657, 18);
+        $s13 -= self::mul($s20, 683901, 20);
 
-        $s7  += self::mul($s19,  666643, 20);
-        $s8  += self::mul($s19,  470296, 19);
-        $s9  += self::mul($s19,  654183, 20);
-        $s10 -= self::mul($s19,  997805, 20);
-        $s11 += self::mul($s19,  136657, 18);
-        $s12 -= self::mul($s19,  683901, 20);
+        $s7  += self::mul($s19, 666643, 20);
+        $s8  += self::mul($s19, 470296, 19);
+        $s9  += self::mul($s19, 654183, 20);
+        $s10 -= self::mul($s19, 997805, 20);
+        $s11 += self::mul($s19, 136657, 18);
+        $s12 -= self::mul($s19, 683901, 20);
 
-        $s6  += self::mul($s18,  666643, 20);
-        $s7  += self::mul($s18,  470296, 19);
-        $s8  += self::mul($s18,  654183, 20);
-        $s9  -= self::mul($s18,  997805, 20);
-        $s10 += self::mul($s18,  136657, 18);
-        $s11 -= self::mul($s18,  683901, 20);
+        $s6  += self::mul($s18, 666643, 20);
+        $s7  += self::mul($s18, 470296, 19);
+        $s8  += self::mul($s18, 654183, 20);
+        $s9  -= self::mul($s18, 997805, 20);
+        $s10 += self::mul($s18, 136657, 18);
+        $s11 -= self::mul($s18, 683901, 20);
 
         $carry6 = ($s6 + (1 << 20)) >> 21;
         $s7 += $carry6;
@@ -2318,47 +2328,47 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $s16 += $carry15;
         $s15 -= $carry15 << 21;
 
-        $s5  += self::mul($s17,  666643, 20);
-        $s6  += self::mul($s17,  470296, 19);
-        $s7  += self::mul($s17,  654183, 20);
-        $s8  -= self::mul($s17,  997805, 20);
-        $s9  += self::mul($s17,  136657, 18);
-        $s10 -= self::mul($s17,  683901, 20);
+        $s5  += self::mul($s17, 666643, 20);
+        $s6  += self::mul($s17, 470296, 19);
+        $s7  += self::mul($s17, 654183, 20);
+        $s8  -= self::mul($s17, 997805, 20);
+        $s9  += self::mul($s17, 136657, 18);
+        $s10 -= self::mul($s17, 683901, 20);
 
-        $s4 += self::mul($s16,  666643, 20);
-        $s5 += self::mul($s16,  470296, 19);
-        $s6 += self::mul($s16,  654183, 20);
-        $s7 -= self::mul($s16,  997805, 20);
-        $s8 += self::mul($s16,  136657, 18);
-        $s9 -= self::mul($s16,  683901, 20);
+        $s4 += self::mul($s16, 666643, 20);
+        $s5 += self::mul($s16, 470296, 19);
+        $s6 += self::mul($s16, 654183, 20);
+        $s7 -= self::mul($s16, 997805, 20);
+        $s8 += self::mul($s16, 136657, 18);
+        $s9 -= self::mul($s16, 683901, 20);
 
-        $s3 += self::mul($s15,  666643, 20);
-        $s4 += self::mul($s15,  470296, 19);
-        $s5 += self::mul($s15,  654183, 20);
-        $s6 -= self::mul($s15,  997805, 20);
-        $s7 += self::mul($s15,  136657, 18);
-        $s8 -= self::mul($s15,  683901, 20);
+        $s3 += self::mul($s15, 666643, 20);
+        $s4 += self::mul($s15, 470296, 19);
+        $s5 += self::mul($s15, 654183, 20);
+        $s6 -= self::mul($s15, 997805, 20);
+        $s7 += self::mul($s15, 136657, 18);
+        $s8 -= self::mul($s15, 683901, 20);
 
-        $s2 += self::mul($s14,  666643, 20);
-        $s3 += self::mul($s14,  470296, 19);
-        $s4 += self::mul($s14,  654183, 20);
-        $s5 -= self::mul($s14,  997805, 20);
-        $s6 += self::mul($s14,  136657, 18);
-        $s7 -= self::mul($s14,  683901, 20);
+        $s2 += self::mul($s14, 666643, 20);
+        $s3 += self::mul($s14, 470296, 19);
+        $s4 += self::mul($s14, 654183, 20);
+        $s5 -= self::mul($s14, 997805, 20);
+        $s6 += self::mul($s14, 136657, 18);
+        $s7 -= self::mul($s14, 683901, 20);
 
-        $s1 += self::mul($s13,  666643, 20);
-        $s2 += self::mul($s13,  470296, 19);
-        $s3 += self::mul($s13,  654183, 20);
-        $s4 -= self::mul($s13,  997805, 20);
-        $s5 += self::mul($s13,  136657, 18);
-        $s6 -= self::mul($s13,  683901, 20);
+        $s1 += self::mul($s13, 666643, 20);
+        $s2 += self::mul($s13, 470296, 19);
+        $s3 += self::mul($s13, 654183, 20);
+        $s4 -= self::mul($s13, 997805, 20);
+        $s5 += self::mul($s13, 136657, 18);
+        $s6 -= self::mul($s13, 683901, 20);
 
-        $s0 += self::mul($s12,  666643, 20);
-        $s1 += self::mul($s12,  470296, 19);
-        $s2 += self::mul($s12,  654183, 20);
-        $s3 -= self::mul($s12,  997805, 20);
-        $s4 += self::mul($s12,  136657, 18);
-        $s5 -= self::mul($s12,  683901, 20);
+        $s0 += self::mul($s12, 666643, 20);
+        $s1 += self::mul($s12, 470296, 19);
+        $s2 += self::mul($s12, 654183, 20);
+        $s3 -= self::mul($s12, 997805, 20);
+        $s4 += self::mul($s12, 136657, 18);
+        $s5 -= self::mul($s12, 683901, 20);
         $s12 = 0;
 
         $carry0 = ($s0 + (1 << 20)) >> 21;
@@ -2399,12 +2409,12 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $s12 += $carry11;
         $s11 -= $carry11 << 21;
 
-        $s0 += self::mul($s12,  666643, 20);
-        $s1 += self::mul($s12,  470296, 19);
-        $s2 += self::mul($s12,  654183, 20);
-        $s3 -= self::mul($s12,  997805, 20);
-        $s4 += self::mul($s12,  136657, 18);
-        $s5 -= self::mul($s12,  683901, 20);
+        $s0 += self::mul($s12, 666643, 20);
+        $s1 += self::mul($s12, 470296, 19);
+        $s2 += self::mul($s12, 654183, 20);
+        $s3 -= self::mul($s12, 997805, 20);
+        $s4 += self::mul($s12, 136657, 18);
+        $s5 -= self::mul($s12, 683901, 20);
         $s12 = 0;
 
         $carry0 = $s0 >> 21;
@@ -2444,12 +2454,12 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $s12 += $carry11;
         $s11 -= $carry11 << 21;
 
-        $s0 += self::mul($s12,  666643, 20);
-        $s1 += self::mul($s12,  470296, 19);
-        $s2 += self::mul($s12,  654183, 20);
-        $s3 -= self::mul($s12,  997805, 20);
-        $s4 += self::mul($s12,  136657, 18);
-        $s5 -= self::mul($s12,  683901, 20);
+        $s0 += self::mul($s12, 666643, 20);
+        $s1 += self::mul($s12, 470296, 19);
+        $s2 += self::mul($s12, 654183, 20);
+        $s3 -= self::mul($s12, 997805, 20);
+        $s4 += self::mul($s12, 136657, 18);
+        $s5 -= self::mul($s12, 683901, 20);
 
         $carry0 = $s0 >> 21;
         $s1 += $carry0;
@@ -2488,7 +2498,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         /**
          * @var array<int, int>
          */
-        $arr = array(
+        $arr = [
             (int) (0xff & ($s0 >> 0)),
             (int) (0xff & ($s0 >> 8)),
             (int) (0xff & (($s0 >> 16) | $s1 << 5)),
@@ -2520,8 +2530,8 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
             (int) (0xff & (($s10 >> 14) | $s11 << 7)),
             (int) (0xff & ($s11 >> 1)),
             (int) (0xff & ($s11 >> 9)),
-            0xff & ($s11 >> 17)
-        );
+            0xff & ($s11 >> 17),
+        ];
         return self::intArrayToString($arr);
     }
 
@@ -2559,47 +2569,47 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $s22 = 2097151 & (self::load_4(self::substr($s, 57, 4)) >> 6);
         $s23 = 0x1fffffff & (self::load_4(self::substr($s, 60, 4)) >> 3);
 
-        $s11 += self::mul($s23,  666643, 20);
-        $s12 += self::mul($s23,  470296, 19);
-        $s13 += self::mul($s23,  654183, 20);
-        $s14 -= self::mul($s23,  997805, 20);
-        $s15 += self::mul($s23,  136657, 18);
-        $s16 -= self::mul($s23,  683901, 20);
+        $s11 += self::mul($s23, 666643, 20);
+        $s12 += self::mul($s23, 470296, 19);
+        $s13 += self::mul($s23, 654183, 20);
+        $s14 -= self::mul($s23, 997805, 20);
+        $s15 += self::mul($s23, 136657, 18);
+        $s16 -= self::mul($s23, 683901, 20);
 
-        $s10 += self::mul($s22,  666643, 20);
-        $s11 += self::mul($s22,  470296, 19);
-        $s12 += self::mul($s22,  654183, 20);
-        $s13 -= self::mul($s22,  997805, 20);
-        $s14 += self::mul($s22,  136657, 18);
-        $s15 -= self::mul($s22,  683901, 20);
+        $s10 += self::mul($s22, 666643, 20);
+        $s11 += self::mul($s22, 470296, 19);
+        $s12 += self::mul($s22, 654183, 20);
+        $s13 -= self::mul($s22, 997805, 20);
+        $s14 += self::mul($s22, 136657, 18);
+        $s15 -= self::mul($s22, 683901, 20);
 
-        $s9  += self::mul($s21,  666643, 20);
-        $s10 += self::mul($s21,  470296, 19);
-        $s11 += self::mul($s21,  654183, 20);
-        $s12 -= self::mul($s21,  997805, 20);
-        $s13 += self::mul($s21,  136657, 18);
-        $s14 -= self::mul($s21,  683901, 20);
+        $s9  += self::mul($s21, 666643, 20);
+        $s10 += self::mul($s21, 470296, 19);
+        $s11 += self::mul($s21, 654183, 20);
+        $s12 -= self::mul($s21, 997805, 20);
+        $s13 += self::mul($s21, 136657, 18);
+        $s14 -= self::mul($s21, 683901, 20);
 
-        $s8  += self::mul($s20,  666643, 20);
-        $s9  += self::mul($s20,  470296, 19);
-        $s10 += self::mul($s20,  654183, 20);
-        $s11 -= self::mul($s20,  997805, 20);
-        $s12 += self::mul($s20,  136657, 18);
-        $s13 -= self::mul($s20,  683901, 20);
+        $s8  += self::mul($s20, 666643, 20);
+        $s9  += self::mul($s20, 470296, 19);
+        $s10 += self::mul($s20, 654183, 20);
+        $s11 -= self::mul($s20, 997805, 20);
+        $s12 += self::mul($s20, 136657, 18);
+        $s13 -= self::mul($s20, 683901, 20);
 
-        $s7  += self::mul($s19,  666643, 20);
-        $s8  += self::mul($s19,  470296, 19);
-        $s9  += self::mul($s19,  654183, 20);
-        $s10 -= self::mul($s19,  997805, 20);
-        $s11 += self::mul($s19,  136657, 18);
-        $s12 -= self::mul($s19,  683901, 20);
+        $s7  += self::mul($s19, 666643, 20);
+        $s8  += self::mul($s19, 470296, 19);
+        $s9  += self::mul($s19, 654183, 20);
+        $s10 -= self::mul($s19, 997805, 20);
+        $s11 += self::mul($s19, 136657, 18);
+        $s12 -= self::mul($s19, 683901, 20);
 
-        $s6  += self::mul($s18,  666643, 20);
-        $s7  += self::mul($s18,  470296, 19);
-        $s8  += self::mul($s18,  654183, 20);
-        $s9  -= self::mul($s18,  997805, 20);
-        $s10 += self::mul($s18,  136657, 18);
-        $s11 -= self::mul($s18,  683901, 20);
+        $s6  += self::mul($s18, 666643, 20);
+        $s7  += self::mul($s18, 470296, 19);
+        $s8  += self::mul($s18, 654183, 20);
+        $s9  -= self::mul($s18, 997805, 20);
+        $s10 += self::mul($s18, 136657, 18);
+        $s11 -= self::mul($s18, 683901, 20);
 
         $carry6 = ($s6 + (1 << 20)) >> 21;
         $s7 += $carry6;
@@ -2636,47 +2646,47 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $s16 += $carry15;
         $s15 -= $carry15 << 21;
 
-        $s5  += self::mul($s17,  666643, 20);
-        $s6  += self::mul($s17,  470296, 19);
-        $s7  += self::mul($s17,  654183, 20);
-        $s8  -= self::mul($s17,  997805, 20);
-        $s9  += self::mul($s17,  136657, 18);
-        $s10 -= self::mul($s17,  683901, 20);
+        $s5  += self::mul($s17, 666643, 20);
+        $s6  += self::mul($s17, 470296, 19);
+        $s7  += self::mul($s17, 654183, 20);
+        $s8  -= self::mul($s17, 997805, 20);
+        $s9  += self::mul($s17, 136657, 18);
+        $s10 -= self::mul($s17, 683901, 20);
 
-        $s4 += self::mul($s16,  666643, 20);
-        $s5 += self::mul($s16,  470296, 19);
-        $s6 += self::mul($s16,  654183, 20);
-        $s7 -= self::mul($s16,  997805, 20);
-        $s8 += self::mul($s16,  136657, 18);
-        $s9 -= self::mul($s16,  683901, 20);
+        $s4 += self::mul($s16, 666643, 20);
+        $s5 += self::mul($s16, 470296, 19);
+        $s6 += self::mul($s16, 654183, 20);
+        $s7 -= self::mul($s16, 997805, 20);
+        $s8 += self::mul($s16, 136657, 18);
+        $s9 -= self::mul($s16, 683901, 20);
 
-        $s3 += self::mul($s15,  666643, 20);
-        $s4 += self::mul($s15,  470296, 19);
-        $s5 += self::mul($s15,  654183, 20);
-        $s6 -= self::mul($s15,  997805, 20);
-        $s7 += self::mul($s15,  136657, 18);
-        $s8 -= self::mul($s15,  683901, 20);
+        $s3 += self::mul($s15, 666643, 20);
+        $s4 += self::mul($s15, 470296, 19);
+        $s5 += self::mul($s15, 654183, 20);
+        $s6 -= self::mul($s15, 997805, 20);
+        $s7 += self::mul($s15, 136657, 18);
+        $s8 -= self::mul($s15, 683901, 20);
 
-        $s2 += self::mul($s14,  666643, 20);
-        $s3 += self::mul($s14,  470296, 19);
-        $s4 += self::mul($s14,  654183, 20);
-        $s5 -= self::mul($s14,  997805, 20);
-        $s6 += self::mul($s14,  136657, 18);
-        $s7 -= self::mul($s14,  683901, 20);
+        $s2 += self::mul($s14, 666643, 20);
+        $s3 += self::mul($s14, 470296, 19);
+        $s4 += self::mul($s14, 654183, 20);
+        $s5 -= self::mul($s14, 997805, 20);
+        $s6 += self::mul($s14, 136657, 18);
+        $s7 -= self::mul($s14, 683901, 20);
 
-        $s1 += self::mul($s13,  666643, 20);
-        $s2 += self::mul($s13,  470296, 19);
-        $s3 += self::mul($s13,  654183, 20);
-        $s4 -= self::mul($s13,  997805, 20);
-        $s5 += self::mul($s13,  136657, 18);
-        $s6 -= self::mul($s13,  683901, 20);
+        $s1 += self::mul($s13, 666643, 20);
+        $s2 += self::mul($s13, 470296, 19);
+        $s3 += self::mul($s13, 654183, 20);
+        $s4 -= self::mul($s13, 997805, 20);
+        $s5 += self::mul($s13, 136657, 18);
+        $s6 -= self::mul($s13, 683901, 20);
 
-        $s0 += self::mul($s12,  666643, 20);
-        $s1 += self::mul($s12,  470296, 19);
-        $s2 += self::mul($s12,  654183, 20);
-        $s3 -= self::mul($s12,  997805, 20);
-        $s4 += self::mul($s12,  136657, 18);
-        $s5 -= self::mul($s12,  683901, 20);
+        $s0 += self::mul($s12, 666643, 20);
+        $s1 += self::mul($s12, 470296, 19);
+        $s2 += self::mul($s12, 654183, 20);
+        $s3 -= self::mul($s12, 997805, 20);
+        $s4 += self::mul($s12, 136657, 18);
+        $s5 -= self::mul($s12, 683901, 20);
         $s12 = 0;
 
         $carry0 = ($s0 + (1 << 20)) >> 21;
@@ -2717,12 +2727,12 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $s12 += $carry11;
         $s11 -= $carry11 << 21;
 
-        $s0 += self::mul($s12,  666643, 20);
-        $s1 += self::mul($s12,  470296, 19);
-        $s2 += self::mul($s12,  654183, 20);
-        $s3 -= self::mul($s12,  997805, 20);
-        $s4 += self::mul($s12,  136657, 18);
-        $s5 -= self::mul($s12,  683901, 20);
+        $s0 += self::mul($s12, 666643, 20);
+        $s1 += self::mul($s12, 470296, 19);
+        $s2 += self::mul($s12, 654183, 20);
+        $s3 -= self::mul($s12, 997805, 20);
+        $s4 += self::mul($s12, 136657, 18);
+        $s5 -= self::mul($s12, 683901, 20);
         $s12 = 0;
 
         $carry0 = $s0 >> 21;
@@ -2762,12 +2772,12 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $s12 += $carry11;
         $s11 -= $carry11 << 21;
 
-        $s0 += self::mul($s12,  666643, 20);
-        $s1 += self::mul($s12,  470296, 19);
-        $s2 += self::mul($s12,  654183, 20);
-        $s3 -= self::mul($s12,  997805, 20);
-        $s4 += self::mul($s12,  136657, 18);
-        $s5 -= self::mul($s12,  683901, 20);
+        $s0 += self::mul($s12, 666643, 20);
+        $s1 += self::mul($s12, 470296, 19);
+        $s2 += self::mul($s12, 654183, 20);
+        $s3 -= self::mul($s12, 997805, 20);
+        $s4 += self::mul($s12, 136657, 18);
+        $s5 -= self::mul($s12, 683901, 20);
 
         $carry0 = $s0 >> 21;
         $s1 += $carry0;
@@ -2806,7 +2816,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         /**
          * @var array<int, int>
          */
-        $arr = array(
+        $arr = [
             (int) (0xff & ($s0 >> 0)),
             (int) (0xff & ($s0 >> 8)),
             (int) (0xff & (($s0 >> 16) | $s1 << 5)),
@@ -2838,8 +2848,8 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
             (int) (0xff & (($s10 >> 14) | $s11 << 7)),
             (int) (0xff & ($s11 >> 1)),
             (int) (0xff & ($s11 >> 9)),
-            (int) (0xff & ($s11 >> 17))
-        );
+            (int) (0xff & ($s11 >> 17)),
+        ];
         return self::intArrayToString($arr);
     }
 
@@ -2851,7 +2861,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
      */
     public static function ge_mul_l(ParagonIE_Sodium_Core_Curve25519_Ge_P3 $A)
     {
-        $aslide = array(
+        $aslide = [
             13, 0, 0, 0, 0, -1, 0, 0, 0, 0, -11, 0, 0, 0, 0, 0, 0, -5, 0, 0, 0,
             0, 0, 0, -3, 0, 0, 0, 0, -13, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 3, 0,
             0, 0, 0, -13, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0,
@@ -2863,11 +2873,11 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
-        );
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+        ];
 
         /** @var array<int, ParagonIE_Sodium_Core_Curve25519_Ge_Cached> $Ai size 8 */
-        $Ai = array();
+        $Ai = [];
 
         # ge_p3_to_cached(&Ai[0], A);
         $Ai[0] = self::ge_p3_to_cached($A);
@@ -3818,10 +3828,10 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $x = (PHP_INT_SIZE << 3) - 1; // 31 or 63
 
         $g = self::fe_copy($f);
-        $e = array(
+        $e = [
             $g->e0, $g->e1, $g->e2, $g->e3, $g->e4,
-            $g->e5, $g->e6, $g->e7, $g->e8, $g->e9
-        );
+            $g->e5, $g->e6, $g->e7, $g->e8, $g->e9,
+        ];
         for ($i = 0; $i < 10; ++$i) {
             $mask = -(($e[$i] >> $x) & 1);
 

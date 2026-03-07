@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Http\Discovery\Strategy;
 
 use WordPress\AiClientDependencies\GuzzleHttp\Client as GuzzleHttp;
@@ -38,6 +40,7 @@ use WordPress\AiClientDependencies\Psr\Http\Message\RequestFactoryInterface as P
 use WordPress\AiClientDependencies\Slim\Http\Request as SlimRequest;
 use WordPress\AiClientDependencies\Symfony\Component\HttpClient\HttplugClient as SymfonyHttplug;
 use WordPress\AiClientDependencies\Symfony\Component\HttpClient\Psr18Client as SymfonyPsr18;
+
 /**
  * @internal
  *

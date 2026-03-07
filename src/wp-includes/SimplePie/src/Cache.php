@@ -65,8 +65,6 @@ class Cache
      * Create a new SimplePie\Cache object
      *
      * @deprecated since SimplePie 1.3.1, use {@see get_handler()} instead
-     * @param string $location
-     * @param string $filename
      * @param Base::TYPE_FEED|Base::TYPE_IMAGE $extension
      * @return Base
      */
@@ -82,9 +80,8 @@ class Cache
      *
      * @param string $type DSN type to register for
      * @param class-string<Base> $class Name of handler class. Must implement Base
-     * @return void
      */
-    public static function register(string $type, $class)
+    public static function register(string $type, $class): void
     {
         self::$handlers[$type] = $class;
     }
@@ -92,10 +89,9 @@ class Cache
     /**
      * Parse a URL into an array
      *
-     * @param string $url
      * @return array<string, mixed>
      */
-    public static function parse_URL(string $url)
+    public static function parse_URL(string $url): array
     {
         $parsedUrl = parse_url($url);
 
@@ -111,4 +107,4 @@ class Cache
     }
 }
 
-class_alias('SimplePie\Cache', 'SimplePie_Cache');
+class_alias(\SimplePie\Cache::class, 'SimplePie_Cache');

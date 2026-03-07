@@ -1,11 +1,14 @@
 <?php
 
-function data_whole_posts() {
-	return array(
+declare(strict_types=1);
+
+function data_whole_posts()
+{
+    return [
 
 /* DIVIDER */
 
-array('[Lorem ipsum dolor sit amet, quo id ignota repudiare, ius iracundia rationibus an, ea natum causae epicuri has. His porro deleniti cu. Eam ut quem alia reprimique. Quas tollit tincidunt his eu, nam ex cibo illud cetero. In perpetua dignissim mel, te utinam vituperata per.
+['[Lorem ipsum dolor sit amet, quo id ignota repudiare, ius iracundia rationibus an, ea natum causae epicuri has. His porro deleniti cu. Eam ut quem alia reprimique. Quas tollit tincidunt his eu, nam ex cibo illud cetero. In perpetua dignissim mel, te utinam vituperata per.
 
  Erat tibique hendrerit et duo, qui iriure tacimates ne, per eu solum admodum ocurreret. Cu ius utinam equidem saperet, mei tation nostrud scripserit ne. Sea et vide natum. Homero constituto eu est, quo eu veniam omnium feugait. Vel enim commune no.
 
@@ -51,13 +54,13 @@ array('[Lorem ipsum dolor sit amet, quo id ignota repudiare, ius iracundia ratio
 
  Cu bonorum graecis ius. Duo id ancillae probatus. Tota latine pri an. Cum ei iudico semper. Eum in blandit voluptaria.
 
- Illud debet vitae ex vis numquam.'),
+ Illud debet vitae ex vis numquam.'],
 
 /* DIVIDER */
 
 // Based on https://core.trac.wordpress.org/attachment/ticket/29557/ChatTranscript.txt
 
-array('hello!-- world. [caption arg1="Aenean consectetur ipsum ante, vel egestas enim tincidunt quis. Pellentesque vitae congue neque, vel mattis ante. In vitae tempus nunc. Etiam adipiscing enim sed condimentum ultrices. Aenean consectetur ipsum ante, vel egestas enim tincidunt qu. In vitae tempus nunc. In vitaentbnbsdgsdsdgsdhsdhdsdhdsh Aenean consectetur ipsum ante, vel egestas enim tincidunt quis. Pellentesque vitae congue neque, vel mattis ante. In vitae tempus nunc. Etiam adipiscing enim sed condimentum ultrices. Aenean consectetur ipsum ante, vel egestas enim tincidunt qu. In vitae tempus nunc. In vitaentbnbsdgsdsdgsdhsdhdsdhdsh" /] hello world.
+['hello!-- world. [caption arg1="Aenean consectetur ipsum ante, vel egestas enim tincidunt quis. Pellentesque vitae congue neque, vel mattis ante. In vitae tempus nunc. Etiam adipiscing enim sed condimentum ultrices. Aenean consectetur ipsum ante, vel egestas enim tincidunt qu. In vitae tempus nunc. In vitaentbnbsdgsdsdgsdhsdhdsdhdsh Aenean consectetur ipsum ante, vel egestas enim tincidunt quis. Pellentesque vitae congue neque, vel mattis ante. In vitae tempus nunc. Etiam adipiscing enim sed condimentum ultrices. Aenean consectetur ipsum ante, vel egestas enim tincidunt qu. In vitae tempus nunc. In vitaentbnbsdgsdsdgsdhsdhdsdhdsh" /] hello world.
 
 Chat Transcript for Apple event on October 22, 2013. Edited slightly for grammar, capitalization, and punctuation. It\'s a little hard to follow along at times, but I\'m mostly posting for posterity\'s sake. Or whatever.
 
@@ -1088,11 +1091,11 @@ He\'s gonna play.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Thanks for a magical event</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">Darn right!</p>'),
+<p class="triangle-right left">Darn right!</p>'],
 
 /* DIVIDER */
 
-array('<em>Lorem ipsum dolor sit amet, quo id ignota repudiare, ius iracundia rationibus an, ea natum causae epicuri has.</em>
+['<em>Lorem ipsum dolor sit amet, quo id ignota repudiare, ius iracundia rationibus an, ea natum causae epicuri has.</em>
 
 His porro deleniti cu. "Eam ut quem alia reprimique." Quas tollit tincidunt his eu, nam ex cibo illud cetero. In perpetua dignissim mel, te utinam vituperata per.
 
@@ -1275,8 +1278,9 @@ Tota offendit sea et, ne vim dicam admodum blandit. No vix <abbr>quas</abbr> nus
 
  Cu bonorum graecis ius. Duo id ancillae probatus. Tota latine pri an. Cum ei iudico semper. Eum in blandit voluptaria.
 
- Illud debet vitae ex vis numquam.'),
+ Illud debet vitae ex vis numquam.'],
 
 /* DIVIDER */
 
-);}?>
+];
+}

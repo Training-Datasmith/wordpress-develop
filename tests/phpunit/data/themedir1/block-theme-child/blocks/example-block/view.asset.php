@@ -1,6 +1,8 @@
 <?php
 
-return array(
-	'dependencies' => array( 'wp-element', 'wp-blocks' ),
-	'version'      => 'test',
-);
+declare(strict_types=1);
+
+return [
+    'dependencies' => [ 'wp-element', 'wp-blocks' ],
+    'version'      => 'test',
+];

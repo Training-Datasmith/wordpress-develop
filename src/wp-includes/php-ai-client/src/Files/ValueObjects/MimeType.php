@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Files\ValueObjects;
 
 use WordPress\AiClient\Common\Exception\InvalidArgumentException;
+
 /**
  * Value object representing a MIME type.
  *

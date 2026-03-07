@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Author;
 
-class_exists('SimplePie\Author');
+class_exists(\SimplePie\Author::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Author" class is deprecated since SimplePie 1.7.0, use "SimplePie\Author" instead.'), \E_USER_DEPRECATED);
 

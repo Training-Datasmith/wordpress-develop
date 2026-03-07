@@ -14,13 +14,9 @@ use SimplePie\XML\Declaration\Parser;
  */
 class Misc
 {
-    /** @var int|null */
-    private static $SIMPLEPIE_BUILD = null;
+    private static ?int $SIMPLEPIE_BUILD = null;
 
-    /**
-     * @return string
-     */
-    public static function time_hms(int $seconds)
+    public static function time_hms(int $seconds): string
     {
         $time = '';
 
@@ -40,9 +36,8 @@ class Misc
         }
 
         $time .= $minutes.':';
-        $time .= $seconds;
 
-        return $time;
+        return $time . $seconds;
     }
 
     /**
@@ -73,7 +68,7 @@ class Misc
      * @param string $string HTML document
      * @return array<array{tag: string, self_closing: bool, attribs: array<string, array{data: string}>, content?: string}>
      */
-    public static function get_element(string $realname, string $string)
+    public static function get_element(string $realname, string $string): array
     {
         // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.3, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
@@ -107,9 +102,8 @@ class Misc
     /**
      * @deprecated since SimplePie 1.9.0. If you need it, you can copy the function to your codebase. But you should consider using `DOMDocument` for any DOM wrangling.
      * @param array{tag: string, self_closing: bool, attribs: array<string, array{data: string}>, content: string} $element
-     * @return string
      */
-    public static function element_implode(array $element)
+    public static function element_implode(array $element): string
     {
         // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.9.'), \E_USER_DEPRECATED);
 
@@ -126,14 +120,7 @@ class Misc
         return $full;
     }
 
-    /**
-     * @param string $message
-     * @param int $level
-     * @param string $file
-     * @param int $line
-     * @return string
-     */
-    public static function error(string $message, int $level, string $file, int $line)
+    public static function error(string $message, int $level, string $file, int $line): string
     {
         if ((error_reporting() & $level) > 0) {
             switch ($level) {
@@ -183,12 +170,14 @@ class Misc
         if ($parsed['scheme'] === '' && $parsed['authority'] === '' && !file_exists($url)) {
             return Misc::fix_protocol(Misc::compress_parse_url('http', $parsed['path'], '', $parsed['query'], $parsed['fragment']), $http);
         }
-
         if ($http === 2 && $parsed['scheme'] !== '') {
             return "feed:$url";
-        } elseif ($http === 3 && strtolower($parsed['scheme']) === 'http') {
+        }
+        if ($http === 3 && strtolower($parsed['scheme']) === 'http') {
             return substr_replace($url, 'podcast', 0, 4);
-        } elseif ($http === 4 && strtolower($parsed['scheme']) === 'http') {
+        }
+
+        if ($http === 4 && strtolower($parsed['scheme']) === 'http') {
             return substr_replace($url, 'itpc', 0, 4);
         }
 
@@ -201,7 +190,7 @@ class Misc
      * @param array<mixed> $array2
      * @return array<mixed>
      */
-    public static function array_merge_recursive(array $array1, array $array2)
+    public static function array_merge_recursive(array $array1, array $array2): array
     {
         foreach ($array2 as $key => $value) {
             if (is_array($value)) {
@@ -217,7 +206,7 @@ class Misc
     /**
      * @return array<string, string>
      */
-    public static function parse_url(string $url)
+    public static function parse_url(string $url): array
     {
         $iri = new \SimplePie\IRI($url);
         return [
@@ -225,7 +214,7 @@ class Misc
             'authority' => (string) $iri->authority,
             'path' => (string) $iri->path,
             'query' => (string) $iri->query,
-            'fragment' => (string) $iri->fragment
+            'fragment' => (string) $iri->fragment,
         ];
     }
 
@@ -255,9 +244,8 @@ class Misc
     /**
      * @deprecated since SimplePie 1.9.0. This functionality is part of `IRI` – if you need it standalone, consider copying the function to your codebase.
      * @param array<int, string> $match
-     * @return string
      */
-    public static function percent_encoding_normalization(array $match)
+    public static function percent_encoding_normalization(array $match): string
     {
         $integer = hexdec($match[1]);
         if ($integer >= 0x41 && $integer <= 0x5A || $integer >= 0x61 && $integer <= 0x7A || $integer >= 0x30 && $integer <= 0x39 || $integer === 0x2D || $integer === 0x2E || $integer === 0x5F || $integer === 0x7E) {
@@ -275,7 +263,7 @@ class Misc
      * @param string $string Windows-1252 encoded string
      * @return string UTF-8 encoded string
      */
-    public static function windows_1252_to_utf8(string $string)
+    public static function windows_1252_to_utf8(string $string): string
     {
         static $convert_table = ["\x80" => "\xE2\x82\xAC", "\x81" => "\xEF\xBF\xBD", "\x82" => "\xE2\x80\x9A", "\x83" => "\xC6\x92", "\x84" => "\xE2\x80\x9E", "\x85" => "\xE2\x80\xA6", "\x86" => "\xE2\x80\xA0", "\x87" => "\xE2\x80\xA1", "\x88" => "\xCB\x86", "\x89" => "\xE2\x80\xB0", "\x8A" => "\xC5\xA0", "\x8B" => "\xE2\x80\xB9", "\x8C" => "\xC5\x92", "\x8D" => "\xEF\xBF\xBD", "\x8E" => "\xC5\xBD", "\x8F" => "\xEF\xBF\xBD", "\x90" => "\xEF\xBF\xBD", "\x91" => "\xE2\x80\x98", "\x92" => "\xE2\x80\x99", "\x93" => "\xE2\x80\x9C", "\x94" => "\xE2\x80\x9D", "\x95" => "\xE2\x80\xA2", "\x96" => "\xE2\x80\x93", "\x97" => "\xE2\x80\x94", "\x98" => "\xCB\x9C", "\x99" => "\xE2\x84\xA2", "\x9A" => "\xC5\xA1", "\x9B" => "\xE2\x80\xBA", "\x9C" => "\xC5\x93", "\x9D" => "\xEF\xBF\xBD", "\x9E" => "\xC5\xBE", "\x9F" => "\xC5\xB8", "\xA0" => "\xC2\xA0", "\xA1" => "\xC2\xA1", "\xA2" => "\xC2\xA2", "\xA3" => "\xC2\xA3", "\xA4" => "\xC2\xA4", "\xA5" => "\xC2\xA5", "\xA6" => "\xC2\xA6", "\xA7" => "\xC2\xA7", "\xA8" => "\xC2\xA8", "\xA9" => "\xC2\xA9", "\xAA" => "\xC2\xAA", "\xAB" => "\xC2\xAB", "\xAC" => "\xC2\xAC", "\xAD" => "\xC2\xAD", "\xAE" => "\xC2\xAE", "\xAF" => "\xC2\xAF", "\xB0" => "\xC2\xB0", "\xB1" => "\xC2\xB1", "\xB2" => "\xC2\xB2", "\xB3" => "\xC2\xB3", "\xB4" => "\xC2\xB4", "\xB5" => "\xC2\xB5", "\xB6" => "\xC2\xB6", "\xB7" => "\xC2\xB7", "\xB8" => "\xC2\xB8", "\xB9" => "\xC2\xB9", "\xBA" => "\xC2\xBA", "\xBB" => "\xC2\xBB", "\xBC" => "\xC2\xBC", "\xBD" => "\xC2\xBD", "\xBE" => "\xC2\xBE", "\xBF" => "\xC2\xBF", "\xC0" => "\xC3\x80", "\xC1" => "\xC3\x81", "\xC2" => "\xC3\x82", "\xC3" => "\xC3\x83", "\xC4" => "\xC3\x84", "\xC5" => "\xC3\x85", "\xC6" => "\xC3\x86", "\xC7" => "\xC3\x87", "\xC8" => "\xC3\x88", "\xC9" => "\xC3\x89", "\xCA" => "\xC3\x8A", "\xCB" => "\xC3\x8B", "\xCC" => "\xC3\x8C", "\xCD" => "\xC3\x8D", "\xCE" => "\xC3\x8E", "\xCF" => "\xC3\x8F", "\xD0" => "\xC3\x90", "\xD1" => "\xC3\x91", "\xD2" => "\xC3\x92", "\xD3" => "\xC3\x93", "\xD4" => "\xC3\x94", "\xD5" => "\xC3\x95", "\xD6" => "\xC3\x96", "\xD7" => "\xC3\x97", "\xD8" => "\xC3\x98", "\xD9" => "\xC3\x99", "\xDA" => "\xC3\x9A", "\xDB" => "\xC3\x9B", "\xDC" => "\xC3\x9C", "\xDD" => "\xC3\x9D", "\xDE" => "\xC3\x9E", "\xDF" => "\xC3\x9F", "\xE0" => "\xC3\xA0", "\xE1" => "\xC3\xA1", "\xE2" => "\xC3\xA2", "\xE3" => "\xC3\xA3", "\xE4" => "\xC3\xA4", "\xE5" => "\xC3\xA5", "\xE6" => "\xC3\xA6", "\xE7" => "\xC3\xA7", "\xE8" => "\xC3\xA8", "\xE9" => "\xC3\xA9", "\xEA" => "\xC3\xAA", "\xEB" => "\xC3\xAB", "\xEC" => "\xC3\xAC", "\xED" => "\xC3\xAD", "\xEE" => "\xC3\xAE", "\xEF" => "\xC3\xAF", "\xF0" => "\xC3\xB0", "\xF1" => "\xC3\xB1", "\xF2" => "\xC3\xB2", "\xF3" => "\xC3\xB3", "\xF4" => "\xC3\xB4", "\xF5" => "\xC3\xB5", "\xF6" => "\xC3\xB6", "\xF7" => "\xC3\xB7", "\xF8" => "\xC3\xB8", "\xF9" => "\xC3\xB9", "\xFA" => "\xC3\xBA", "\xFB" => "\xC3\xBB", "\xFC" => "\xC3\xBC", "\xFD" => "\xC3\xBD", "\xFE" => "\xC3\xBE", "\xFF" => "\xC3\xBF"];
 
@@ -305,21 +293,21 @@ class Misc
             }
             $data = substr($data, 0, strcspn($data, $non_ascii_octets));
         }
-
         // This is first, as behaviour of this is completely predictable
         if ($input === 'windows-1252' && $output === 'UTF-8') {
             return Misc::windows_1252_to_utf8($data);
         }
         // This is second, as behaviour of this varies only with PHP version (the middle part of this expression checks the encoding is supported).
-        elseif (function_exists('mb_convert_encoding') && ($return = Misc::change_encoding_mbstring($data, $input, $output))) {
+        if (function_exists('mb_convert_encoding') && ($return = Misc::change_encoding_mbstring($data, $input, $output))) {
             return $return;
         }
         // This is third, as behaviour of this varies with OS userland and PHP version
-        elseif (function_exists('iconv') && ($return = Misc::change_encoding_iconv($data, $input, $output))) {
+        if (function_exists('iconv') && ($return = Misc::change_encoding_iconv($data, $input, $output))) {
             return $return;
         }
-        // This is last, as behaviour of this varies with OS userland and PHP version
-        elseif (class_exists('\UConverter') && ($return = Misc::change_encoding_uconverter($data, $input, $output))) {
+
+        // This is first, as behaviour of this is completely predictable
+        if (class_exists('\UConverter') && ($return = Misc::change_encoding_uconverter($data, $input, $output))) {
             return $return;
         }
 
@@ -389,7 +377,7 @@ class Misc
      * @param string $charset Character set to standardise
      * @return string Standardised name
      */
-    public static function encoding(string $charset)
+    public static function encoding(string $charset): string
     {
         // Normalization from UTS #22
         // Cast for PHPStan, the regex should not fail.
@@ -1708,11 +1696,9 @@ class Misc
     public static function get_curl_version()
     {
         if (is_array($curl = curl_version())) {
-            $curl = $curl['version'];
-        } else {
-            $curl = '0';
+            return $curl['version'];
         }
-        return $curl;
+        return '0';
     }
 
     /**
@@ -1769,7 +1755,7 @@ class Misc
      * @param string $string Data to strip comments from
      * @return string Comment stripped string
      */
-    public static function uncomment_rfc822(string $string)
+    public static function uncomment_rfc822(string $string): string
     {
         // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.9.'), \E_USER_DEPRECATED);
 
@@ -1789,7 +1775,8 @@ class Misc
                     if ($string[$position - 1] === '\\') {
                         $position++;
                         continue;
-                    } elseif (isset($string[$position])) {
+                    }
+                    if (isset($string[$position])) {
                         switch ($string[$position]) {
                             case '(':
                                 $depth++;
@@ -1808,15 +1795,11 @@ class Misc
                 $output .= '(';
             }
         }
-        $output .= substr($string, $position);
 
-        return $output;
+        return $output . substr($string, $position);
     }
 
-    /**
-     * @return string
-     */
-    public static function parse_mime(string $mime)
+    public static function parse_mime(string $mime): string
     {
         if (($pos = strpos($mime, ';')) === false) {
             return trim($mime);
@@ -1829,7 +1812,7 @@ class Misc
      * @param array<string, array<string, string>> $attribs
      * @return int-mask-of<SimplePie::CONSTRUCT_*>
      */
-    public static function atom_03_construct_type(array $attribs)
+    public static function atom_03_construct_type(array $attribs): int
     {
         if (isset($attribs['']['mode']) && strtolower(trim($attribs['']['mode'])) === 'base64') {
             $mode = \SimplePie\SimplePie::CONSTRUCT_BASE64;
@@ -1862,7 +1845,7 @@ class Misc
      * @param array<string, array<string, string>> $attribs
      * @return int-mask-of<SimplePie::CONSTRUCT_*>
      */
-    public static function atom_10_construct_type(array $attribs)
+    public static function atom_10_construct_type(array $attribs): int
     {
         if (isset($attribs['']['type'])) {
             switch (strtolower(trim($attribs['']['type']))) {
@@ -1886,7 +1869,7 @@ class Misc
      * @param array<string, array<string, string>> $attribs
      * @return int-mask-of<SimplePie::CONSTRUCT_*>
      */
-    public static function atom_10_content_construct_type(array $attribs)
+    public static function atom_10_content_construct_type(array $attribs): int
     {
         if (isset($attribs['']['type'])) {
             $type = strtolower(trim($attribs['']['type']));
@@ -1902,18 +1885,14 @@ class Misc
             }
             if (in_array(substr($type, -4), ['+xml', '/xml']) || substr($type, 0, 5) === 'text/') {
                 return \SimplePie\SimplePie::CONSTRUCT_NONE;
-            } else {
-                return \SimplePie\SimplePie::CONSTRUCT_BASE64;
             }
+            return \SimplePie\SimplePie::CONSTRUCT_BASE64;
         }
 
         return \SimplePie\SimplePie::CONSTRUCT_TEXT;
     }
 
-    /**
-     * @return bool
-     */
-    public static function is_isegment_nz_nc(string $string)
+    public static function is_isegment_nz_nc(string $string): bool
     {
         return (bool) preg_match('/^([A-Za-z0-9\-._~\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}!$&\'()*+,;=@]|(%[0-9ABCDEF]{2}))+$/u', $string);
     }
@@ -1921,7 +1900,7 @@ class Misc
     /**
      * @return string[]
      */
-    public static function space_separated_tokens(string $string)
+    public static function space_separated_tokens(string $string): array
     {
         $space_characters = "\x20\x09\x0A\x0B\x0C\x0D";
         $string_length = strlen($string);
@@ -1950,13 +1929,17 @@ class Misc
     {
         if ($codepoint < 0) {
             return false;
-        } elseif ($codepoint <= 0x7f) {
+        }
+        if ($codepoint <= 0x7f) {
             return chr($codepoint);
-        } elseif ($codepoint <= 0x7ff) {
+        }
+        if ($codepoint <= 0x7ff) {
             return chr(0xc0 | ($codepoint >> 6)) . chr(0x80 | ($codepoint & 0x3f));
-        } elseif ($codepoint <= 0xffff) {
+        }
+        if ($codepoint <= 0xffff) {
             return chr(0xe0 | ($codepoint >> 12)) . chr(0x80 | (($codepoint >> 6) & 0x3f)) . chr(0x80 | ($codepoint & 0x3f));
-        } elseif ($codepoint <= 0x10ffff) {
+        }
+        if ($codepoint <= 0x10ffff) {
             return chr(0xf0 | ($codepoint >> 18)) . chr(0x80 | (($codepoint >> 12) & 0x3f)) . chr(0x80 | (($codepoint >> 6) & 0x3f)) . chr(0x80 | ($codepoint & 0x3f));
         }
 
@@ -1975,7 +1958,7 @@ class Misc
      * @param string $str The input string.
      * @return array<string, array<string|null>>
      */
-    public static function parse_str(string $str)
+    public static function parse_str(string $str): array
     {
         // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.9.'), \E_USER_DEPRECATED);
 
@@ -2081,10 +2064,7 @@ class Misc
         return $encoding;
     }
 
-    /**
-     * @return void
-     */
-    public static function output_javascript()
+    public static function output_javascript(): void
     {
         if (function_exists('ob_gzhandler')) {
             ob_start('ob_gzhandler');
@@ -2135,18 +2115,16 @@ JS;
         $root = dirname(__FILE__, 2);
         if (file_exists($root . '/.git/index')) {
             self::$SIMPLEPIE_BUILD = (int) filemtime($root . '/.git/index');
-
             return self::$SIMPLEPIE_BUILD;
-        } elseif (file_exists($root . '/src')) {
+        }
+        if (file_exists($root . '/src')) {
             $time = 0;
             foreach (glob($root . '/src/*.php') ?: [] as $file) {
                 if (($mtime = filemtime($file)) > $time) {
                     $time = $mtime;
                 }
             }
-
             self::$SIMPLEPIE_BUILD = $time;
-
             return self::$SIMPLEPIE_BUILD;
         }
 
@@ -2157,20 +2135,16 @@ JS;
 
     /**
      * Get the default user agent string
-     *
-     * @return string
      */
-    public static function get_default_useragent()
+    public static function get_default_useragent(): string
     {
         return \SimplePie\SimplePie::NAME . '/' . \SimplePie\SimplePie::VERSION . ' (Feed Parser; ' . \SimplePie\SimplePie::URL . '; Allow like Gecko) Build/' . static::get_build();
     }
 
     /**
      * Format debugging information
-     *
-     * @return string
      */
-    public static function debug(SimplePie &$sp)
+    public static function debug(SimplePie &$sp): string
     {
         $info = 'SimplePie ' . \SimplePie\SimplePie::VERSION . ' Build ' . static::get_build() . "\n";
         $info .= 'PHP ' . PHP_VERSION . "\n";
@@ -2207,10 +2181,7 @@ JS;
         return $info;
     }
 
-    /**
-     * @return bool
-     */
-    public static function silence_errors(int $num, string $str)
+    public static function silence_errors(int $num, string $str): bool
     {
         // No-op
         return true;
@@ -2230,4 +2201,4 @@ JS;
     }
 }
 
-class_alias('SimplePie\Misc', 'SimplePie_Misc', false);
+class_alias(\SimplePie\Misc::class, 'SimplePie_Misc', false);

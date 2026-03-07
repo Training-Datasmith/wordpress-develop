@@ -1,1 +1,4 @@
-<?php // Template Name: Something ?>
+<?php
+
+declare(strict_types=1);
+// Template Name: Something

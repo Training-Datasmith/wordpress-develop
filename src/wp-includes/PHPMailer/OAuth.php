@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * PHPMailer - PHP email creation and transport class.
  * PHP Version 5.5.
@@ -84,7 +86,7 @@ class OAuth implements OAuthTokenProvider
      * @param array $options Associative array containing
      *                       `provider`, `userName`, `clientSecret`, `clientId` and `refreshToken` elements
      */
-    public function __construct($options)
+    public function __construct(array $options)
     {
         $this->provider = $options['provider'];
         $this->oauthUserEmail = $options['userName'];
@@ -118,10 +120,8 @@ class OAuth implements OAuthTokenProvider
 
     /**
      * Generate a base64-encoded OAuth token.
-     *
-     * @return string
      */
-    public function getOauth64()
+    public function getOauth64(): string
     {
         //Get a new token if it's not available or has expired
         if (null === $this->oauthToken || $this->oauthToken->hasExpired()) {

@@ -1,12 +1,14 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Http\Util;
 
 use WordPress\AiClient\Providers\Http\DTO\Response;
 use WordPress\AiClient\Providers\Http\Exception\ClientException;
 use WordPress\AiClient\Providers\Http\Exception\RedirectException;
 use WordPress\AiClient\Providers\Http\Exception\ServerException;
+
 /**
  * Class with static utility methods to process HTTP responses.
  *

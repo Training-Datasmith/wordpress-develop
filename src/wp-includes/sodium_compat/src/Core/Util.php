@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core_Util', false)) {
     return;
 }
@@ -9,7 +11,7 @@ if (class_exists('ParagonIE_Sodium_Core_Util', false)) {
  */
 abstract class ParagonIE_Sodium_Core_Util
 {
-    const U32_MAX = 0xFFFFFFFF;
+    public const U32_MAX = 0xFFFFFFFF;
 
     /**
      * @param int $integer
@@ -182,7 +184,7 @@ abstract class ParagonIE_Sodium_Core_Util
             $left = str_pad($left, $len, "\x00", STR_PAD_RIGHT);
             $right = str_pad($right, $len, "\x00", STR_PAD_RIGHT);
         } elseif ($leftLen !== $rightLen) {
-            throw new SodiumException("Argument #1 and argument #2 must have the same length");
+            throw new SodiumException('Argument #1 and argument #2 must have the same length');
         }
 
         $gt = 0;
@@ -225,7 +227,7 @@ abstract class ParagonIE_Sodium_Core_Util
                 break;
             case 'integer':
             case 'int':
-                $allow = array('int', 'integer');
+                $allow = ['int', 'integer'];
                 if (!in_array($type, $allow)) {
                     throw new TypeError('Argument ' . $argumentIndex . ' must be an integer, ' . $realType . ' given.');
                 }
@@ -233,7 +235,7 @@ abstract class ParagonIE_Sodium_Core_Util
                 break;
             case 'boolean':
             case 'bool':
-                $allow = array('bool', 'boolean');
+                $allow = ['bool', 'boolean'];
                 if (!in_array($type, $allow)) {
                     throw new TypeError('Argument ' . $argumentIndex . ' must be a boolean, ' . $realType . ' given.');
                 }
@@ -248,7 +250,7 @@ abstract class ParagonIE_Sodium_Core_Util
             case 'decimal':
             case 'double':
             case 'float':
-                $allow = array('decimal', 'double', 'float');
+                $allow = ['decimal', 'double', 'float'];
                 if (!in_array($type, $allow)) {
                     throw new TypeError('Argument ' . $argumentIndex . ' must be a float, ' . $realType . ' given.');
                 }
@@ -638,13 +640,13 @@ abstract class ParagonIE_Sodium_Core_Util
         if ((+(abs($num))) >= 1) {
             if ($num > 0) {
                 /** @var int $high */
-                $high = min((+(floor($num/4294967296))), 4294967295);
+                $high = min((+(floor($num / 4294967296))), 4294967295);
             } else {
                 /** @var int $high */
-                $high = ~~((+(ceil(($num - (+((~~($num)))))/4294967296))));
+                $high = ~~((+(ceil(($num - (+((~~($num))))) / 4294967296))));
             }
         }
-        return array((int) $high, (int) $low);
+        return [(int) $high, (int) $low];
     }
 
     /**
@@ -762,7 +764,7 @@ abstract class ParagonIE_Sodium_Core_Util
             $hiB = 0;
         }
         return
-            self::intToChr(($int      ) & 0xff) .
+            self::intToChr(($int) & 0xff) .
             self::intToChr(($int >>  8) & 0xff) .
             self::intToChr(($int >> 16) & 0xff) .
             self::intToChr(($int >> 24) & 0xff) .
@@ -791,7 +793,7 @@ abstract class ParagonIE_Sodium_Core_Util
         }
 
         return (int) (
-        self::isMbStringOverride()
+            self::isMbStringOverride()
             ? mb_strlen($str, '8bit')
             : strlen($str)
         );

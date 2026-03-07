@@ -1,11 +1,13 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClientDependencies\Nyholm\Psr7;
 
 use WordPress\AiClientDependencies\Psr\Http\Message\StreamInterface;
 use WordPress\AiClientDependencies\Symfony\Component\Debug\ErrorHandler as SymfonyLegacyErrorHandler;
 use WordPress\AiClientDependencies\Symfony\Component\ErrorHandler\ErrorHandler as SymfonyErrorHandler;
+
 if (\PHP_VERSION_ID >= 70400 || (new \ReflectionMethod(StreamInterface::class, '__toString'))->hasReturnType()) {
     /**
      * @internal

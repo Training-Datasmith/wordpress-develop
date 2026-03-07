@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Multisite: Deprecated admin functions from past versions and WordPress MU
  *
@@ -15,9 +17,10 @@
  *
  * @deprecated 3.0.0
  */
-function wpmu_menu() {
-	_deprecated_function( __FUNCTION__, '3.0.0' );
-	// Deprecated. See #11763.
+function wpmu_menu(): void
+{
+    _deprecated_function(__FUNCTION__, '3.0.0');
+    // Deprecated. See #11763.
 }
 
 /**
@@ -26,16 +29,17 @@ function wpmu_menu() {
  * @deprecated 3.0.0 Use is_upload_space_available()
  * @see is_upload_space_available()
  */
-function wpmu_checkAvailableSpace() {
-	_deprecated_function( __FUNCTION__, '3.0.0', 'is_upload_space_available()' );
+function wpmu_checkAvailableSpace(): void
+{
+    _deprecated_function(__FUNCTION__, '3.0.0', 'is_upload_space_available()');
 
-	if ( ! is_upload_space_available() ) {
-		wp_die( sprintf(
-			/* translators: %s: Allowed space allocation. */
-			__( 'Sorry, you have used your space allocation of %s. Please delete some files to upload more files.' ),
-			size_format( get_space_allowed() * MB_IN_BYTES )
-		) );
-	}
+    if (! is_upload_space_available()) {
+        wp_die(sprintf(
+            /* translators: %s: Allowed space allocation. */
+            __('Sorry, you have used your space allocation of %s. Please delete some files to upload more files.'),
+            size_format(get_space_allowed() * MB_IN_BYTES)
+        ));
+    }
 }
 
 /**
@@ -43,9 +47,10 @@ function wpmu_checkAvailableSpace() {
  *
  * @deprecated 3.0.0
  */
-function mu_options( $options ) {
-	_deprecated_function( __FUNCTION__, '3.0.0' );
-	return $options;
+function mu_options($options)
+{
+    _deprecated_function(__FUNCTION__, '3.0.0');
+    return $options;
 }
 
 /**
@@ -54,9 +59,10 @@ function mu_options( $options ) {
  * @deprecated 3.0.0 Use activate_plugin()
  * @see activate_plugin()
  */
-function activate_sitewide_plugin() {
-	_deprecated_function( __FUNCTION__, '3.0.0', 'activate_plugin()' );
-	return false;
+function activate_sitewide_plugin(): bool
+{
+    _deprecated_function(__FUNCTION__, '3.0.0', 'activate_plugin()');
+    return false;
 }
 
 /**
@@ -65,8 +71,9 @@ function activate_sitewide_plugin() {
  * @deprecated 3.0.0 Use deactivate_plugin()
  * @see deactivate_plugin()
  */
-function deactivate_sitewide_plugin( $plugin = false ) {
-	_deprecated_function( __FUNCTION__, '3.0.0', 'deactivate_plugin()' );
+function deactivate_sitewide_plugin($plugin = false): void
+{
+    _deprecated_function(__FUNCTION__, '3.0.0', 'deactivate_plugin()');
 }
 
 /**
@@ -75,9 +82,10 @@ function deactivate_sitewide_plugin( $plugin = false ) {
  * @deprecated 3.0.0 Use is_network_only_plugin()
  * @see is_network_only_plugin()
  */
-function is_wpmu_sitewide_plugin( $file ) {
-	_deprecated_function( __FUNCTION__, '3.0.0', 'is_network_only_plugin()' );
-	return is_network_only_plugin( $file );
+function is_wpmu_sitewide_plugin($file)
+{
+    _deprecated_function(__FUNCTION__, '3.0.0', 'is_network_only_plugin()');
+    return is_network_only_plugin($file);
 }
 
 /**
@@ -86,9 +94,10 @@ function is_wpmu_sitewide_plugin( $file ) {
  * @deprecated 3.4.0 Use WP_Theme::get_allowed_on_network()
  * @see WP_Theme::get_allowed_on_network()
  */
-function get_site_allowed_themes() {
-	_deprecated_function( __FUNCTION__, '3.4.0', 'WP_Theme::get_allowed_on_network()' );
-	return array_map( 'intval', WP_Theme::get_allowed_on_network() );
+function get_site_allowed_themes(): array
+{
+    _deprecated_function(__FUNCTION__, '3.4.0', 'WP_Theme::get_allowed_on_network()');
+    return array_map('intval', WP_Theme::get_allowed_on_network());
 }
 
 /**
@@ -97,9 +106,10 @@ function get_site_allowed_themes() {
  * @deprecated 3.4.0 Use WP_Theme::get_allowed_on_site()
  * @see WP_Theme::get_allowed_on_site()
  */
-function wpmu_get_blog_allowedthemes( $blog_id = 0 ) {
-	_deprecated_function( __FUNCTION__, '3.4.0', 'WP_Theme::get_allowed_on_site()' );
-	return array_map( 'intval', WP_Theme::get_allowed_on_site( $blog_id ) );
+function wpmu_get_blog_allowedthemes($blog_id = 0): array
+{
+    _deprecated_function(__FUNCTION__, '3.4.0', 'WP_Theme::get_allowed_on_site()');
+    return array_map('intval', WP_Theme::get_allowed_on_site($blog_id));
 }
 
 /**
@@ -107,19 +117,22 @@ function wpmu_get_blog_allowedthemes( $blog_id = 0 ) {
  *
  * @deprecated 3.5.0
  */
-function ms_deprecated_blogs_file() {}
+function ms_deprecated_blogs_file(): void
+{
+}
 
-if ( ! function_exists( 'install_global_terms' ) ) :
-	/**
-	 * Install global terms.
-	 *
-	 * @since 3.0.0
-	 * @since 6.1.0 This function no longer does anything.
-	 * @deprecated 6.1.0
-	 */
-	function install_global_terms() {
-		_deprecated_function( __FUNCTION__, '6.1.0' );
-	}
+if (! function_exists('install_global_terms')) :
+    /**
+     * Install global terms.
+     *
+     * @since 3.0.0
+     * @since 6.1.0 This function no longer does anything.
+     * @deprecated 6.1.0
+     */
+    function install_global_terms(): void
+    {
+        _deprecated_function(__FUNCTION__, '6.1.0');
+    }
 endif;
 
 /**
@@ -133,8 +146,9 @@ endif;
  * @param string        $taxonomy The taxonomy for `$term`.
  * @return WP_Term|array Always returns `$term`.
  */
-function sync_category_tag_slugs( $term, $taxonomy ) {
-	_deprecated_function( __FUNCTION__, '6.1.0' );
+function sync_category_tag_slugs($term, $taxonomy)
+{
+    _deprecated_function(__FUNCTION__, '6.1.0');
 
-	return $term;
+    return $term;
 }

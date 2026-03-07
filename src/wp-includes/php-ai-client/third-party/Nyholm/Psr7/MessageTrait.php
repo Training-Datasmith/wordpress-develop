@@ -1,10 +1,12 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClientDependencies\Nyholm\Psr7;
 
 use WordPress\AiClientDependencies\Psr\Http\Message\MessageInterface;
 use WordPress\AiClientDependencies\Psr\Http\Message\StreamInterface;
+
 /**
  * Trait implementing functionality common to requests and responses.
  *

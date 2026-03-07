@@ -1,10 +1,12 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Models\SpeechGeneration\Contracts;
 
 use WordPress\AiClient\Messages\DTO\Message;
 use WordPress\AiClient\Operations\DTO\GenerativeAiOperation;
+
 /**
  * Interface for models that support asynchronous speech generation operations.
  *

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core_ChaCha20', false)) {
     return;
 }
@@ -63,7 +65,7 @@ class ParagonIE_Sodium_Core_ChaCha20 extends ParagonIE_Sodium_Core_Util
         /** @var int $c */
         $c = ($c + $d) & 0xffffffff;
         $b = self::rotate($b ^ $c, 7);
-        return array((int) $a, (int) $b, (int) $c, (int) $d);
+        return [(int) $a, (int) $b, (int) $c, (int) $d];
     }
 
     /**

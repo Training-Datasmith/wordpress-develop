@@ -1,10 +1,12 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Http\Exception;
 
 use WordPress\AiClient\Common\Exception\RuntimeException;
 use WordPress\AiClient\Providers\Http\DTO\Response;
+
 /**
  * Exception thrown for 3xx HTTP redirect responses.
  *

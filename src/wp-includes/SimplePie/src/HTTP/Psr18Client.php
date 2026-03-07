@@ -36,10 +36,7 @@ final class Psr18Client implements Client
      */
     private $uriFactory;
 
-    /**
-     * @var int
-     */
-    private $allowedRedirects = 5;
+    private int $allowedRedirects = 5;
 
     public function __construct(ClientInterface $httpClient, RequestFactoryInterface $requestFactory, UriFactoryInterface $uriFactory)
     {
@@ -67,9 +64,7 @@ final class Psr18Client implements Client
      * send a request and return the response
      *
      * @param Client::METHOD_* $method
-     * @param string $url
      * @param array<string,string|string[]> $headers
-     *
      * @throws ClientException if anything goes wrong requesting the data
      */
     public function request(string $method, string $url, array $headers = []): Response

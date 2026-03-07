@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
-use DomDocument;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
@@ -26,7 +25,7 @@ use SimplePie\HTTP\Response;
 class Locator implements RegistryAware
 {
     /** @var ?string */
-    public $useragent = null;
+    public $useragent;
     /** @var int */
     public $timeout = 10;
     /** @var File */
@@ -59,7 +58,7 @@ class Locator implements RegistryAware
     /**
      * @var Client|null
      */
-    private $http_client = null;
+    private ?\SimplePie\HTTP\Psr18Client $http_client = null;
 
     /**
      * @param array<int, mixed> $curl_options
@@ -103,10 +102,7 @@ class Locator implements RegistryAware
         $this->http_client = new Psr18Client($http_client, $request_factory, $uri_factory);
     }
 
-    /**
-     * @return void
-     */
-    public function set_registry(\SimplePie\Registry $registry)
+    public function set_registry(\SimplePie\Registry $registry): void
     {
         $this->registry = $registry;
     }
@@ -165,7 +161,6 @@ class Locator implements RegistryAware
     public function is_feed(Response $file, bool $check_html = false)
     {
         assert($this->registry !== null);
-
         if (Misc::is_remote_uri($file->get_final_requested_uri())) {
             $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$file]);
             $sniffed = $sniffer->get_type();
@@ -175,19 +170,16 @@ class Locator implements RegistryAware
             if ($check_html) {
                 $mime_types[] = 'text/html';
             }
-
             return in_array($sniffed, $mime_types);
-        } elseif (is_file($file->get_final_requested_uri())) {
-            return true;
-        } else {
-            return false;
         }
+
+        if (is_file($file->get_final_requested_uri())) {
+            return true;
+        }
+        return false;
     }
 
-    /**
-     * @return void
-     */
-    public function get_base()
+    public function get_base(): void
     {
         assert($this->registry !== null);
 
@@ -213,7 +205,7 @@ class Locator implements RegistryAware
     /**
      * @return array<Response>|null
      */
-    public function autodiscovery()
+    public function autodiscovery(): ?array
     {
         $done = [];
         $feeds = [];
@@ -233,7 +225,7 @@ class Locator implements RegistryAware
      * @param array<string, Response> $feeds
      * @return array<string, Response>
      */
-    protected function search_elements_by_tag(string $name, array &$done, array $feeds)
+    protected function search_elements_by_tag(string $name, array &$done, array $feeds): array
     {
         assert($this->registry !== null);
 
@@ -285,7 +277,7 @@ class Locator implements RegistryAware
     /**
      * @return true|null
      */
-    public function get_links()
+    public function get_links(): ?bool
     {
         assert($this->registry !== null);
 
@@ -384,7 +376,7 @@ class Locator implements RegistryAware
      * @param string[] $array
      * @return array<Response>|null
      */
-    public function extension(array &$array)
+    public function extension(array &$array): ?array
     {
         foreach ($array as $key => $value) {
             if ($this->checked_feeds === $this->max_checked_feeds) {
@@ -418,7 +410,7 @@ class Locator implements RegistryAware
      * @param string[] $array
      * @return array<Response>|null
      */
-    public function body(array &$array)
+    public function body(array &$array): ?array
     {
         foreach ($array as $key => $value) {
             if ($this->checked_feeds === $this->max_checked_feeds) {
@@ -475,4 +467,4 @@ class Locator implements RegistryAware
     }
 }
 
-class_alias('SimplePie\Locator', 'SimplePie_Locator', false);
+class_alias(\SimplePie\Locator::class, 'SimplePie_Locator', false);

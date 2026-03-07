@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Core Administration API
  *
@@ -7,15 +9,15 @@
  * @since 2.3.0
  */
 
-if ( ! defined( 'WP_ADMIN' ) ) {
-	/*
-	 * This file is being included from a file other than wp-admin/admin.php, so
-	 * some setup was skipped. Make sure the admin message catalog is loaded since
-	 * load_default_textdomain() will not have done so in this context.
-	 */
-	$admin_locale = get_locale();
-	load_textdomain( 'default', WP_LANG_DIR . '/admin-' . $admin_locale . '.mo', $admin_locale );
-	unset( $admin_locale );
+if (! defined('WP_ADMIN')) {
+    /*
+     * This file is being included from a file other than wp-admin/admin.php, so
+     * some setup was skipped. Make sure the admin message catalog is loaded since
+     * load_default_textdomain() will not have done so in this context.
+     */
+    $admin_locale = get_locale();
+    load_textdomain('default', WP_LANG_DIR . '/admin-' . $admin_locale . '.mo', $admin_locale);
+    unset($admin_locale);
 }
 
 /** WordPress Administration Hooks */
@@ -94,8 +96,8 @@ require_once ABSPATH . 'wp-admin/includes/update.php';
 require_once ABSPATH . 'wp-admin/includes/deprecated.php';
 
 /** WordPress Multisite support API */
-if ( is_multisite() ) {
-	require_once ABSPATH . 'wp-admin/includes/ms-admin-filters.php';
-	require_once ABSPATH . 'wp-admin/includes/ms.php';
-	require_once ABSPATH . 'wp-admin/includes/ms-deprecated.php';
+if (is_multisite()) {
+    require_once ABSPATH . 'wp-admin/includes/ms-admin-filters.php';
+    require_once ABSPATH . 'wp-admin/includes/ms.php';
+    require_once ABSPATH . 'wp-admin/includes/ms-deprecated.php';
 }

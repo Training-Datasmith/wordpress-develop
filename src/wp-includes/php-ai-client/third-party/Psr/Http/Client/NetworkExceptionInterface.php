@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Psr\Http\Client;
 
 use WordPress\AiClientDependencies\Psr\Http\Message\RequestInterface;
+
 /**
  * Thrown when the request cannot be completed because of network issues.
  *

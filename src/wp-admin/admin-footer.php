@@ -7,8 +7,8 @@
  */
 
 // Don't load directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	die( '-1' );
+if (! defined('ABSPATH')) {
+    die('-1');
 }
 
 /**
@@ -23,47 +23,47 @@ global $hook_suffix;
 
 <div id="wpfooter" role="contentinfo">
 	<?php
-	/**
-	 * Fires after the opening tag for the admin footer.
-	 *
-	 * @since 2.5.0
-	 */
-	do_action( 'in_admin_footer' );
-	?>
+    /**
+     * Fires after the opening tag for the admin footer.
+     *
+     * @since 2.5.0
+     */
+    do_action('in_admin_footer');
+?>
 	<p id="footer-left" class="alignleft">
 		<?php
-		$text = sprintf(
-			/* translators: %s: https://wordpress.org/ */
-			__( 'Thank you for creating with <a href="%s">WordPress</a>.' ),
-			esc_url( __( 'https://wordpress.org/' ) )
-		);
+    $text = sprintf(
+        /* translators: %s: https://wordpress.org/ */
+        __('Thank you for creating with <a href="%s">WordPress</a>.'),
+        esc_url(__('https://wordpress.org/'))
+    );
 
-		/**
-		 * Filters the "Thank you" text displayed in the admin footer.
-		 *
-		 * @since 2.8.0
-		 *
-		 * @param string $text The content that will be printed.
-		 */
-		echo apply_filters( 'admin_footer_text', '<span id="footer-thankyou">' . $text . '</span>' );
-		?>
+/**
+ * Filters the "Thank you" text displayed in the admin footer.
+ *
+ * @since 2.8.0
+ *
+ * @param string $text The content that will be printed.
+ */
+echo apply_filters('admin_footer_text', '<span id="footer-thankyou">' . $text . '</span>');
+?>
 	</p>
 	<p id="footer-upgrade" class="alignright">
 		<?php
-		/**
-		 * Filters the version/update text displayed in the admin footer.
-		 *
-		 * WordPress prints the current version and update information,
-		 * using core_update_footer() at priority 10.
-		 *
-		 * @since 2.3.0
-		 *
-		 * @see core_update_footer()
-		 *
-		 * @param string $content The content that will be printed.
-		 */
-		echo apply_filters( 'update_footer', '' );
-		?>
+/**
+ * Filters the version/update text displayed in the admin footer.
+ *
+ * WordPress prints the current version and update information,
+ * using core_update_footer() at priority 10.
+ *
+ * @since 2.3.0
+ *
+ * @see core_update_footer()
+ *
+ * @param string $content The content that will be printed.
+ */
+echo apply_filters('update_footer', '');
+?>
 	</p>
 	<div class="clear"></div>
 </div>
@@ -75,7 +75,7 @@ global $hook_suffix;
  *
  * @param string $data The data to print.
  */
-do_action( 'admin_footer', '' );
+do_action('admin_footer', '');
 
 /**
  * Prints scripts and data queued for the footer.
@@ -85,14 +85,14 @@ do_action( 'admin_footer', '' );
  *
  * @since 4.6.0
  */
-do_action( "admin_print_footer_scripts-{$hook_suffix}" ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
+do_action("admin_print_footer_scripts-{$hook_suffix}"); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
 /**
  * Prints any scripts and data queued for the footer.
  *
  * @since 2.8.0
  */
-do_action( 'admin_print_footer_scripts' );
+do_action('admin_print_footer_scripts');
 
 /**
  * Prints scripts or data after the default footer scripts.
@@ -102,13 +102,13 @@ do_action( 'admin_print_footer_scripts' );
  *
  * @since 2.8.0
  */
-do_action( "admin_footer-{$hook_suffix}" ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
+do_action("admin_footer-{$hook_suffix}"); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
 // get_site_option() won't exist when auto upgrading from <= 2.7.
-if ( function_exists( 'get_site_option' )
-	&& false === get_site_option( 'can_compress_scripts' )
+if (function_exists('get_site_option')
+    && false === get_site_option('can_compress_scripts')
 ) {
-	compression_test();
+    compression_test();
 }
 
 ?>

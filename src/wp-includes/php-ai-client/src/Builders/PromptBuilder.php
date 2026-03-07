@@ -1,9 +1,9 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Builders;
 
-use WordPress\AiClientDependencies\Psr\EventDispatcher\EventDispatcherInterface;
 use WordPress\AiClient\Common\Exception\InvalidArgumentException;
 use WordPress\AiClient\Common\Exception\RuntimeException;
 use WordPress\AiClient\Events\AfterGenerateResultEvent;
@@ -31,6 +31,8 @@ use WordPress\AiClient\Results\DTO\GenerativeAiResult;
 use WordPress\AiClient\Tools\DTO\FunctionDeclaration;
 use WordPress\AiClient\Tools\DTO\FunctionResponse;
 use WordPress\AiClient\Tools\DTO\WebSearch;
+use WordPress\AiClientDependencies\Psr\EventDispatcher\EventDispatcherInterface;
+
 /**
  * Fluent builder for constructing AI prompts.
  *

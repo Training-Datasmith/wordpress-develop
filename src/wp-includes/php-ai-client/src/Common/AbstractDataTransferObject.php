@@ -1,6 +1,7 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Common;
 
 use JsonSerializable;
@@ -8,6 +9,7 @@ use stdClass;
 use WordPress\AiClient\Common\Contracts\WithArrayTransformationInterface;
 use WordPress\AiClient\Common\Contracts\WithJsonSchemaInterface;
 use WordPress\AiClient\Common\Exception\InvalidArgumentException;
+
 /**
  * Abstract base class for all Data Value Objects in the AI Client.
  *
