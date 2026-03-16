@@ -89,7 +89,7 @@ switch ($action) {
                 [
                     'timeout'     => 120,
                     'httpversion' => '1.1',
-                    'sslverify'   => false,
+                    'sslverify'   => apply_filters('https_local_ssl_verify', false),
                 ]
             );
 

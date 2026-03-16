@@ -3933,7 +3933,7 @@ function send_confirmation_on_profile_email()
             return;
         }
 
-        $hash           = md5($_POST['email'] . time() . wp_rand());
+        $hash           = bin2hex(random_bytes(32));
         $new_user_email = [
             'hash'     => $hash,
             'newemail' => $_POST['email'],

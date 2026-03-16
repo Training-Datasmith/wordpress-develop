@@ -1422,7 +1422,7 @@ switch ($action) {
                     $redirect_to = $user->has_cap('read') ? admin_url('profile.php') : home_url();
                 }
 
-                wp_redirect($redirect_to);
+                wp_safe_redirect($redirect_to);
                 exit;
             }
 

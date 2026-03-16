@@ -2185,7 +2185,7 @@ function upload_is_file_too_big($upload)
  */
 function signup_nonce_fields()
 {
-    $id = mt_rand();
+    $id = random_int(0, PHP_INT_MAX);
     echo "<input type='hidden' name='signup_form_id' value='{$id}' />";
     wp_nonce_field('signup_form_' . $id, '_signup_form', false);
 }
@@ -2836,7 +2836,7 @@ function update_network_option_new_admin_email($old_value, $value)
         return;
     }
 
-    $hash            = md5($value . time() . mt_rand());
+    $hash            = bin2hex(random_bytes(32));
     $new_admin_email = [
         'hash'     => $hash,
         'newemail' => $value,

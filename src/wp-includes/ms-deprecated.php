@@ -304,7 +304,7 @@ function wpmu_admin_do_redirect($url = '')
         exit;
     }
     if (! empty($_SERVER['HTTP_REFERER'])) {
-        wp_redirect($_SERVER['HTTP_REFERER']);
+        wp_safe_redirect($_SERVER['HTTP_REFERER']);
         exit;
     }
 
