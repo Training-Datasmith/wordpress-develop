@@ -509,17 +509,28 @@ class WP_User
     }
 
     /**
-     * Retrieves all of the capabilities of the user's roles, and merges them with
-     * individual user capabilities.
+     * Rebuilds the user's merged capability set from their roles and individual grants.
      *
-     * All of the capabilities of the user's roles are merged with the user's individual
-     * capabilities. This means that the user can be denied specific capabilities that
-     * their role might have, but the user is specifically denied.
+     * Iterates over all roles in $this->roles, fetches each role's capability map
+     * from WP_Roles, and merges them into $this->allcaps. Individual user capabilities
+     * ($this->caps) are then overlaid on top, allowing per-user grants or denials to
+     * override role defaults.
+     *
+     * In a multisite installation, this method switches to the user's $site_id
+     * to load site-specific roles, then restores the current blog context.
+     *
+     * This method is called automatically by init(), add_role(), remove_role(), and
+     * set_role(). You rarely need to call it directly unless you have modified
+     * $this->caps or $this->roles directly.
      *
      * @since 2.0.0
      *
-     * @return bool[] Array of key/value pairs where keys represent a capability name
-     *                and boolean values represent whether the user has that capability.
+     * @return bool[] Map of capability slug to grant status. Keys are capability
+     *                machine names (e.g. 'edit_posts', 'manage_options') and values
+     *                are TRUE (granted) or FALSE (explicitly denied).
+     *
+     * @see WP_User::add_cap()    To grant a capability to the user.
+     * @see WP_User::remove_cap() To revoke a user capability.
      */
     public function get_role_caps()
     {
@@ -730,12 +741,20 @@ class WP_User
     }
 
     /**
-     * Adds capability and grant or deny access to capability.
+     * Grants or explicitly denies an individual capability for this user.
+     *
+     * Stores the capability in $this->caps, persists it to user meta under
+     * the $cap_key meta key, then rebuilds $this->allcaps. Individual caps
+     * are overlaid on top of role caps, so setting $grant = false will deny
+     * a capability even if the user's role grants it.
      *
      * @since 2.0.0
      *
-     * @param string $cap   Capability name.
-     * @param bool   $grant Whether to grant capability to user.
+     * @param string $cap   The capability machine name to add (e.g. 'edit_others_posts').
+     *                      Should not include spaces. Use existing WordPress capability
+     *                      names or a custom slug unique to your plugin.
+     * @param bool   $grant TRUE (default) to grant the capability, FALSE to explicitly
+     *                      deny it even when the user's role grants it.
      */
     public function add_cap($cap, $grant = true)
     {
@@ -746,11 +765,19 @@ class WP_User
     }
 
     /**
-     * Removes capability from user.
+     * Removes an individual capability previously added via add_cap().
+     *
+     * Deletes the capability entry from $this->caps and persists the change
+     * to user meta. This only removes explicitly-set user capabilities; it
+     * does not revoke capabilities granted by the user's role. To revoke role
+     * capabilities, use remove_role() or set_role().
+     *
+     * If the capability is not currently set on this user, this method is a
+     * no-op.
      *
      * @since 2.0.0
      *
-     * @param string $cap Capability name.
+     * @param string $cap The capability machine name to remove (e.g. 'edit_others_posts').
      */
     public function remove_cap($cap)
     {

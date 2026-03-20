@@ -62,17 +62,27 @@ final class WP_Hook implements Iterator, ArrayAccess
      */
     private $doing_action = false;
     /**
-     * Adds a callback function to a filter hook.
+     * Adds a callback function to a filter hook, registering it for later execution.
+     *
+     * Stores the callback in $this->callbacks[$priority] keyed by a unique ID
+     * derived from the callable and priority. If this is a new priority and
+     * the hook is currently being iterated (nesting_level > 0), the iteration
+     * list is resorded to include the new priority at the correct position.
      *
      * @since 4.7.0
      *
-     * @param string   $hook_name     The name of the filter to add the callback to.
+     * @param string   $hook_name     The name of the filter or action hook to attach to
+     *                                (e.g. 'the_content', 'save_post'). Used only as an
+     *                                identifier for deduplication via _wp_filter_build_unique_id().
      * @param callable $callback      The callback to be run when the filter is applied.
-     * @param int      $priority      The order in which the functions associated with a particular filter
-     *                                are executed. Lower numbers correspond with earlier execution,
-     *                                and functions with the same priority are executed in the order
-     *                                in which they were added to the filter.
-     * @param int      $accepted_args The number of arguments the function accepts.
+     *                                Any PHP callable is accepted: function name string,
+     *                                [$object, 'method'], static::class closures, etc.
+     * @param int      $priority      Execution order relative to other callbacks on the same
+     *                                hook. Lower numbers run earlier; default is 10. Callbacks
+     *                                sharing a priority run in registration order.
+     * @param int      $accepted_args The number of arguments the callback will receive.
+     *                                apply_filters() slices the $args array to this count,
+     *                                or passes all args if accepted_args >= count($args).
      */
     public function add_filter($hook_name, $callback, $priority, $accepted_args)
     {
@@ -263,14 +273,29 @@ final class WP_Hook implements Iterator, ArrayAccess
         }
     }
     /**
-     * Calls the callback functions that have been added to a filter hook.
+     * Calls all registered callback functions for a filter hook in priority order.
+     *
+     * Iterates through callbacks grouped by numeric priority (lowest first).
+     * Supports recursive filter calls: if a callback adds or removes filters
+     * on this same hook during execution, the iteration list is recalculated
+     * via resort_active_iterations() without corrupting the current pass.
      *
      * @since 4.7.0
      *
-     * @param mixed $value The value to filter.
-     * @param array $args  Additional parameters to pass to the callback functions.
-     *                     This array is expected to include $value at index 0.
-     * @return mixed The filtered value after all hooked functions are applied to it.
+     * @param mixed $value The initial value to be filtered. Each callback receives
+     *                     the return value of the previous callback, allowing the
+     *                     value to be transformed through a chain of functions.
+     * @param array $args  The full argument list for the callback, including $value
+     *                     at index 0. Additional elements provide context (e.g. the
+     *                     post ID, the query object) as declared by accepted_args.
+     *
+     * @return mixed The final filtered value after all callbacks have been applied.
+     *               Type may change if a callback returns a different type than
+     *               it receives — callers should not assume type stability.
+     *
+     * @complexity O(c) where c is the total number of registered callbacks across
+     *             all priorities. Callbacks are dispatched with call_user_func_array
+     *             so individual callback cost is not bounded here.
      */
     public function apply_filters($value, $args)
     {
@@ -303,11 +328,18 @@ final class WP_Hook implements Iterator, ArrayAccess
         return $value;
     }
     /**
-     * Calls the callback functions that have been added to an action hook.
+     * Fires all callbacks registered to an action hook, discarding return values.
+     *
+     * Sets the $doing_action flag so that apply_filters() does not replace
+     * $args[0] with a return value (actions are fire-and-forget, not filters).
+     * Supports nested/recursive action calls via the nesting_level counter.
      *
      * @since 4.7.0
      *
-     * @param array $args Parameters to pass to the callback functions.
+     * @param array $args The arguments to pass to each callback. $args[0] is
+     *                    typically the main subject of the action (e.g. the post
+     *                    object for save_post, the query for pre_get_posts).
+     *                    Unlike filters, the return values of callbacks are ignored.
      */
     public function do_action($args)
     {

@@ -1485,9 +1485,19 @@ class WP_Query
         }
     }
     /**
-     * Sets the 404 property and saves whether query is feed.
+     * Marks this query as a 404 (not-found) result and fires the set_404 action.
+     *
+     * Resets all is_* conditional flags via init_query_flags(), then sets
+     * $this->is_404 = true. The is_feed flag is preserved because a feed request
+     * that results in no content should still be identified as a feed.
+     *
+     * Call this from a template or plugin when you determine that the queried
+     * object does not exist, to ensure proper template hierarchy resolution.
      *
      * @since 2.0.0
+     *
+     * @fires set_404 Passes $this (WP_Query) by reference. Fires after setting
+     *               the 404 flag so listeners can inspect or alter the state.
      */
     public function set_404()
     {
@@ -1532,16 +1542,34 @@ class WP_Query
         $this->query_vars[$query_var] = $value;
     }
     /**
-     * Retrieves an array of posts based on query variables.
+     * Retrieves an array of posts based on the current query variables.
      *
-     * There are a few filters and actions that can be used to modify the post
-     * database query.
+     * Builds and executes a SQL SELECT against $wpdb->posts, joining additional
+     * tables as needed for taxonomy, meta, date, and author conditions. Applies
+     * the pre_get_posts action before SQL construction and the posts_results /
+     * the_posts filters after fetching rows.
+     *
+     * Sticky posts are prepended when is_home() and posts_per_page is positive,
+     * unless 'ignore_sticky_posts' is set. A 'fields' => 'ids' query returns
+     * int[] instead of WP_Post[].
      *
      * @since 1.5.0
      *
-     * @global wpdb $wpdb WordPress database abstraction object.
+     * @global wpdb $wpdb WordPress database abstraction object used to execute
+     *                    the generated SQL. The exact SQL is stored in $this->request.
      *
-     * @return WP_Post[]|int[] Array of post objects or post IDs.
+     * @return WP_Post[]|int[] Array of WP_Post objects when 'fields' is '' or 'all',
+     *                         or array of int post IDs when 'fields' is 'ids',
+     *                         or array of objects with id/parent when 'fields' is 'id=>parent'.
+     *
+     * @fires pre_get_posts Before SQL execution; allows query modification.
+     * @fires posts_results After fetching raw rows; allows result set modification.
+     * @fires the_posts     After caching; final chance to alter the posts array.
+     *
+     * @complexity O(n) in result set size plus O(m) for meta/term cache priming
+     *             where m is the number of distinct terms/meta keys.
+     * @performance Avoid posts_per_page = -1 on large tables; use reasonable
+     *              LIMIT values or paginate with 'paged'.
      */
     public function get_posts()
     {
@@ -3281,14 +3309,28 @@ class WP_Query
         }
     }
     /**
-     * Sets up the WordPress query by parsing query string.
+     * Initialises a fresh WP_Query instance and retrieves matching posts.
+     *
+     * Resets all internal state via init(), stores the incoming query, then
+     * delegates to get_posts() to build and execute the database query.
+     * This is the primary public entry point for creating secondary queries.
+     *
+     * Equivalent to:
+     * <code>
+     * $q = new WP_Query(['post_type' => 'post', 'posts_per_page' => 5]);
+     * // ...which calls query() in __construct().
+     * </code>
      *
      * @since 1.5.0
      *
-     * @see WP_Query::parse_query() for all available arguments.
+     * @see WP_Query::parse_query() for the full list of accepted arguments.
+     * @see WP_Query::get_posts()   for query execution and filter hooks.
      *
-     * @param string|array $query URL query string or array of query arguments.
-     * @return WP_Post[]|int[] Array of post objects or post IDs.
+     * @param string|array $query URL query string (e.g. 'post_type=post&posts_per_page=5')
+     *                            or an associative array of query arguments.
+     *
+     * @return WP_Post[]|int[] Array of WP_Post objects, or array of int post IDs
+     *                         when 'fields' => 'ids' is specified.
      */
     public function query($query)
     {
