@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * WordPress AI Client API.
  *
@@ -8,9 +8,7 @@ declare(strict_types=1);
  * @subpackage AI
  * @since 7.0.0
  */
-
-use WordPress\AiClient\AiClient;
-
+use Word_Press\Ai_Client\Ai_Client;
 /**
  * Creates a new AI prompt builder using the default provider registry.
  *
@@ -33,5 +31,5 @@ use WordPress\AiClient\AiClient;
  */
 function wp_ai_client_prompt($prompt = null)
 {
-    return new WP_AI_Client_Prompt_Builder(AiClient::defaultRegistry(), $prompt);
+    return new WP_AI_Client_Prompt_Builder(Ai_Client::default_registry(), $prompt);
 }

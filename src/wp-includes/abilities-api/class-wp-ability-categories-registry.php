@@ -9,9 +9,7 @@
  * @subpackage Abilities API
  * @since 6.9.0
  */
-
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * Manages the registration and lookup of ability categories.
  *
@@ -27,7 +25,6 @@ final class WP_Ability_Categories_Registry
      * @var self|null
      */
     private static $instance = null;
-
     /**
      * Holds the registered ability categories.
      *
@@ -35,7 +32,6 @@ final class WP_Ability_Categories_Registry
      * @var WP_Ability_Category[]
      */
     private $registered_categories = [];
-
     /**
      * Registers a new ability category.
      *
@@ -67,16 +63,10 @@ final class WP_Ability_Categories_Registry
             );
             return null;
         }
-
-        if (! preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug)) {
-            _doing_it_wrong(
-                __METHOD__,
-                __('Ability category slug must contain only lowercase alphanumeric characters and dashes.'),
-                '6.9.0'
-            );
+        if (!preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug)) {
+            _doing_it_wrong(__METHOD__, __('Ability category slug must contain only lowercase alphanumeric characters and dashes.'), '6.9.0');
             return null;
         }
-
         /**
          * Filters the ability category arguments before they are validated and used to instantiate the ability category.
          *
@@ -92,23 +82,16 @@ final class WP_Ability_Categories_Registry
          * @param string               $slug The slug of the ability category.
          */
         $args = apply_filters('wp_register_ability_category_args', $args, $slug);
-
         try {
             // WP_Ability_Category::prepare_properties() will throw an exception if the properties are invalid.
             $category = new WP_Ability_Category($slug, $args);
         } catch (InvalidArgumentException $e) {
-            _doing_it_wrong(
-                __METHOD__,
-                $e->getMessage(),
-                '6.9.0'
-            );
+            _doing_it_wrong(__METHOD__, $e->get_message(), '6.9.0');
             return null;
         }
-
-        $this->registered_categories[ $slug ] = $category;
+        $this->registered_categories[$slug] = $category;
         return $category;
     }
-
     /**
      * Unregisters an ability category.
      *
@@ -123,7 +106,7 @@ final class WP_Ability_Categories_Registry
      */
     public function unregister(string $slug): ?WP_Ability_Category
     {
-        if (! $this->is_registered($slug)) {
+        if (!$this->is_registered($slug)) {
             _doing_it_wrong(
                 __METHOD__,
                 /* translators: %s: Ability category slug. */
@@ -132,13 +115,10 @@ final class WP_Ability_Categories_Registry
             );
             return null;
         }
-
-        $unregistered_category = $this->registered_categories[ $slug ];
-        unset($this->registered_categories[ $slug ]);
-
+        $unregistered_category = $this->registered_categories[$slug];
+        unset($this->registered_categories[$slug]);
         return $unregistered_category;
     }
-
     /**
      * Retrieves the list of all registered ability categories.
      *
@@ -154,7 +134,6 @@ final class WP_Ability_Categories_Registry
     {
         return $this->registered_categories;
     }
-
     /**
      * Checks if an ability category is registered.
      *
@@ -169,9 +148,8 @@ final class WP_Ability_Categories_Registry
      */
     public function is_registered(string $slug): bool
     {
-        return isset($this->registered_categories[ $slug ]);
+        return isset($this->registered_categories[$slug]);
     }
-
     /**
      * Retrieves a registered ability category.
      *
@@ -186,7 +164,7 @@ final class WP_Ability_Categories_Registry
      */
     public function get_registered(string $slug): ?WP_Ability_Category
     {
-        if (! $this->is_registered($slug)) {
+        if (!$this->is_registered($slug)) {
             _doing_it_wrong(
                 __METHOD__,
                 /* translators: %s: Ability category slug. */
@@ -195,9 +173,8 @@ final class WP_Ability_Categories_Registry
             );
             return null;
         }
-        return $this->registered_categories[ $slug ];
+        return $this->registered_categories[$slug];
     }
-
     /**
      * Utility method to retrieve the main instance of the registry class.
      *
@@ -209,22 +186,16 @@ final class WP_Ability_Categories_Registry
      */
     public static function get_instance(): ?self
     {
-        if (! did_action('init')) {
-            _doing_it_wrong(
-                __METHOD__,
-                sprintf(
-                    // translators: %s: init action.
-                    __('Ability API should not be initialized before the %s action has fired.'),
-                    '<code>init</code>'
-                ),
-                '6.9.0'
-            );
+        if (!did_action('init')) {
+            _doing_it_wrong(__METHOD__, sprintf(
+                // translators: %s: init action.
+                __('Ability API should not be initialized before the %s action has fired.'),
+                '<code>init</code>'
+            ), '6.9.0');
             return null;
         }
-
         if (null === self::$instance) {
             self::$instance = new self();
-
             /**
              * Fires when preparing ability categories registry.
              *
@@ -236,10 +207,8 @@ final class WP_Ability_Categories_Registry
              */
             do_action('wp_abilities_api_categories_init', self::$instance);
         }
-
         return self::$instance;
     }
-
     /**
      * Wakeup magic method.
      *
@@ -251,7 +220,6 @@ final class WP_Ability_Categories_Registry
     {
         throw new LogicException(__CLASS__ . ' should never be unserialized.');
     }
-
     /**
      * Sleep magic method.
      *

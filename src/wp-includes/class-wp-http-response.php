@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * HTTP API: WP_HTTP_Response class
  *
@@ -8,13 +8,12 @@ declare(strict_types=1);
  * @subpackage HTTP
  * @since 4.4.0
  */
-
 /**
  * Core class used to prepare HTTP responses.
  *
  * @since 4.4.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_HTTP_Response
 {
     /**
@@ -24,7 +23,6 @@ class WP_HTTP_Response
      * @var mixed
      */
     public $data;
-
     /**
      * Response headers.
      *
@@ -32,7 +30,6 @@ class WP_HTTP_Response
      * @var array
      */
     public $headers;
-
     /**
      * Response status.
      *
@@ -40,7 +37,6 @@ class WP_HTTP_Response
      * @var int
      */
     public $status;
-
     /**
      * Constructor.
      *
@@ -56,7 +52,6 @@ class WP_HTTP_Response
         $this->set_status($status);
         $this->set_headers($headers);
     }
-
     /**
      * Retrieves headers associated with the response.
      *
@@ -68,7 +63,6 @@ class WP_HTTP_Response
     {
         return $this->headers;
     }
-
     /**
      * Sets all header values.
      *
@@ -80,7 +74,6 @@ class WP_HTTP_Response
     {
         $this->headers = $headers;
     }
-
     /**
      * Sets a single HTTP header.
      *
@@ -93,13 +86,12 @@ class WP_HTTP_Response
      */
     public function header($key, $value, $replace = true)
     {
-        if ($replace || ! isset($this->headers[ $key ])) {
-            $this->headers[ $key ] = $value;
+        if ($replace || !isset($this->headers[$key])) {
+            $this->headers[$key] = $value;
         } else {
-            $this->headers[ $key ] .= ', ' . $value;
+            $this->headers[$key] .= ', ' . $value;
         }
     }
-
     /**
      * Retrieves the HTTP return code for the response.
      *
@@ -111,7 +103,6 @@ class WP_HTTP_Response
     {
         return $this->status;
     }
-
     /**
      * Sets the 3-digit HTTP status code.
      *
@@ -123,7 +114,6 @@ class WP_HTTP_Response
     {
         $this->status = absint($code);
     }
-
     /**
      * Retrieves the response data.
      *
@@ -135,7 +125,6 @@ class WP_HTTP_Response
     {
         return $this->data;
     }
-
     /**
      * Sets the response data.
      *
@@ -147,7 +136,6 @@ class WP_HTTP_Response
     {
         $this->data = $data;
     }
-
     /**
      * Retrieves the response data for JSON serialization.
      *
@@ -158,7 +146,8 @@ class WP_HTTP_Response
      *
      * @return mixed Any JSON-serializable value.
      */
-    public function jsonSerialize() // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
-    {return $this->get_data();
+    public function jsonSerialize()
+    {
+        return $this->get_data();
     }
 }

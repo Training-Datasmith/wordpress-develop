@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WordPress Customize Section classes
  *
@@ -6,7 +7,6 @@
  * @subpackage Customize
  * @since 3.4.0
  */
-
 /**
  * Customize Section class.
  *
@@ -16,7 +16,7 @@
  *
  * @see WP_Customize_Manager
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_Customize_Section
 {
     /**
@@ -28,7 +28,6 @@ class WP_Customize_Section
      * @var int
      */
     protected static $instance_count = 0;
-
     /**
      * Order in which this instance was created in relation to other instances.
      *
@@ -36,7 +35,6 @@ class WP_Customize_Section
      * @var int
      */
     public $instance_number;
-
     /**
      * WP_Customize_Manager instance.
      *
@@ -44,7 +42,6 @@ class WP_Customize_Section
      * @var WP_Customize_Manager
      */
     public $manager;
-
     /**
      * Unique identifier.
      *
@@ -52,7 +49,6 @@ class WP_Customize_Section
      * @var string
      */
     public $id;
-
     /**
      * Priority of the section which informs load order of sections.
      *
@@ -60,7 +56,6 @@ class WP_Customize_Section
      * @var int
      */
     public $priority = 160;
-
     /**
      * Panel in which to show the section, making it a sub-section.
      *
@@ -68,7 +63,6 @@ class WP_Customize_Section
      * @var string
      */
     public $panel = '';
-
     /**
      * Capability required for the section.
      *
@@ -76,7 +70,6 @@ class WP_Customize_Section
      * @var string
      */
     public $capability = 'edit_theme_options';
-
     /**
      * Theme features required to support the section.
      *
@@ -84,7 +77,6 @@ class WP_Customize_Section
      * @var string|string[]
      */
     public $theme_supports = '';
-
     /**
      * Title of the section to show in UI.
      *
@@ -92,7 +84,6 @@ class WP_Customize_Section
      * @var string
      */
     public $title = '';
-
     /**
      * Description to show in the UI.
      *
@@ -100,7 +91,6 @@ class WP_Customize_Section
      * @var string
      */
     public $description = '';
-
     /**
      * Customizer controls for this section.
      *
@@ -108,7 +98,6 @@ class WP_Customize_Section
      * @var array
      */
     public $controls;
-
     /**
      * Type of this section.
      *
@@ -116,7 +105,6 @@ class WP_Customize_Section
      * @var string
      */
     public $type = 'default';
-
     /**
      * Active callback.
      *
@@ -130,7 +118,6 @@ class WP_Customize_Section
      *               being previewed).
      */
     public $active_callback = '';
-
     /**
      * Show the description or hide it behind the help icon.
      *
@@ -141,7 +128,6 @@ class WP_Customize_Section
      *           similar to how help icons are displayed on Panels.
      */
     public $description_hidden = false;
-
     /**
      * Constructor.
      *
@@ -174,22 +160,20 @@ class WP_Customize_Section
     {
         $keys = array_keys(get_object_vars($this));
         foreach ($keys as $key) {
-            if (isset($args[ $key ])) {
-                $this->$key = $args[ $key ];
+            if (isset($args[$key])) {
+                $this->{$key} = $args[$key];
             }
         }
-
         $this->manager = $manager;
-        $this->id      = $id;
+        $this->id = $id;
         if (empty($this->active_callback)) {
-            $this->active_callback = [ $this, 'active_callback' ];
+            $this->active_callback = [$this, 'active_callback'];
         }
         self::$instance_count += 1;
         $this->instance_number = self::$instance_count;
-
-        $this->controls = []; // Users cannot customize the $controls array.
+        $this->controls = [];
+        // Users cannot customize the $controls array.
     }
-
     /**
      * Check whether section is active to current Customizer preview.
      *
@@ -200,8 +184,7 @@ class WP_Customize_Section
     final public function active()
     {
         $section = $this;
-        $active  = call_user_func($this->active_callback, $this);
-
+        $active = call_user_func($this->active_callback, $this);
         /**
          * Filters response of WP_Customize_Section::active().
          *
@@ -211,10 +194,8 @@ class WP_Customize_Section
          * @param WP_Customize_Section $section WP_Customize_Section instance.
          */
         $active = apply_filters('customize_section_active', $active, $section);
-
         return $active;
     }
-
     /**
      * Default callback used when invoking WP_Customize_Section::active().
      *
@@ -229,7 +210,6 @@ class WP_Customize_Section
     {
         return true;
     }
-
     /**
      * Gather the parameters passed to client JavaScript via JSON.
      *
@@ -239,22 +219,19 @@ class WP_Customize_Section
      */
     public function json()
     {
-        $array                   = wp_array_slice_assoc((array) $this, [ 'id', 'description', 'priority', 'panel', 'type', 'description_hidden' ]);
-        $array['title']          = html_entity_decode($this->title, ENT_QUOTES, get_bloginfo('charset'));
-        $array['content']        = $this->get_content();
-        $array['active']         = $this->active();
+        $array = wp_array_slice_assoc((array) $this, ['id', 'description', 'priority', 'panel', 'type', 'description_hidden']);
+        $array['title'] = html_entity_decode($this->title, ENT_QUOTES, get_bloginfo('charset'));
+        $array['content'] = $this->get_content();
+        $array['active'] = $this->active();
         $array['instanceNumber'] = $this->instance_number;
-
         if ($this->panel) {
             /* translators: &#9656; is the unicode right-pointing triangle. %s: Section title in the Customizer. */
             $array['customizeAction'] = sprintf(__('Customizing &#9656; %s'), esc_html($this->manager->get_panel($this->panel)->title));
         } else {
             $array['customizeAction'] = __('Customizing');
         }
-
         return $array;
     }
-
     /**
      * Checks required user capabilities and whether the theme has the
      * feature support required by the section.
@@ -265,17 +242,14 @@ class WP_Customize_Section
      */
     final public function check_capabilities()
     {
-        if ($this->capability && ! current_user_can($this->capability)) {
+        if ($this->capability && !current_user_can($this->capability)) {
             return false;
         }
-
-        if ($this->theme_supports && ! current_theme_supports(...(array) $this->theme_supports)) {
+        if ($this->theme_supports && !current_theme_supports(...(array) $this->theme_supports)) {
             return false;
         }
-
         return true;
     }
-
     /**
      * Get the section's content for insertion into the Customizer pane.
      *
@@ -289,7 +263,6 @@ class WP_Customize_Section
         $this->maybe_render();
         return trim(ob_get_clean());
     }
-
     /**
      * Check capabilities and render the section.
      *
@@ -297,10 +270,9 @@ class WP_Customize_Section
      */
     final public function maybe_render()
     {
-        if (! $this->check_capabilities()) {
+        if (!$this->check_capabilities()) {
             return;
         }
-
         /**
          * Fires before rendering a Customizer section.
          *
@@ -318,10 +290,8 @@ class WP_Customize_Section
          * @since 3.4.0
          */
         do_action("customize_render_section_{$this->id}");
-
         $this->render();
     }
-
     /**
      * Render the section UI in a subclass.
      *
@@ -332,7 +302,6 @@ class WP_Customize_Section
     protected function render()
     {
     }
-
     /**
      * Render the section's JS template.
      *
@@ -346,12 +315,15 @@ class WP_Customize_Section
     public function print_template()
     {
         ?>
-		<script type="text/html" id="tmpl-customize-section-<?php echo $this->type; ?>">
-			<?php $this->render_template(); ?>
+		<script type="text/html" id="tmpl-customize-section-<?php 
+        echo $this->type;
+        ?>">
+			<?php 
+        $this->render_template();
+        ?>
 		</script>
-		<?php
+		<?php 
     }
-
     /**
      * An Underscore (JS) template for rendering this section.
      *
@@ -376,9 +348,9 @@ class WP_Customize_Section
 					<div class="customize-section-title">
 						<button class="customize-section-back" tabindex="-1">
 							<span class="screen-reader-text">
-								<?php
-                                /* translators: Hidden accessibility text. */
-                                _e('Back');
+								<?php 
+        /* translators: Hidden accessibility text. */
+        _e('Back');
         ?>
 							</span>
 						</button>
@@ -390,7 +362,7 @@ class WP_Customize_Section
 						</h3>
 						<# if ( data.description && data.description_hidden ) { #>
 							<button type="button" class="customize-help-toggle dashicons dashicons-editor-help" aria-expanded="false"><span class="screen-reader-text">
-								<?php
+								<?php 
         /* translators: Hidden accessibility text. */
         _e('Help');
         ?>
@@ -411,15 +383,12 @@ class WP_Customize_Section
 				</li>
 			</ul>
 		</li>
-		<?php
+		<?php 
     }
 }
-
 /** WP_Customize_Themes_Section class */
 require_once ABSPATH . WPINC . '/customize/class-wp-customize-themes-section.php';
-
 /** WP_Customize_Sidebar_Section class */
 require_once ABSPATH . WPINC . '/customize/class-wp-customize-sidebar-section.php';
-
 /** WP_Customize_Nav_Menu_Section class */
 require_once ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-section.php';

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * HTTP API: WP_HTTP_Requests_Response class
  *
@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @subpackage HTTP
  * @since 4.6.0
  */
-
 /**
  * Core wrapper object for a WpOrg\Requests\Response for standardization.
  *
@@ -25,7 +24,6 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
      * @var \WpOrg\Requests\Response
      */
     protected $response;
-
     /**
      * Filename the response was saved to.
      *
@@ -33,7 +31,6 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
      * @var string|null
      */
     protected $filename;
-
     /**
      * Constructor.
      *
@@ -42,12 +39,11 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
      * @param \WpOrg\Requests\Response $response HTTP response.
      * @param string                   $filename Optional. File name. Default empty.
      */
-    public function __construct(WpOrg\Requests\Response $response, $filename = '')
+    public function __construct(Wp_Org\Requests\Response $response, $filename = '')
     {
         $this->response = $response;
         $this->filename = $filename;
     }
-
     /**
      * Retrieves the response object for the request.
      *
@@ -59,7 +55,6 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
     {
         return $this->response;
     }
-
     /**
      * Retrieves headers associated with the response.
      *
@@ -70,19 +65,16 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
     public function get_headers()
     {
         // Ensure headers remain case-insensitive.
-        $converted = new WpOrg\Requests\Utility\CaseInsensitiveDictionary();
-
-        foreach ($this->response->headers->getAll() as $key => $value) {
+        $converted = new Wp_Org\Requests\Utility\Case_Insensitive_Dictionary();
+        foreach ($this->response->headers->get_all() as $key => $value) {
             if (count($value) === 1) {
-                $converted[ $key ] = $value[0];
+                $converted[$key] = $value[0];
             } else {
-                $converted[ $key ] = $value;
+                $converted[$key] = $value;
             }
         }
-
         return $converted;
     }
-
     /**
      * Sets all header values.
      *
@@ -92,9 +84,8 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
      */
     public function set_headers($headers)
     {
-        $this->response->headers = new WpOrg\Requests\Response\Headers($headers);
+        $this->response->headers = new Wp_Org\Requests\Response\Headers($headers);
     }
-
     /**
      * Sets a single HTTP header.
      *
@@ -108,12 +99,10 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
     public function header($key, $value, $replace = true)
     {
         if ($replace) {
-            unset($this->response->headers[ $key ]);
+            unset($this->response->headers[$key]);
         }
-
-        $this->response->headers[ $key ] = $value;
+        $this->response->headers[$key] = $value;
     }
-
     /**
      * Retrieves the HTTP return code for the response.
      *
@@ -125,7 +114,6 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
     {
         return $this->response->status_code;
     }
-
     /**
      * Sets the 3-digit HTTP status code.
      *
@@ -137,7 +125,6 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
     {
         $this->response->status_code = absint($code);
     }
-
     /**
      * Retrieves the response data.
      *
@@ -149,7 +136,6 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
     {
         return $this->response->body;
     }
-
     /**
      * Sets the response data.
      *
@@ -161,7 +147,6 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
     {
         $this->response->body = $data;
     }
-
     /**
      * Retrieves cookies from the response.
      *
@@ -173,21 +158,10 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
     {
         $cookies = [];
         foreach ($this->response->cookies as $cookie) {
-            $cookies[] = new WP_Http_Cookie(
-                [
-                    'name'      => $cookie->name,
-                    'value'     => urldecode($cookie->value),
-                    'expires'   => $cookie->attributes['expires'] ?? null,
-                    'path'      => $cookie->attributes['path'] ?? null,
-                    'domain'    => $cookie->attributes['domain'] ?? null,
-                    'host_only' => $cookie->flags['host-only'] ?? null,
-                ]
-            );
+            $cookies[] = new WP_Http_Cookie(['name' => $cookie->name, 'value' => urldecode($cookie->value), 'expires' => $cookie->attributes['expires'] ?? null, 'path' => $cookie->attributes['path'] ?? null, 'domain' => $cookie->attributes['domain'] ?? null, 'host_only' => $cookie->flags['host-only'] ?? null]);
         }
-
         return $cookies;
     }
-
     /**
      * Converts the object to a WP_Http response array.
      *
@@ -197,15 +171,6 @@ class WP_HTTP_Requests_Response extends WP_HTTP_Response
      */
     public function to_array()
     {
-        return [
-            'headers'  => $this->get_headers(),
-            'body'     => $this->get_data(),
-            'response' => [
-                'code'    => $this->get_status(),
-                'message' => get_status_header_desc($this->get_status()),
-            ],
-            'cookies'  => $this->get_cookies(),
-            'filename' => $this->filename,
-        ];
+        return ['headers' => $this->get_headers(), 'body' => $this->get_data(), 'response' => ['code' => $this->get_status(), 'message' => get_status_header_desc($this->get_status())], 'cookies' => $this->get_cookies(), 'filename' => $this->filename];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Dependencies API: _WP_Dependency class
  *
@@ -9,7 +9,6 @@ declare(strict_types=1);
  * @package WordPress
  * @subpackage Dependencies
  */
-
 /**
  * Class _WP_Dependency
  *
@@ -18,7 +17,7 @@ declare(strict_types=1);
  * @access private
  * @since 2.6.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class _WP_Dependency
 {
     /**
@@ -28,7 +27,6 @@ class _WP_Dependency
      * @var string
      */
     public $handle;
-
     /**
      * The handle source.
      *
@@ -38,7 +36,6 @@ class _WP_Dependency
      * @var string|false
      */
     public $src;
-
     /**
      * An array of handle dependencies.
      *
@@ -46,7 +43,6 @@ class _WP_Dependency
      * @var string[]
      */
     public $deps = [];
-
     /**
      * The handle version.
      *
@@ -56,15 +52,14 @@ class _WP_Dependency
      * @var string|false|null
      */
     public $ver = false;
-
     /**
      * Additional arguments for the handle.
      *
      * @since 2.6.0
      * @var mixed
      */
-    public $args = null;  // Custom property, such as $in_footer or $media.
-
+    public $args = null;
+    // Custom property, such as $in_footer or $media.
     /**
      * Extra data to supply to the handle.
      *
@@ -72,7 +67,6 @@ class _WP_Dependency
      * @var array<string, mixed>
      */
     public $extra = [];
-
     /**
      * Translation textdomain set for this dependency.
      *
@@ -80,7 +74,6 @@ class _WP_Dependency
      * @var string
      */
     public $textdomain;
-
     /**
      * Translation path set for this dependency.
      *
@@ -88,7 +81,6 @@ class _WP_Dependency
      * @var string|null
      */
     public $translations_path;
-
     /**
      * Setup dependencies.
      *
@@ -101,11 +93,10 @@ class _WP_Dependency
     public function __construct(...$args)
     {
         list($this->handle, $this->src, $this->deps, $this->ver, $this->args) = $args;
-        if (! is_array($this->deps)) {
+        if (!is_array($this->deps)) {
             $this->deps = [];
         }
     }
-
     /**
      * Add handle data.
      *
@@ -117,13 +108,12 @@ class _WP_Dependency
      */
     public function add_data($name, $data)
     {
-        if (! is_scalar($name)) {
+        if (!is_scalar($name)) {
             return false;
         }
-        $this->extra[ $name ] = $data;
+        $this->extra[$name] = $data;
         return true;
     }
-
     /**
      * Sets the translation domain for this dependency.
      *
@@ -135,10 +125,10 @@ class _WP_Dependency
      */
     public function set_translations($domain, $path = '')
     {
-        if (! is_string($domain)) {
+        if (!is_string($domain)) {
             return false;
         }
-        $this->textdomain        = $domain;
+        $this->textdomain = $domain;
         $this->translations_path = $path;
         return true;
     }

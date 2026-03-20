@@ -1,12 +1,11 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * WordPress Error API.
  *
  * @package WordPress
  */
-
 /**
  * WordPress Error class.
  *
@@ -17,7 +16,7 @@ declare(strict_types=1);
  *
  * @since 2.1.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_Error
 {
     /**
@@ -27,7 +26,6 @@ class WP_Error
      * @var array
      */
     public $errors = [];
-
     /**
      * Stores the most recently added data for each error code.
      *
@@ -35,7 +33,6 @@ class WP_Error
      * @var array
      */
     public $error_data = [];
-
     /**
      * Stores previously added data added for error codes, oldest-to-newest by code.
      *
@@ -43,7 +40,6 @@ class WP_Error
      * @var array[]
      */
     protected $additional_data = [];
-
     /**
      * Initializes the error.
      *
@@ -66,10 +62,8 @@ class WP_Error
         if (empty($code)) {
             return;
         }
-
         $this->add($code, $message, $data);
     }
-
     /**
      * Retrieves all error codes.
      *
@@ -79,13 +73,11 @@ class WP_Error
      */
     public function get_error_codes()
     {
-        if (! $this->has_errors()) {
+        if (!$this->has_errors()) {
             return [];
         }
-
         return array_keys($this->errors);
     }
-
     /**
      * Retrieves the first error code available.
      *
@@ -96,14 +88,11 @@ class WP_Error
     public function get_error_code()
     {
         $codes = $this->get_error_codes();
-
         if (empty($codes)) {
             return '';
         }
-
         return $codes[0];
     }
-
     /**
      * Retrieves all error messages, or the error messages for the given error code.
      *
@@ -121,17 +110,14 @@ class WP_Error
             foreach ((array) $this->errors as $code => $messages) {
                 $all_messages = array_merge($all_messages, $messages);
             }
-
             return $all_messages;
         }
-
-        if (isset($this->errors[ $code ])) {
-            return $this->errors[ $code ];
+        if (isset($this->errors[$code])) {
+            return $this->errors[$code];
         } else {
             return [];
         }
     }
-
     /**
      * Gets a single error message.
      *
@@ -155,7 +141,6 @@ class WP_Error
         }
         return $messages[0];
     }
-
     /**
      * Retrieves the most recently added error data for an error code.
      *
@@ -169,12 +154,10 @@ class WP_Error
         if (empty($code)) {
             $code = $this->get_error_code();
         }
-
-        if (isset($this->error_data[ $code ])) {
-            return $this->error_data[ $code ];
+        if (isset($this->error_data[$code])) {
+            return $this->error_data[$code];
         }
     }
-
     /**
      * Verifies if the instance contains errors.
      *
@@ -184,12 +167,11 @@ class WP_Error
      */
     public function has_errors()
     {
-        if (! empty($this->errors)) {
+        if (!empty($this->errors)) {
             return true;
         }
         return false;
     }
-
     /**
      * Adds an error or appends an additional message to an existing error.
      *
@@ -201,12 +183,10 @@ class WP_Error
      */
     public function add($code, $message, $data = '')
     {
-        $this->errors[ $code ][] = $message;
-
-        if (! empty($data)) {
+        $this->errors[$code][] = $message;
+        if (!empty($data)) {
             $this->add_data($data, $code);
         }
-
         /**
          * Fires when an error is added to a WP_Error object.
          *
@@ -219,7 +199,6 @@ class WP_Error
          */
         do_action('wp_error_added', $code, $message, $data, $this);
     }
-
     /**
      * Adds data to an error with the given code.
      *
@@ -234,14 +213,11 @@ class WP_Error
         if (empty($code)) {
             $code = $this->get_error_code();
         }
-
-        if (isset($this->error_data[ $code ])) {
-            $this->additional_data[ $code ][] = $this->error_data[ $code ];
+        if (isset($this->error_data[$code])) {
+            $this->additional_data[$code][] = $this->error_data[$code];
         }
-
-        $this->error_data[ $code ] = $data;
+        $this->error_data[$code] = $data;
     }
-
     /**
      * Retrieves all error data for an error code in the order in which the data was added.
      *
@@ -255,20 +231,15 @@ class WP_Error
         if (empty($code)) {
             $code = $this->get_error_code();
         }
-
         $data = [];
-
-        if (isset($this->additional_data[ $code ])) {
-            $data = $this->additional_data[ $code ];
+        if (isset($this->additional_data[$code])) {
+            $data = $this->additional_data[$code];
         }
-
-        if (isset($this->error_data[ $code ])) {
-            $data[] = $this->error_data[ $code ];
+        if (isset($this->error_data[$code])) {
+            $data[] = $this->error_data[$code];
         }
-
         return $data;
     }
-
     /**
      * Removes the specified error.
      *
@@ -281,11 +252,10 @@ class WP_Error
      */
     public function remove($code)
     {
-        unset($this->errors[ $code ]);
-        unset($this->error_data[ $code ]);
-        unset($this->additional_data[ $code ]);
+        unset($this->errors[$code]);
+        unset($this->error_data[$code]);
+        unset($this->additional_data[$code]);
     }
-
     /**
      * Merges the errors in the given error object into this one.
      *
@@ -297,7 +267,6 @@ class WP_Error
     {
         static::copy_errors($error, $this);
     }
-
     /**
      * Exports the errors in this object into the given one.
      *
@@ -309,7 +278,6 @@ class WP_Error
     {
         static::copy_errors($this, $error);
     }
-
     /**
      * Copies errors from one WP_Error instance to another.
      *
@@ -324,7 +292,6 @@ class WP_Error
             foreach ($from->get_error_messages($code) as $error_message) {
                 $to->add($code, $error_message);
             }
-
             foreach ($from->get_all_error_data($code) as $data) {
                 $to->add_data($data, $code);
             }

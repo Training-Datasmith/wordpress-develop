@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * WP AI Client: WP_AI_Client_Ability_Function_Resolver class
  *
@@ -8,13 +8,11 @@ declare(strict_types=1);
  * @subpackage AI
  * @since 7.0.0
  */
-
-use WordPress\AiClient\Messages\DTO\Message;
-use WordPress\AiClient\Messages\DTO\MessagePart;
-use WordPress\AiClient\Messages\DTO\UserMessage;
-use WordPress\AiClient\Tools\DTO\FunctionCall;
-use WordPress\AiClient\Tools\DTO\FunctionResponse;
-
+use Word_Press\Ai_Client\Messages\DTO\Message;
+use Word_Press\Ai_Client\Messages\DTO\Message_Part;
+use Word_Press\Ai_Client\Messages\DTO\User_Message;
+use Word_Press\Ai_Client\Tools\DTO\Function_Call;
+use Word_Press\Ai_Client\Tools\DTO\Function_Response;
 /**
  * Resolves and executes WordPress Abilities API function calls from AI models.
  *
@@ -33,7 +31,6 @@ class WP_AI_Client_Ability_Function_Resolver
      * @var string
      */
     private const ABILITY_PREFIX = 'wpab__';
-
     /**
      * Map of allowed ability names for this instance.
      *
@@ -43,7 +40,6 @@ class WP_AI_Client_Ability_Function_Resolver
      * @var array<string, true>
      */
     private array $allowed_abilities;
-
     /**
      * Constructor.
      *
@@ -54,16 +50,14 @@ class WP_AI_Client_Ability_Function_Resolver
     public function __construct(...$abilities)
     {
         $this->allowed_abilities = [];
-
         foreach ($abilities as $ability) {
             if ($ability instanceof WP_Ability) {
-                $this->allowed_abilities[ $ability->get_name() ] = true;
+                $this->allowed_abilities[$ability->get_name()] = true;
             } elseif (is_string($ability)) {
-                $this->allowed_abilities[ $ability ] = true;
+                $this->allowed_abilities[$ability] = true;
             }
         }
     }
-
     /**
      * Checks if a function call is an ability call.
      *
@@ -72,16 +66,14 @@ class WP_AI_Client_Ability_Function_Resolver
      * @param FunctionCall $call The function call to check.
      * @return bool True if the function call is an ability call, false otherwise.
      */
-    public function is_ability_call(FunctionCall $call): bool
+    public function is_ability_call(Function_Call $call): bool
     {
-        $name = $call->getName();
+        $name = $call->get_name();
         if (null === $name) {
             return false;
         }
-
         return str_starts_with($name, self::ABILITY_PREFIX);
     }
-
     /**
      * Executes a WordPress ability from a function call.
      *
@@ -94,72 +86,36 @@ class WP_AI_Client_Ability_Function_Resolver
      * @param FunctionCall $call The function call to execute.
      * @return FunctionResponse The response from executing the ability.
      */
-    public function execute_ability(FunctionCall $call): FunctionResponse
+    public function execute_ability(Function_Call $call): Function_Response
     {
-        $function_name = $call->getName() ?? 'unknown';
-        $function_id   = $call->getId() ?? 'unknown';
-
-        if (! $this->is_ability_call($call)) {
-            return new FunctionResponse(
-                $function_id,
-                $function_name,
-                [
-                    'error' => __('Not an ability function call'),
-                    'code'  => 'invalid_ability_call',
-                ]
-            );
+        $function_name = $call->get_name() ?? 'unknown';
+        $function_id = $call->get_id() ?? 'unknown';
+        if (!$this->is_ability_call($call)) {
+            return new Function_Response($function_id, $function_name, ['error' => __('Not an ability function call'), 'code' => 'invalid_ability_call']);
         }
-
         $ability_name = self::function_name_to_ability_name($function_name);
-
-        if (! isset($this->allowed_abilities[ $ability_name ])) {
-            return new FunctionResponse(
-                $function_id,
-                $function_name,
-                [
-                    /* translators: %s: ability name */
-                    'error' => sprintf(__('Ability "%s" was not specified in the allowed abilities list.'), $ability_name),
-                    'code'  => 'ability_not_allowed',
-                ]
-            );
+        if (!isset($this->allowed_abilities[$ability_name])) {
+            return new Function_Response($function_id, $function_name, [
+                /* translators: %s: ability name */
+                'error' => sprintf(__('Ability "%s" was not specified in the allowed abilities list.'), $ability_name),
+                'code' => 'ability_not_allowed',
+            ]);
         }
-
         $ability = wp_get_ability($ability_name);
-
-        if (! $ability instanceof WP_Ability) {
-            return new FunctionResponse(
-                $function_id,
-                $function_name,
-                [
-                    /* translators: %s: ability name */
-                    'error' => sprintf(__('Ability "%s" not found'), $ability_name),
-                    'code'  => 'ability_not_found',
-                ]
-            );
+        if (!$ability instanceof WP_Ability) {
+            return new Function_Response($function_id, $function_name, [
+                /* translators: %s: ability name */
+                'error' => sprintf(__('Ability "%s" not found'), $ability_name),
+                'code' => 'ability_not_found',
+            ]);
         }
-
-        $args   = $call->getArgs();
-        $result = $ability->execute(! empty($args) ? $args : null);
-
+        $args = $call->get_args();
+        $result = $ability->execute(!empty($args) ? $args : null);
         if (is_wp_error($result)) {
-            return new FunctionResponse(
-                $function_id,
-                $function_name,
-                [
-                    'error' => $result->get_error_message(),
-                    'code'  => $result->get_error_code(),
-                    'data'  => $result->get_error_data(),
-                ]
-            );
+            return new Function_Response($function_id, $function_name, ['error' => $result->get_error_message(), 'code' => $result->get_error_code(), 'data' => $result->get_error_data()]);
         }
-
-        return new FunctionResponse(
-            $function_id,
-            $function_name,
-            $result
-        );
+        return new Function_Response($function_id, $function_name, $result);
     }
-
     /**
      * Checks if a message contains any ability function calls.
      *
@@ -170,18 +126,16 @@ class WP_AI_Client_Ability_Function_Resolver
      */
     public function has_ability_calls(Message $message): bool
     {
-        foreach ($message->getParts() as $part) {
-            if ($part->getType()->isFunctionCall()) {
-                $function_call = $part->getFunctionCall();
-                if ($function_call instanceof FunctionCall && $this->is_ability_call($function_call)) {
+        foreach ($message->get_parts() as $part) {
+            if ($part->get_type()->is_function_call()) {
+                $function_call = $part->get_function_call();
+                if ($function_call instanceof Function_Call && $this->is_ability_call($function_call)) {
                     return true;
                 }
             }
         }
-
         return false;
     }
-
     /**
      * Executes all ability function calls in a message.
      *
@@ -193,20 +147,17 @@ class WP_AI_Client_Ability_Function_Resolver
     public function execute_abilities(Message $message): Message
     {
         $response_parts = [];
-
-        foreach ($message->getParts() as $part) {
-            if ($part->getType()->isFunctionCall()) {
-                $function_call = $part->getFunctionCall();
-                if ($function_call instanceof FunctionCall) {
+        foreach ($message->get_parts() as $part) {
+            if ($part->get_type()->is_function_call()) {
+                $function_call = $part->get_function_call();
+                if ($function_call instanceof Function_Call) {
                     $function_response = $this->execute_ability($function_call);
-                    $response_parts[]  = new MessagePart($function_response);
+                    $response_parts[] = new Message_Part($function_response);
                 }
             }
         }
-
-        return new UserMessage($response_parts);
+        return new User_Message($response_parts);
     }
-
     /**
      * Converts an ability name to a function name.
      *
@@ -221,7 +172,6 @@ class WP_AI_Client_Ability_Function_Resolver
     {
         return self::ABILITY_PREFIX . str_replace('/', '__', $ability_name);
     }
-
     /**
      * Converts a function name to an ability name.
      *
@@ -235,7 +185,6 @@ class WP_AI_Client_Ability_Function_Resolver
     public static function function_name_to_ability_name(string $function_name): string
     {
         $without_prefix = substr($function_name, strlen(self::ABILITY_PREFIX));
-
         return str_replace('__', '/', $without_prefix);
     }
 }

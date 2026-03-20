@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Custom page walker for this theme.
  *
@@ -8,15 +8,14 @@ declare(strict_types=1);
  * @subpackage Twenty_Twenty
  * @since Twenty Twenty 1.0
  */
-
-if (! class_exists('TwentyTwenty_Walker_Page')) {
+if (!class_exists('TwentyTwenty_Walker_Page')) {
     /**
      * CUSTOM PAGE WALKER
      * A custom walker for pages.
      *
      * @since Twenty Twenty 1.0
      */
-    class TwentyTwenty_Walker_Page extends Walker_Page
+    class Twenty_Twenty_walker_page extends Walker_Page
     {
         /**
          * Outputs the beginning of the current element in the tree.
@@ -36,9 +35,8 @@ if (! class_exists('TwentyTwenty_Walker_Page')) {
         public function start_el(&$output, $data_object, $depth = 0, $args = [], $current_object_id = 0): void
         {
             // Restores the more descriptive, specific name for use within this method.
-            $page            = $data_object;
+            $page = $data_object;
             $current_page_id = $current_object_id;
-
             if (isset($args['item_spacing']) && 'preserve' === $args['item_spacing']) {
                 $t = "\t";
             } else {
@@ -49,14 +47,11 @@ if (! class_exists('TwentyTwenty_Walker_Page')) {
             } else {
                 $indent = '';
             }
-
-            $css_class = [ 'page_item', 'page-item-' . $page->ID ];
-
-            if (isset($args['pages_with_children'][ $page->ID ])) {
+            $css_class = ['page_item', 'page-item-' . $page->ID];
+            if (isset($args['pages_with_children'][$page->ID])) {
                 $css_class[] = 'page_item_has_children';
             }
-
-            if (! empty($current_page_id)) {
+            if (!empty($current_page_id)) {
                 $_current_page = get_post($current_page_id);
                 if ($_current_page && in_array($page->ID, $_current_page->ancestors, true)) {
                     $css_class[] = 'current_page_ancestor';
@@ -69,68 +64,50 @@ if (! class_exists('TwentyTwenty_Walker_Page')) {
             } elseif (get_option('page_for_posts') === $page->ID) {
                 $css_class[] = 'current_page_parent';
             }
-
             /** This filter is documented in wp-includes/class-walker-page.php */
             $css_classes = implode(' ', apply_filters('page_css_class', $css_class, $page, $depth, $args, $current_page_id));
             $css_classes = $css_classes ? ' class="' . esc_attr($css_classes) . '"' : '';
-
             if ('' === $page->post_title) {
                 /* translators: %d: ID of a post. */
                 $page->post_title = sprintf(__('#%d (no title)', 'twentytwenty'), $page->ID);
             }
-
             $args['link_before'] = empty($args['link_before']) ? '' : $args['link_before'];
-            $args['link_after']  = empty($args['link_after']) ? '' : $args['link_after'];
-
-            $atts                 = [];
-            $atts['href']         = get_permalink($page->ID);
-            $atts['aria-current'] = ($page->ID === $current_page_id) ? 'page' : '';
-
+            $args['link_after'] = empty($args['link_after']) ? '' : $args['link_after'];
+            $atts = [];
+            $atts['href'] = get_permalink($page->ID);
+            $atts['aria-current'] = $page->ID === $current_page_id ? 'page' : '';
             /** This filter is documented in wp-includes/class-walker-page.php */
             $atts = apply_filters('page_menu_link_attributes', $atts, $page, $depth, $args, $current_page_id);
-
             $attributes = '';
             foreach ($atts as $attr => $value) {
-                if (! empty($value)) {
-                    $value       = ('href' === $attr) ? esc_url($value) : esc_attr($value);
+                if (!empty($value)) {
+                    $value = 'href' === $attr ? esc_url($value) : esc_attr($value);
                     $attributes .= ' ' . $attr . '="' . $value . '"';
                 }
             }
-
             $args['list_item_before'] = '';
-            $args['list_item_after']  = '';
-
+            $args['list_item_after'] = '';
             // Wrap the link in a div and append a sub menu toggle.
             if (isset($args['show_toggles']) && true === $args['show_toggles']) {
                 // Wrap the menu item link contents in a div, used for positioning.
                 $args['list_item_before'] = '<div class="ancestor-wrapper">';
-                $args['list_item_after']  = '';
-
+                $args['list_item_after'] = '';
                 // Add a toggle to items with children.
-                if (isset($args['pages_with_children'][ $page->ID ])) {
-
+                if (isset($args['pages_with_children'][$page->ID])) {
                     $toggle_target_string = '.menu-modal .page-item-' . $page->ID . ' > ul';
-                    $toggle_duration      = twentytwenty_toggle_duration();
-
+                    $toggle_duration = twentytwenty_toggle_duration();
                     // Add the sub menu toggle.
-                    $args['list_item_after'] .= '<button class="toggle sub-menu-toggle fill-children-current-color" data-toggle-target="' . $toggle_target_string . '" data-toggle-type="slidetoggle" data-toggle-duration="' . absint($toggle_duration) . '" aria-expanded="false"><span class="screen-reader-text">' .
-                        /* translators: Hidden accessibility text. */
-                        __('Show sub menu', 'twentytwenty') .
-                    '</span>' . twentytwenty_get_theme_svg('chevron-down') . '</button>';
-
+                    $args['list_item_after'] .= '<button class="toggle sub-menu-toggle fill-children-current-color" data-toggle-target="' . $toggle_target_string . '" data-toggle-type="slidetoggle" data-toggle-duration="' . absint($toggle_duration) . '" aria-expanded="false"><span class="screen-reader-text">' . __('Show sub menu', 'twentytwenty') . '</span>' . twentytwenty_get_theme_svg('chevron-down') . '</button>';
                 }
-
                 // Close the wrapper.
                 $args['list_item_after'] .= '</div><!-- .ancestor-wrapper -->';
             }
-
             // Add icons to menu items with children.
             if (isset($args['show_sub_menu_icons']) && true === $args['show_sub_menu_icons']) {
-                if (isset($args['pages_with_children'][ $page->ID ])) {
+                if (isset($args['pages_with_children'][$page->ID])) {
                     $args['list_item_after'] = '<span class="icon"></span>';
                 }
             }
-
             $output .= $indent . sprintf(
                 '<li%s>%s<a%s>%s%s%s</a>%s',
                 $css_classes,
@@ -142,16 +119,14 @@ if (! class_exists('TwentyTwenty_Walker_Page')) {
                 $args['link_after'],
                 $args['list_item_after']
             );
-
-            if (! empty($args['show_date'])) {
+            if (!empty($args['show_date'])) {
                 if ('modified' === $args['show_date']) {
                     $time = $page->post_modified;
                 } else {
                     $time = $page->post_date;
                 }
-
                 $date_format = empty($args['date_format']) ? '' : $args['date_format'];
-                $output     .= ' ' . mysql2date($date_format, $time);
+                $output .= ' ' . mysql2date($date_format, $time);
             }
         }
     }

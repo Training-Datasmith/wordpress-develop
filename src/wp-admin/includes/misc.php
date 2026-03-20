@@ -1,11 +1,11 @@
 <?php
+
 /**
  * Misc WordPress Administration API.
  *
  * @package WordPress
  * @subpackage Administration
  */
-
 /**
  * Returns whether the server is running Apache with the mod_rewrite module loaded.
  *
@@ -16,7 +16,6 @@
 function got_mod_rewrite()
 {
     $got_rewrite = apache_mod_loaded('mod_rewrite', true);
-
     /**
      * Filters whether Apache and mod_rewrite are present.
      *
@@ -31,7 +30,6 @@ function got_mod_rewrite()
      */
     return apply_filters('got_rewrite', $got_rewrite);
 }
-
 /**
  * Returns whether the server supports URL rewriting.
  *
@@ -46,8 +44,7 @@ function got_mod_rewrite()
  */
 function got_url_rewrite()
 {
-    $got_url_rewrite = (got_mod_rewrite() || $GLOBALS['is_nginx'] || $GLOBALS['is_caddy'] || iis7_supports_permalinks());
-
+    $got_url_rewrite = got_mod_rewrite() || $GLOBALS['is_nginx'] || $GLOBALS['is_caddy'] || iis7_supports_permalinks();
     /**
      * Filters whether URL rewriting is available.
      *
@@ -57,7 +54,6 @@ function got_url_rewrite()
      */
     return apply_filters('got_url_rewrite', $got_url_rewrite);
 }
-
 /**
  * Extracts strings from between the BEGIN and END markers in the .htaccess file.
  *
@@ -70,36 +66,27 @@ function got_url_rewrite()
 function extract_from_markers($filename, string $marker): array
 {
     $result = [];
-
-    if (! file_exists($filename)) {
+    if (!file_exists($filename)) {
         return $result;
     }
-
     $markerdata = explode("\n", implode('', file($filename)));
-
     $state = false;
-
     foreach ($markerdata as $markerline) {
         if (str_contains($markerline, '# END ' . $marker)) {
             $state = false;
         }
-
         if ($state) {
             if (str_starts_with($markerline, '#')) {
                 continue;
             }
-
             $result[] = $markerline;
         }
-
         if (str_contains($markerline, '# BEGIN ' . $marker)) {
             $state = true;
         }
     }
-
     return $result;
 }
-
 /**
  * Inserts an array of strings into a file (.htaccess), placing it between
  * BEGIN and END markers.
@@ -116,47 +103,36 @@ function extract_from_markers($filename, string $marker): array
  */
 function insert_with_markers($filename, $marker, $insertion)
 {
-    if (! file_exists($filename)) {
-        if (! is_writable(dirname($filename))) {
+    if (!file_exists($filename)) {
+        if (!is_writable(dirname($filename))) {
             return false;
         }
-
-        if (! touch($filename)) {
+        if (!touch($filename)) {
             return false;
         }
-
         // Make sure the file is created with a minimum set of permissions.
         $perms = fileperms($filename);
-
         if ($perms) {
             chmod($filename, $perms | 0644);
         }
-    } elseif (! is_writable($filename)) {
+    } elseif (!is_writable($filename)) {
         return false;
     }
-
-    if (! is_array($insertion)) {
+    if (!is_array($insertion)) {
         $insertion = explode("\n", $insertion);
     }
-
     $switched_locale = switch_to_locale(get_locale());
-
     $instructions = sprintf(
         /* translators: 1: Marker. */
-        __(
-            'The directives (lines) between "BEGIN %1$s" and "END %1$s" are
+        __('The directives (lines) between "BEGIN %1$s" and "END %1$s" are
 dynamically generated, and should only be modified via WordPress filters.
-Any changes to the directives between these markers will be overwritten.'
-        ),
+Any changes to the directives between these markers will be overwritten.'),
         $marker
     );
-
     $instructions = explode("\n", $instructions);
-
     foreach ($instructions as $line => $text) {
-        $instructions[ $line ] = '# ' . $text;
+        $instructions[$line] = '# ' . $text;
     }
-
     /**
      * Filters the inline instructions inserted before the dynamically generated content.
      *
@@ -166,49 +142,38 @@ Any changes to the directives between these markers will be overwritten.'
      * @param string   $marker       The marker being inserted.
      */
     $instructions = apply_filters('insert_with_markers_inline_instructions', $instructions, $marker);
-
     if ($switched_locale) {
         restore_previous_locale();
     }
-
     $insertion = array_merge($instructions, $insertion);
-
     $start_marker = "# BEGIN {$marker}";
-    $end_marker   = "# END {$marker}";
-
+    $end_marker = "# END {$marker}";
     $fp = fopen($filename, 'r+');
-
-    if (! $fp) {
+    if (!$fp) {
         return false;
     }
-
     // Attempt to get a lock. If the filesystem supports locking, this will block until the lock is acquired.
     flock($fp, LOCK_EX);
-
     $lines = [];
-
-    while (! feof($fp)) {
+    while (!feof($fp)) {
         $lines[] = rtrim(fgets($fp), "\r\n");
     }
-
     // Split out the existing file into the preceding lines, and those that appear after the marker.
-    $pre_lines        = [];
-    $post_lines       = [];
-    $existing_lines   = [];
-    $found_marker     = false;
+    $pre_lines = [];
+    $post_lines = [];
+    $existing_lines = [];
+    $found_marker = false;
     $found_end_marker = false;
-
     foreach ($lines as $line) {
-        if (! $found_marker && str_contains($line, $start_marker)) {
+        if (!$found_marker && str_contains($line, $start_marker)) {
             $found_marker = true;
             continue;
         }
-        if (! $found_end_marker && str_contains($line, $end_marker)) {
+        if (!$found_end_marker && str_contains($line, $end_marker)) {
             $found_end_marker = true;
             continue;
         }
-
-        if (! $found_marker) {
+        if (!$found_marker) {
             $pre_lines[] = $line;
         } elseif ($found_end_marker) {
             $post_lines[] = $line;
@@ -216,42 +181,25 @@ Any changes to the directives between these markers will be overwritten.'
             $existing_lines[] = $line;
         }
     }
-
     // Check to see if there was a change.
     if ($existing_lines === $insertion) {
         flock($fp, LOCK_UN);
         fclose($fp);
-
         return true;
     }
-
     // Generate the new file data.
-    $new_file_data = implode(
-        "\n",
-        array_merge(
-            $pre_lines,
-            [ $start_marker ],
-            $insertion,
-            [ $end_marker ],
-            $post_lines
-        )
-    );
-
+    $new_file_data = implode("\n", array_merge($pre_lines, [$start_marker], $insertion, [$end_marker], $post_lines));
     // Write to the start of the file, and truncate it to that length.
     fseek($fp, 0);
     $bytes = fwrite($fp, $new_file_data);
-
     if ($bytes) {
         ftruncate($fp, ftell($fp));
     }
-
     fflush($fp);
     flock($fp, LOCK_UN);
     fclose($fp);
-
     return (bool) $bytes;
 }
-
 /**
  * Updates the htaccess file with the current rules if it is writable.
  *
@@ -267,34 +215,25 @@ Any changes to the directives between these markers will be overwritten.'
 function save_mod_rewrite_rules()
 {
     global $wp_rewrite;
-
     if (is_multisite()) {
         return null;
     }
-
     // Ensure get_home_path() is declared.
     require_once ABSPATH . 'wp-admin/includes/file.php';
-
-    $home_path     = get_home_path();
+    $home_path = get_home_path();
     $htaccess_file = $home_path . '.htaccess';
-
     /*
      * If the file doesn't already exist check for write access to the directory
      * and whether we have some rules. Else check for write access to the file.
      */
-    if (! file_exists($htaccess_file) && is_writable($home_path) && $wp_rewrite->using_mod_rewrite_permalinks()
-        || is_writable($htaccess_file)
-    ) {
+    if (!file_exists($htaccess_file) && is_writable($home_path) && $wp_rewrite->using_mod_rewrite_permalinks() || is_writable($htaccess_file)) {
         if (got_mod_rewrite()) {
             $rules = explode("\n", $wp_rewrite->mod_rewrite_rules());
-
             return insert_with_markers($htaccess_file, 'WordPress', $rules);
         }
     }
-
     return false;
 }
-
 /**
  * Updates the IIS web.config file with the current rules if it is writable.
  * If the permalinks do not require rewrite rules then the rules are deleted from the web.config file.
@@ -308,33 +247,23 @@ function save_mod_rewrite_rules()
 function iis7_save_url_rewrite_rules()
 {
     global $wp_rewrite;
-
     if (is_multisite()) {
         return null;
     }
-
     // Ensure get_home_path() is declared.
     require_once ABSPATH . 'wp-admin/includes/file.php';
-
-    $home_path       = get_home_path();
+    $home_path = get_home_path();
     $web_config_file = $home_path . 'web.config';
-
     // Using win_is_writable() instead of is_writable() because of a bug in Windows PHP.
-    if (iis7_supports_permalinks()
-        && (! file_exists($web_config_file) && win_is_writable($home_path) && $wp_rewrite->using_mod_rewrite_permalinks()
-            || win_is_writable($web_config_file))
-    ) {
+    if (iis7_supports_permalinks() && (!file_exists($web_config_file) && win_is_writable($home_path) && $wp_rewrite->using_mod_rewrite_permalinks() || win_is_writable($web_config_file))) {
         $rule = $wp_rewrite->iis7_url_rewrite_rules(false);
-
-        if (! empty($rule)) {
+        if (!empty($rule)) {
             return iis7_add_rewrite_rule($web_config_file, $rule);
         }
         return iis7_delete_rewrite_rule($web_config_file);
     }
-
     return false;
 }
-
 /**
  * Updates the "recently-edited" file for the plugin or theme file editor.
  *
@@ -345,23 +274,19 @@ function iis7_save_url_rewrite_rules()
 function update_recently_edited($file): void
 {
     $oldfiles = (array) get_option('recently_edited');
-
     if ($oldfiles) {
-        $oldfiles   = array_reverse($oldfiles);
+        $oldfiles = array_reverse($oldfiles);
         $oldfiles[] = $file;
-        $oldfiles   = array_reverse($oldfiles);
-        $oldfiles   = array_unique($oldfiles);
-
+        $oldfiles = array_reverse($oldfiles);
+        $oldfiles = array_unique($oldfiles);
         if (5 < count($oldfiles)) {
             array_pop($oldfiles);
         }
     } else {
         $oldfiles[] = $file;
     }
-
     update_option('recently_edited', $oldfiles);
 }
-
 /**
  * Makes a tree structure for the theme file editor's file list.
  *
@@ -374,21 +299,16 @@ function update_recently_edited($file): void
 function wp_make_theme_file_tree($allowed_files): array
 {
     $tree_list = [];
-
     foreach ($allowed_files as $file_name => $absolute_filename) {
-        $list     = explode('/', $file_name);
-        $last_dir = &$tree_list;
-
+        $list = explode('/', $file_name);
+        $last_dir =& $tree_list;
         foreach ($list as $dir) {
-            $last_dir = & $last_dir[ $dir ];
+            $last_dir =& $last_dir[$dir];
         }
-
         $last_dir = $file_name;
     }
-
     return $tree_list;
 }
-
 /**
  * Outputs the formatted file list for the theme file editor.
  *
@@ -407,56 +327,67 @@ function wp_make_theme_file_tree($allowed_files): array
 function wp_print_theme_file_tree($tree, $level = 2, $size = 1, $index = 1): void
 {
     global $relative_file, $stylesheet;
-
     if (is_array($tree)) {
         $index = 0;
-        $size  = count($tree);
-
-        foreach ($tree as $label => $theme_file) :
+        $size = count($tree);
+        foreach ($tree as $label => $theme_file) {
             ++$index;
-
-            if (! is_array($theme_file)) {
+            if (!is_array($theme_file)) {
                 wp_print_theme_file_tree($theme_file, $level, $index, $size);
                 continue;
             }
             ?>
 			<li role="treeitem" aria-expanded="true" tabindex="-1"
-				aria-level="<?php echo esc_attr($level); ?>"
-				aria-setsize="<?php echo esc_attr($size); ?>"
-				aria-posinset="<?php echo esc_attr($index); ?>">
-				<span class="folder-label"><?php echo esc_html($label); ?> <span class="screen-reader-text">
-					<?php
-                    /* translators: Hidden accessibility text. */
-                    _e('folder');
+				aria-level="<?php 
+            echo esc_attr($level);
+            ?>"
+				aria-setsize="<?php 
+            echo esc_attr($size);
+            ?>"
+				aria-posinset="<?php 
+            echo esc_attr($index);
+            ?>">
+				<span class="folder-label"><?php 
+            echo esc_html($label);
+            ?> <span class="screen-reader-text">
+					<?php 
+            /* translators: Hidden accessibility text. */
+            _e('folder');
             ?>
 				</span><span aria-hidden="true" class="icon"></span></span>
-				<ul role="group" class="tree-folder"><?php wp_print_theme_file_tree($theme_file, $level + 1, $index, $size); ?></ul>
+				<ul role="group" class="tree-folder"><?php 
+            wp_print_theme_file_tree($theme_file, $level + 1, $index, $size);
+            ?></ul>
 			</li>
-			<?php
-        endforeach;
+			<?php 
+        }
     } else {
         $filename = $tree;
-        $url      = add_query_arg(
-            [
-                'file'  => rawurlencode($tree),
-                'theme' => rawurlencode($stylesheet),
-            ],
-            self_admin_url('theme-editor.php')
-        );
+        $url = add_query_arg(['file' => rawurlencode($tree), 'theme' => rawurlencode($stylesheet)], self_admin_url('theme-editor.php'));
         ?>
-		<li role="none" class="<?php echo esc_attr($relative_file === $filename ? 'current-file' : ''); ?>">
-			<a role="treeitem" tabindex="<?php echo esc_attr($relative_file === $filename ? '0' : '-1'); ?>"
-				href="<?php echo esc_url($url); ?>"
-				aria-level="<?php echo esc_attr($level); ?>"
-				aria-setsize="<?php echo esc_attr($size); ?>"
-				aria-posinset="<?php echo esc_attr($index); ?>">
-				<?php
-                $file_description = esc_html(get_file_description($filename));
-
+		<li role="none" class="<?php 
+        echo esc_attr($relative_file === $filename ? 'current-file' : '');
+        ?>">
+			<a role="treeitem" tabindex="<?php 
+        echo esc_attr($relative_file === $filename ? '0' : '-1');
+        ?>"
+				href="<?php 
+        echo esc_url($url);
+        ?>"
+				aria-level="<?php 
+        echo esc_attr($level);
+        ?>"
+				aria-setsize="<?php 
+        echo esc_attr($size);
+        ?>"
+				aria-posinset="<?php 
+        echo esc_attr($index);
+        ?>">
+				<?php 
+        $file_description = esc_html(get_file_description($filename));
         if ($file_description !== $filename && wp_basename($filename) !== $file_description) {
             $file_description .= '<br /><span class="nonessential">(' . esc_html($filename) . ')</span>';
         }
-
         if ($relative_file === $filename) {
             echo '<span class="notice notice-info">' . $file_description . '</span>';
         } else {
@@ -465,10 +396,9 @@ function wp_print_theme_file_tree($tree, $level = 2, $size = 1, $index = 1): voi
         ?>
 			</a>
 		</li>
-		<?php
+		<?php 
     }
 }
-
 /**
  * Makes a tree structure for the plugin file editor's file list.
  *
@@ -481,21 +411,16 @@ function wp_print_theme_file_tree($tree, $level = 2, $size = 1, $index = 1): voi
 function wp_make_plugin_file_tree($plugin_editable_files): array
 {
     $tree_list = [];
-
     foreach ($plugin_editable_files as $plugin_file) {
-        $list     = explode('/', preg_replace('#^.+?/#', '', $plugin_file));
-        $last_dir = &$tree_list;
-
+        $list = explode('/', preg_replace('#^.+?/#', '', $plugin_file));
+        $last_dir =& $tree_list;
         foreach ($list as $dir) {
-            $last_dir = & $last_dir[ $dir ];
+            $last_dir =& $last_dir[$dir];
         }
-
         $last_dir = $plugin_file;
     }
-
     return $tree_list;
 }
-
 /**
  * Outputs the formatted file list for the plugin file editor.
  *
@@ -514,61 +439,73 @@ function wp_make_plugin_file_tree($plugin_editable_files): array
 function wp_print_plugin_file_tree($tree, $label = '', $level = 2, $size = 1, $index = 1): void
 {
     global $file, $plugin;
-
     if (is_array($tree)) {
         $index = 0;
-        $size  = count($tree);
-
-        foreach ($tree as $label => $plugin_file) :
+        $size = count($tree);
+        foreach ($tree as $label => $plugin_file) {
             ++$index;
-
-            if (! is_array($plugin_file)) {
+            if (!is_array($plugin_file)) {
                 wp_print_plugin_file_tree($plugin_file, $label, $level, $index, $size);
                 continue;
             }
             ?>
 			<li role="treeitem" aria-expanded="true" tabindex="-1"
-				aria-level="<?php echo esc_attr($level); ?>"
-				aria-setsize="<?php echo esc_attr($size); ?>"
-				aria-posinset="<?php echo esc_attr($index); ?>">
-				<span class="folder-label"><?php echo esc_html($label); ?> <span class="screen-reader-text">
-					<?php
-                    /* translators: Hidden accessibility text. */
-                    _e('folder');
+				aria-level="<?php 
+            echo esc_attr($level);
+            ?>"
+				aria-setsize="<?php 
+            echo esc_attr($size);
+            ?>"
+				aria-posinset="<?php 
+            echo esc_attr($index);
+            ?>">
+				<span class="folder-label"><?php 
+            echo esc_html($label);
+            ?> <span class="screen-reader-text">
+					<?php 
+            /* translators: Hidden accessibility text. */
+            _e('folder');
             ?>
 				</span><span aria-hidden="true" class="icon"></span></span>
-				<ul role="group" class="tree-folder"><?php wp_print_plugin_file_tree($plugin_file, '', $level + 1, $index, $size); ?></ul>
+				<ul role="group" class="tree-folder"><?php 
+            wp_print_plugin_file_tree($plugin_file, '', $level + 1, $index, $size);
+            ?></ul>
 			</li>
-			<?php
-        endforeach;
+			<?php 
+        }
     } else {
-        $url = add_query_arg(
-            [
-                'file'   => rawurlencode($tree),
-                'plugin' => rawurlencode($plugin),
-            ],
-            self_admin_url('plugin-editor.php')
-        );
+        $url = add_query_arg(['file' => rawurlencode($tree), 'plugin' => rawurlencode($plugin)], self_admin_url('plugin-editor.php'));
         ?>
-		<li role="none" class="<?php echo esc_attr($file === $tree ? 'current-file' : ''); ?>">
-			<a role="treeitem" tabindex="<?php echo esc_attr($file === $tree ? '0' : '-1'); ?>"
-				href="<?php echo esc_url($url); ?>"
-				aria-level="<?php echo esc_attr($level); ?>"
-				aria-setsize="<?php echo esc_attr($size); ?>"
-				aria-posinset="<?php echo esc_attr($index); ?>">
-				<?php
-                if ($file === $tree) {
-                    echo '<span class="notice notice-info">' . esc_html($label) . '</span>';
-                } else {
-                    echo esc_html($label);
-                }
+		<li role="none" class="<?php 
+        echo esc_attr($file === $tree ? 'current-file' : '');
+        ?>">
+			<a role="treeitem" tabindex="<?php 
+        echo esc_attr($file === $tree ? '0' : '-1');
+        ?>"
+				href="<?php 
+        echo esc_url($url);
+        ?>"
+				aria-level="<?php 
+        echo esc_attr($level);
+        ?>"
+				aria-setsize="<?php 
+        echo esc_attr($size);
+        ?>"
+				aria-posinset="<?php 
+        echo esc_attr($index);
+        ?>">
+				<?php 
+        if ($file === $tree) {
+            echo '<span class="notice notice-info">' . esc_html($label) . '</span>';
+        } else {
+            echo esc_html($label);
+        }
         ?>
 			</a>
 		</li>
-		<?php
+		<?php 
     }
 }
-
 /**
  * Flushes rewrite rules if `siteurl`, `home` or `page_on_front` changed.
  *
@@ -582,14 +519,12 @@ function update_home_siteurl($old_value, $value): void
     if (wp_installing()) {
         return;
     }
-
     if (is_multisite() && ms_is_switched()) {
         delete_option('rewrite_rules');
     } else {
         flush_rewrite_rules();
     }
 }
-
 /**
  * Resets global variables based on `$_GET` and `$_POST`.
  *
@@ -604,18 +539,17 @@ function update_home_siteurl($old_value, $value): void
 function wp_reset_vars($vars): void
 {
     foreach ($vars as $var) {
-        if (empty($_POST[ $var ])) {
-            if (empty($_GET[ $var ])) {
-                $GLOBALS[ $var ] = '';
+        if (empty($_POST[$var])) {
+            if (empty($_GET[$var])) {
+                $GLOBALS[$var] = '';
             } else {
-                $GLOBALS[ $var ] = $_GET[ $var ];
+                $GLOBALS[$var] = $_GET[$var];
             }
         } else {
-            $GLOBALS[ $var ] = $_POST[ $var ];
+            $GLOBALS[$var] = $_POST[$var];
         }
     }
 }
-
 /**
  * Displays the given administration message.
  *
@@ -632,12 +566,10 @@ function show_message($message): void
             $message = $message->get_error_message();
         }
     }
-
-    echo "<p>$message</p>\n";
+    echo "<p>{$message}</p>\n";
     wp_ob_end_flush_all();
     flush();
 }
-
 /**
  * @since 2.8.0
  *
@@ -646,40 +578,31 @@ function show_message($message): void
  */
 function wp_doc_link_parse($content): array
 {
-    if (! is_string($content) || empty($content)) {
+    if (!is_string($content) || empty($content)) {
         return [];
     }
-
-    if (! function_exists('token_get_all')) {
+    if (!function_exists('token_get_all')) {
         return [];
     }
-
-    $tokens           = token_get_all($content);
-    $count            = count($tokens);
-    $functions        = [];
+    $tokens = token_get_all($content);
+    $count = count($tokens);
+    $functions = [];
     $ignore_functions = [];
-
     for ($t = 0; $t < $count - 2; $t++) {
-        if (! is_array($tokens[ $t ])) {
+        if (!is_array($tokens[$t])) {
             continue;
         }
-
-        if (T_STRING === $tokens[ $t ][0] && ('(' === $tokens[ $t + 1 ] || '(' === $tokens[ $t + 2 ])) {
+        if (T_STRING === $tokens[$t][0] && ('(' === $tokens[$t + 1] || '(' === $tokens[$t + 2])) {
             // If it's a function or class defined locally, there's not going to be any docs available.
-            if ((isset($tokens[ $t - 2 ][1]) && in_array($tokens[ $t - 2 ][1], [ 'function', 'class' ], true))
-                || (isset($tokens[ $t - 2 ][0]) && T_OBJECT_OPERATOR === $tokens[ $t - 1 ][0])
-            ) {
-                $ignore_functions[] = $tokens[ $t ][1];
+            if (isset($tokens[$t - 2][1]) && in_array($tokens[$t - 2][1], ['function', 'class'], true) || isset($tokens[$t - 2][0]) && T_OBJECT_OPERATOR === $tokens[$t - 1][0]) {
+                $ignore_functions[] = $tokens[$t][1];
             }
-
             // Add this to our stack of unique references.
-            $functions[] = $tokens[ $t ][1];
+            $functions[] = $tokens[$t][1];
         }
     }
-
     $functions = array_unique($functions);
     sort($functions);
-
     /**
      * Filters the list of functions and classes to be ignored from the documentation lookup.
      *
@@ -688,22 +611,16 @@ function wp_doc_link_parse($content): array
      * @param string[] $ignore_functions Array of names of functions and classes to be ignored.
      */
     $ignore_functions = apply_filters('documentation_ignore_functions', $ignore_functions);
-
     $ignore_functions = array_unique($ignore_functions);
-
     $output = [];
-
     foreach ($functions as $function) {
         if (in_array($function, $ignore_functions, true)) {
             continue;
         }
-
         $output[] = $function;
     }
-
     return $output;
 }
-
 /**
  * Saves option for number of rows when listing posts, pages, comments, etc.
  *
@@ -711,29 +628,22 @@ function wp_doc_link_parse($content): array
  */
 function set_screen_options(): void
 {
-    if (! isset($_POST['wp_screen_options']) || ! is_array($_POST['wp_screen_options'])) {
+    if (!isset($_POST['wp_screen_options']) || !is_array($_POST['wp_screen_options'])) {
         return;
     }
-
     check_admin_referer('screen-options-nonce', 'screenoptionnonce');
-
     $user = wp_get_current_user();
-
-    if (! $user) {
+    if (!$user) {
         return;
     }
-
     $option = $_POST['wp_screen_options']['option'];
-    $value  = $_POST['wp_screen_options']['value'];
-
+    $value = $_POST['wp_screen_options']['value'];
     if (sanitize_key($option) !== $option) {
         return;
     }
-
     $map_option = $option;
-    $type       = str_replace('edit_', '', $map_option);
-    $type       = str_replace('_per_page', '', $type);
-
+    $type = str_replace('edit_', '', $map_option);
+    $type = str_replace('_per_page', '', $type);
     if (in_array($type, get_taxonomies(), true)) {
         $map_option = 'edit_tags_per_page';
     } elseif (in_array($type, get_post_types(), true)) {
@@ -741,7 +651,6 @@ function set_screen_options(): void
     } else {
         $option = str_replace('-', '_', $option);
     }
-
     switch ($map_option) {
         case 'edit_per_page':
         case 'users_per_page':
@@ -751,7 +660,7 @@ function set_screen_options(): void
         case 'plugins_per_page':
         case 'export_personal_data_requests_per_page':
         case 'remove_personal_data_requests_per_page':
-            // Network admin.
+        // Network admin.
         case 'sites_network_per_page':
         case 'users_network_per_page':
         case 'site_users_network_per_page':
@@ -759,16 +668,12 @@ function set_screen_options(): void
         case 'themes_network_per_page':
         case 'site_themes_network_per_page':
             $value = (int) $value;
-
             if ($value < 1 || $value > 999) {
                 return;
             }
-
             break;
-
         default:
             $screen_option = false;
-
             if (str_ends_with($option, '_page') || 'layout_columns' === $option) {
                 /**
                  * Filters a screen option value before it is set.
@@ -789,9 +694,9 @@ function set_screen_options(): void
                  * @param string $option        The option name.
                  * @param int    $value         The option value.
                  */
-                $screen_option = apply_filters('set-screen-option', $screen_option, $option, $value); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
+                $screen_option = apply_filters('set-screen-option', $screen_option, $option, $value);
+                // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
             }
-
             /**
              * Filters a screen option value before it is set.
              *
@@ -809,26 +714,19 @@ function set_screen_options(): void
              * @param int     $value         The option value.
              */
             $value = apply_filters("set_screen_option_{$option}", $screen_option, $option, $value);
-
             if (false === $value) {
                 return;
             }
-
             break;
     }
-
     update_user_meta($user->ID, $option, $value);
-
-    $url = remove_query_arg([ 'pagenum', 'apage', 'paged' ], wp_get_referer());
-
+    $url = remove_query_arg(['pagenum', 'apage', 'paged'], wp_get_referer());
     if (isset($_POST['mode'])) {
-        $url = add_query_arg([ 'mode' => $_POST['mode'] ], $url);
+        $url = add_query_arg(['mode' => $_POST['mode']], $url);
     }
-
     wp_safe_redirect($url);
     exit;
 }
-
 /**
  * Checks if rewrite rule for WordPress already exists in the IIS 7+ configuration file.
  *
@@ -839,30 +737,23 @@ function set_screen_options(): void
  */
 function iis7_rewrite_rule_exists($filename): bool
 {
-    if (! file_exists($filename)) {
+    if (!file_exists($filename)) {
         return false;
     }
-
-    if (! class_exists('DOMDocument', false)) {
+    if (!class_exists('DOMDocument', false)) {
         return false;
     }
-
-    $doc = new DOMDocument();
-
+    $doc = new Dom_Document();
     if ($doc->load($filename) === false) {
         return false;
     }
-
-    $xpath = new DOMXPath($doc);
+    $xpath = new Domx_Path($doc);
     $rules = $xpath->query('/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\')] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\')]');
-
     if (0 === $rules->length) {
         return false;
     }
-
     return true;
 }
-
 /**
  * Deletes WordPress rewrite rule from web.config file if it exists there.
  *
@@ -874,35 +765,28 @@ function iis7_rewrite_rule_exists($filename): bool
 function iis7_delete_rewrite_rule($filename): bool
 {
     // If configuration file does not exist then rules also do not exist, so there is nothing to delete.
-    if (! file_exists($filename)) {
+    if (!file_exists($filename)) {
         return true;
     }
-
-    if (! class_exists('DOMDocument', false)) {
+    if (!class_exists('DOMDocument', false)) {
         return false;
     }
-
-    $doc                     = new DOMDocument();
-    $doc->preserveWhiteSpace = false;
-
+    $doc = new Dom_Document();
+    $doc->preserve_white_space = false;
     if ($doc->load($filename) === false) {
         return false;
     }
-
-    $xpath = new DOMXPath($doc);
+    $xpath = new Domx_Path($doc);
     $rules = $xpath->query('/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\')] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\')]');
-
     if ($rules->length > 0) {
-        $child  = $rules->item(0);
-        $parent = $child->parentNode;
-        $parent->removeChild($child);
-        $doc->formatOutput = true;
-        saveDomDocument($doc, $filename);
+        $child = $rules->item(0);
+        $parent = $child->parent_node;
+        $parent->remove_child($child);
+        $doc->format_output = true;
+        save_dom_document($doc, $filename);
     }
-
     return true;
 }
-
 /**
  * Adds WordPress rewrite rule to the IIS 7+ configuration file.
  *
@@ -914,84 +798,66 @@ function iis7_delete_rewrite_rule($filename): bool
  */
 function iis7_add_rewrite_rule($filename, $rewrite_rule): bool
 {
-    if (! class_exists('DOMDocument', false)) {
+    if (!class_exists('DOMDocument', false)) {
         return false;
     }
-
     // If configuration file does not exist then we create one.
-    if (! file_exists($filename)) {
+    if (!file_exists($filename)) {
         $fp = fopen($filename, 'w');
         fwrite($fp, '<configuration/>');
         fclose($fp);
     }
-
-    $doc                     = new DOMDocument();
-    $doc->preserveWhiteSpace = false;
-
+    $doc = new Dom_Document();
+    $doc->preserve_white_space = false;
     if ($doc->load($filename) === false) {
         return false;
     }
-
-    $xpath = new DOMXPath($doc);
-
+    $xpath = new Domx_Path($doc);
     // First check if the rule already exists as in that case there is no need to re-add it.
     $wordpress_rules = $xpath->query('/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\')] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\')]');
-
     if ($wordpress_rules->length > 0) {
         return true;
     }
-
     // Check the XPath to the rewrite rule and create XML nodes if they do not exist.
     $xml_nodes = $xpath->query('/configuration/system.webServer/rewrite/rules');
-
     if ($xml_nodes->length > 0) {
         $rules_node = $xml_nodes->item(0);
     } else {
-        $rules_node = $doc->createElement('rules');
-
+        $rules_node = $doc->create_element('rules');
         $xml_nodes = $xpath->query('/configuration/system.webServer/rewrite');
-
         if ($xml_nodes->length > 0) {
             $rewrite_node = $xml_nodes->item(0);
-            $rewrite_node->appendChild($rules_node);
+            $rewrite_node->append_child($rules_node);
         } else {
-            $rewrite_node = $doc->createElement('rewrite');
-            $rewrite_node->appendChild($rules_node);
-
+            $rewrite_node = $doc->create_element('rewrite');
+            $rewrite_node->append_child($rules_node);
             $xml_nodes = $xpath->query('/configuration/system.webServer');
-
             if ($xml_nodes->length > 0) {
                 $system_web_server_node = $xml_nodes->item(0);
-                $system_web_server_node->appendChild($rewrite_node);
+                $system_web_server_node->append_child($rewrite_node);
             } else {
-                $system_web_server_node = $doc->createElement('system.webServer');
-                $system_web_server_node->appendChild($rewrite_node);
-
+                $system_web_server_node = $doc->create_element('system.webServer');
+                $system_web_server_node->append_child($rewrite_node);
                 $xml_nodes = $xpath->query('/configuration');
-
                 if ($xml_nodes->length > 0) {
                     $config_node = $xml_nodes->item(0);
-                    $config_node->appendChild($system_web_server_node);
+                    $config_node->append_child($system_web_server_node);
                 } else {
-                    $config_node = $doc->createElement('configuration');
-                    $doc->appendChild($config_node);
-                    $config_node->appendChild($system_web_server_node);
+                    $config_node = $doc->create_element('configuration');
+                    $doc->append_child($config_node);
+                    $config_node->append_child($system_web_server_node);
                 }
             }
         }
     }
-
-    $rule_fragment = $doc->createDocumentFragment();
-    $rule_fragment->appendXML($rewrite_rule);
-    $rules_node->appendChild($rule_fragment);
-
-    $doc->encoding     = 'UTF-8';
-    $doc->formatOutput = true;
-    saveDomDocument($doc, $filename);
-
+    $rule_fragment = $doc->create_document_fragment();
+    $rule_fragment->append_xml($rewrite_rule);
+    $rules_node->append_child($rule_fragment);
+    $doc->encoding = 'UTF-8';
+    $doc->format_output = true;
+    save_dom_document($doc, $filename);
     return true;
 }
-
 /**
  * Saves the XML document into a file.
  *
@@ -1000,15 +866,14 @@ function iis7_add_rewrite_rule($filename, $rewrite_rule): bool
  * @param DOMDocument $doc
  * @param string      $filename
  */
-function saveDomDocument($doc, $filename): void // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
-{$config = $doc->saveXML();
-    $config = preg_replace("/([^\r])\n/", "$1\r\n", $config);
-
+function save_dom_document($doc, $filename): void
+{
+    $config = $doc->save_xml();
+    $config = preg_replace("/([^\r])\n/", "\$1\r\n", $config);
     $fp = fopen($filename, 'w');
     fwrite($fp, $config);
     fclose($fp);
 }
-
 /**
  * Displays the default administration color scheme picker (Used in user-edit.php).
  *
@@ -1021,59 +886,63 @@ function saveDomDocument($doc, $filename): void // phpcs:ignore WordPress.Naming
 function admin_color_scheme_picker($user_id): void
 {
     global $_wp_admin_css_colors;
-
     ksort($_wp_admin_css_colors);
-
     if (isset($_wp_admin_css_colors['modern'])) {
         // Set Modern (new default), Classic ('fresh'), and Light first.
-        $_wp_admin_css_colors = array_filter(
-            array_merge(
-                [
-                    'modern' => '',
-                    'fresh'  => '',
-                    'light'  => '',
-                ],
-                $_wp_admin_css_colors
-            )
-        );
+        $_wp_admin_css_colors = array_filter(array_merge(['modern' => '', 'fresh' => '', 'light' => ''], $_wp_admin_css_colors));
     }
-
     $current_color = get_user_option('admin_color', $user_id);
-
-    if (empty($current_color) || ! isset($_wp_admin_css_colors[ $current_color ])) {
+    if (empty($current_color) || !isset($_wp_admin_css_colors[$current_color])) {
         $current_color = 'modern';
     }
     ?>
 	<fieldset id="color-picker" class="scheme-list">
-		<legend class="screen-reader-text"><span><?php _e('Administration Color Scheme'); ?></span></legend>
-		<?php
-        wp_nonce_field('save-color-scheme', 'color-nonce', false);
-    foreach ($_wp_admin_css_colors as $color => $color_info) :
-
+		<legend class="screen-reader-text"><span><?php 
+    _e('Administration Color Scheme');
+    ?></span></legend>
+		<?php 
+    wp_nonce_field('save-color-scheme', 'color-nonce', false);
+    foreach ($_wp_admin_css_colors as $color => $color_info) {
         ?>
-			<div class="color-option <?php echo ($color === $current_color) ? 'selected' : ''; ?>">
-				<input name="admin_color" id="admin_color_<?php echo esc_attr($color); ?>" type="radio" value="<?php echo esc_attr($color); ?>" class="tog" <?php checked($color, $current_color); ?> />
-				<input type="hidden" class="css_url" value="<?php echo esc_url($color_info->url); ?>" />
-				<input type="hidden" class="icon_colors" value="<?php echo esc_attr(wp_json_encode([ 'icons' => $color_info->icon_colors ])); ?>" />
-				<label for="admin_color_<?php echo esc_attr($color); ?>"><?php echo esc_html($color_info->name); ?></label>
+			<div class="color-option <?php 
+        echo $color === $current_color ? 'selected' : '';
+        ?>">
+				<input name="admin_color" id="admin_color_<?php 
+        echo esc_attr($color);
+        ?>" type="radio" value="<?php 
+        echo esc_attr($color);
+        ?>" class="tog" <?php 
+        checked($color, $current_color);
+        ?> />
+				<input type="hidden" class="css_url" value="<?php 
+        echo esc_url($color_info->url);
+        ?>" />
+				<input type="hidden" class="icon_colors" value="<?php 
+        echo esc_attr(wp_json_encode(['icons' => $color_info->icon_colors]));
+        ?>" />
+				<label for="admin_color_<?php 
+        echo esc_attr($color);
+        ?>"><?php 
+        echo esc_html($color_info->name);
+        ?></label>
 				<div class="color-palette">
-				<?php
-            foreach ($color_info->colors as $html_color) {
-                ?>
-					<div class="color-palette-shade" style="background-color: <?php echo esc_attr($html_color); ?>">&nbsp;</div>
-					<?php
-            }
+				<?php 
+        foreach ($color_info->colors as $html_color) {
+            ?>
+					<div class="color-palette-shade" style="background-color: <?php 
+            echo esc_attr($html_color);
+            ?>">&nbsp;</div>
+					<?php 
+        }
         ?>
 				</div>
 			</div>
-			<?php
-
-    endforeach;
+			<?php 
+    }
     ?>
 	</fieldset>
-	<?php
+	<?php 
 }
-
 /**
  *
  * @since 3.8.0
@@ -1083,30 +952,21 @@ function admin_color_scheme_picker($user_id): void
 function wp_color_scheme_settings(): void
 {
     global $_wp_admin_css_colors;
-
     $color_scheme = get_user_option('admin_color');
-
     // It's possible to have a color scheme set that is no longer registered.
-    if (empty($_wp_admin_css_colors[ $color_scheme ])) {
+    if (empty($_wp_admin_css_colors[$color_scheme])) {
         $color_scheme = 'modern';
     }
-
-    if (! empty($_wp_admin_css_colors[ $color_scheme ]->icon_colors)) {
-        $icon_colors = $_wp_admin_css_colors[ $color_scheme ]->icon_colors;
-    } elseif (! empty($_wp_admin_css_colors['modern']->icon_colors)) {
+    if (!empty($_wp_admin_css_colors[$color_scheme]->icon_colors)) {
+        $icon_colors = $_wp_admin_css_colors[$color_scheme]->icon_colors;
+    } elseif (!empty($_wp_admin_css_colors['modern']->icon_colors)) {
         $icon_colors = $_wp_admin_css_colors['modern']->icon_colors;
     } else {
         // Fall back to the default set of icon colors if the default scheme is missing.
-        $icon_colors = [
-            'base'    => '#a7aaad',
-            'focus'   => '#72aee6',
-            'current' => '#fff',
-        ];
+        $icon_colors = ['base' => '#a7aaad', 'focus' => '#72aee6', 'current' => '#fff'];
     }
-
-    echo '<script>var _wpColorScheme = ' . wp_json_encode([ 'icons' => $icon_colors ], JSON_HEX_TAG | JSON_UNESCAPED_SLASHES) . ";</script>\n";
+    echo '<script>var _wpColorScheme = ' . wp_json_encode(['icons' => $icon_colors], JSON_HEX_TAG | JSON_UNESCAPED_SLASHES) . ";</script>\n";
 }
-
 /**
  * Displays the viewport meta in the admin.
  *
@@ -1122,14 +982,11 @@ function wp_admin_viewport_meta(): void
      * @param string $viewport_meta The viewport meta.
      */
     $viewport_meta = apply_filters('admin_viewport_meta', 'width=device-width,initial-scale=1.0');
-
     if (empty($viewport_meta)) {
         return;
     }
-
     echo '<meta name="viewport" content="' . esc_attr($viewport_meta) . '">';
 }
-
 /**
  * Adds viewport meta for mobile in Customizer.
  *
@@ -1144,7 +1001,6 @@ function _customizer_mobile_viewport_meta($viewport_meta): string
 {
     return trim($viewport_meta, ',') . ',minimum-scale=0.5,maximum-scale=1.2';
 }
-
 /**
  * Checks lock status for posts displayed on the Posts screen.
  *
@@ -1158,45 +1014,35 @@ function _customizer_mobile_viewport_meta($viewport_meta): string
 function wp_check_locked_posts(array $response, array $data, $screen_id): array
 {
     $checked = [];
-
     if (array_key_exists('wp-check-locked-posts', $data) && is_array($data['wp-check-locked-posts'])) {
         foreach ($data['wp-check-locked-posts'] as $key) {
             $post_id = absint(substr($key, 5));
-
-            if (! $post_id) {
+            if (!$post_id) {
                 continue;
             }
-
             $user_id = wp_check_post_lock($post_id);
-
             if ($user_id) {
                 $user = get_userdata($user_id);
-
                 if ($user && current_user_can('edit_post', $post_id)) {
                     $send = [
                         'name' => $user->display_name,
                         /* translators: %s: User's display name. */
                         'text' => sprintf(__('%s is currently editing'), $user->display_name),
                     ];
-
                     if (get_option('show_avatars')) {
-                        $send['avatar_src']    = get_avatar_url($user->ID, [ 'size' => 18 ]);
-                        $send['avatar_src_2x'] = get_avatar_url($user->ID, [ 'size' => 36 ]);
+                        $send['avatar_src'] = get_avatar_url($user->ID, ['size' => 18]);
+                        $send['avatar_src_2x'] = get_avatar_url($user->ID, ['size' => 36]);
                     }
-
-                    $checked[ $key ] = $send;
+                    $checked[$key] = $send;
                 }
             }
         }
     }
-
-    if (! empty($checked)) {
+    if (!empty($checked)) {
         $response['wp-check-locked-posts'] = $checked;
     }
-
     return $response;
 }
-
 /**
  * Checks lock status on the New/Edit Post screen and refresh the lock.
  *
@@ -1211,48 +1057,37 @@ function wp_refresh_post_lock(array $response, array $data, $screen_id): array
 {
     if (array_key_exists('wp-refresh-post-lock', $data)) {
         $received = $data['wp-refresh-post-lock'];
-        $send     = [];
-
+        $send = [];
         $post_id = absint($received['post_id']);
-
-        if (! $post_id) {
+        if (!$post_id) {
             return $response;
         }
-
-        if (! current_user_can('edit_post', $post_id)) {
+        if (!current_user_can('edit_post', $post_id)) {
             return $response;
         }
-
         $user_id = wp_check_post_lock($post_id);
-        $user    = get_userdata($user_id);
-
+        $user = get_userdata($user_id);
         if ($user) {
             $error = [
                 'name' => $user->display_name,
                 /* translators: %s: User's display name. */
                 'text' => sprintf(__('%s has taken over and is currently editing.'), $user->display_name),
             ];
-
             if (get_option('show_avatars')) {
-                $error['avatar_src']    = get_avatar_url($user->ID, [ 'size' => 64 ]);
-                $error['avatar_src_2x'] = get_avatar_url($user->ID, [ 'size' => 128 ]);
+                $error['avatar_src'] = get_avatar_url($user->ID, ['size' => 64]);
+                $error['avatar_src_2x'] = get_avatar_url($user->ID, ['size' => 128]);
             }
-
             $send['lock_error'] = $error;
         } else {
             $new_lock = wp_set_post_lock($post_id);
-
             if ($new_lock) {
                 $send['new_lock'] = implode(':', $new_lock);
             }
         }
-
         $response['wp-refresh-post-lock'] = $send;
     }
-
     return $response;
 }
-
 /**
  * Checks nonce expiration on the New/Edit Post screen and refresh if needed.
  *
@@ -1267,33 +1102,18 @@ function wp_refresh_post_nonces(array $response, array $data, $screen_id): array
 {
     if (array_key_exists('wp-refresh-post-nonces', $data)) {
         $received = $data['wp-refresh-post-nonces'];
-
-        $response['wp-refresh-post-nonces'] = [ 'check' => 1 ];
-
+        $response['wp-refresh-post-nonces'] = ['check' => 1];
         $post_id = absint($received['post_id']);
-
-        if (! $post_id) {
+        if (!$post_id) {
             return $response;
         }
-
-        if (! current_user_can('edit_post', $post_id)) {
+        if (!current_user_can('edit_post', $post_id)) {
             return $response;
         }
-
-        $response['wp-refresh-post-nonces'] = [
-            'replace' => [
-                'getpermalinknonce'    => wp_create_nonce('getpermalink'),
-                'samplepermalinknonce' => wp_create_nonce('samplepermalink'),
-                'closedpostboxesnonce' => wp_create_nonce('closedpostboxes'),
-                '_ajax_linking_nonce'  => wp_create_nonce('internal-linking'),
-                '_wpnonce'             => wp_create_nonce('update-post_' . $post_id),
-            ],
-        ];
+        $response['wp-refresh-post-nonces'] = ['replace' => ['getpermalinknonce' => wp_create_nonce('getpermalink'), 'samplepermalinknonce' => wp_create_nonce('samplepermalink'), 'closedpostboxesnonce' => wp_create_nonce('closedpostboxes'), '_ajax_linking_nonce' => wp_create_nonce('internal-linking'), '_wpnonce' => wp_create_nonce('update-post_' . $post_id)]];
     }
-
     return $response;
 }
-
 /**
  * Refresh nonces used with meta boxes in the block editor.
  *
@@ -1308,28 +1128,17 @@ function wp_refresh_metabox_loader_nonces(array $response, array $data): array
     if (empty($data['wp-refresh-metabox-loader-nonces'])) {
         return $response;
     }
-
     $received = $data['wp-refresh-metabox-loader-nonces'];
-    $post_id  = (int) $received['post_id'];
-
-    if (! $post_id) {
+    $post_id = (int) $received['post_id'];
+    if (!$post_id) {
         return $response;
     }
-
-    if (! current_user_can('edit_post', $post_id)) {
+    if (!current_user_can('edit_post', $post_id)) {
         return $response;
     }
-
-    $response['wp-refresh-metabox-loader-nonces'] = [
-        'replace' => [
-            'metabox_loader_nonce' => wp_create_nonce('meta-box-loader'),
-            '_wpnonce'             => wp_create_nonce('update-post_' . $post_id),
-        ],
-    ];
-
+    $response['wp-refresh-metabox-loader-nonces'] = ['replace' => ['metabox_loader_nonce' => wp_create_nonce('meta-box-loader'), '_wpnonce' => wp_create_nonce('update-post_' . $post_id)]];
     return $response;
 }
-
 /**
  * Adds the latest Heartbeat and REST API nonce to the Heartbeat response.
  *
@@ -1342,13 +1151,10 @@ function wp_refresh_heartbeat_nonces(array $response): array
 {
     // Refresh the Rest API nonce.
     $response['rest_nonce'] = wp_create_nonce('wp_rest');
-
     // Refresh the Heartbeat nonce.
     $response['heartbeat_nonce'] = wp_create_nonce('heartbeat-nonce');
-
     return $response;
 }
-
 /**
  * Disables suspension of Heartbeat on the Add/Edit Post screens.
  *
@@ -1362,14 +1168,11 @@ function wp_refresh_heartbeat_nonces(array $response): array
 function wp_heartbeat_set_suspension(array $settings): array
 {
     global $pagenow;
-
     if ('post.php' === $pagenow || 'post-new.php' === $pagenow) {
         $settings['suspension'] = 'disable';
     }
-
     return $settings;
 }
-
 /**
  * Performs autosave with heartbeat.
  *
@@ -1381,19 +1184,12 @@ function wp_heartbeat_set_suspension(array $settings): array
  */
 function heartbeat_autosave(array $response, array $data): array
 {
-    if (! empty($data['wp_autosave'])) {
+    if (!empty($data['wp_autosave'])) {
         $saved = wp_autosave($data['wp_autosave']);
-
         if (is_wp_error($saved)) {
-            $response['wp_autosave'] = [
-                'success' => false,
-                'message' => $saved->get_error_message(),
-            ];
+            $response['wp_autosave'] = ['success' => false, 'message' => $saved->get_error_message()];
         } elseif (empty($saved)) {
-            $response['wp_autosave'] = [
-                'success' => false,
-                'message' => __('Error while saving.'),
-            ];
+            $response['wp_autosave'] = ['success' => false, 'message' => __('Error while saving.')];
         } else {
             /* translators: Draft saved date format, see https://www.php.net/manual/datetime.format.php */
             $draft_saved_date_format = __('g:i:s a');
@@ -1404,10 +1200,8 @@ function heartbeat_autosave(array $response, array $data): array
             ];
         }
     }
-
     return $response;
 }
-
 /**
  * Removes single-use URL parameters and create canonical link based on new URL.
  *
@@ -1419,15 +1213,12 @@ function heartbeat_autosave(array $response, array $data): array
 function wp_admin_canonical_url(): void
 {
     $removable_query_args = wp_removable_query_args();
-
     if (empty($removable_query_args)) {
         return;
     }
-
     // Ensure we're using an absolute URL.
-    $current_url  = set_url_scheme('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    $current_url = set_url_scheme('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     $filtered_url = remove_query_arg($removable_query_args, $current_url);
-
     /**
      * Filters the admin canonical URL value.
      *
@@ -1437,15 +1228,16 @@ function wp_admin_canonical_url(): void
      */
     $filtered_url = apply_filters('wp_admin_canonical_url', $filtered_url);
     ?>
-	<link id="wp-admin-canonical" rel="canonical" href="<?php echo esc_url($filtered_url); ?>" />
+	<link id="wp-admin-canonical" rel="canonical" href="<?php 
+    echo esc_url($filtered_url);
+    ?>" />
 	<script>
 		if ( window.history.replaceState ) {
 			window.history.replaceState( null, null, document.getElementById( 'wp-admin-canonical' ).href + window.location.hash );
 		}
 	</script>
-	<?php
+	<?php 
 }
-
 /**
  * Outputs JS that reloads the page if the user navigated to it with the Back or Forward button.
  *
@@ -1462,9 +1254,8 @@ function wp_page_reload_on_back_button_js(): void
 			document.location.reload( true );
 		}
 	</script>
-	<?php
+	<?php 
 }
-
 /**
  * Sends a confirmation request email when a change of site admin email address is attempted.
  *
@@ -1478,22 +1269,15 @@ function wp_page_reload_on_back_button_js(): void
  */
 function update_option_new_admin_email($old_value, string $value): void
 {
-    if (get_option('admin_email') === $value || ! is_email($value)) {
+    if (get_option('admin_email') === $value || !is_email($value)) {
         return;
     }
-
-    $hash            = md5($value . time() . wp_rand());
-    $new_admin_email = [
-        'hash'     => $hash,
-        'newemail' => $value,
-    ];
+    $hash = md5($value . time() . wp_rand());
+    $new_admin_email = ['hash' => $hash, 'newemail' => $value];
     update_option('adminhash', $new_admin_email, false);
-
     $switched_locale = switch_to_user_locale(get_current_user_id());
-
     /* translators: Do not translate USERNAME, ADMIN_URL, EMAIL, SITENAME, SITEURL: those are placeholders. */
-    $email_text = __(
-        'Howdy,
+    $email_text = __('Howdy,
 
 A site administrator (###USERNAME###) recently requested to have the
 administration email address changed on this site:
@@ -1509,9 +1293,7 @@ This email has been sent to ###EMAIL###
 
 Regards,
 All at ###SITENAME###
-###SITEURL###'
-    );
-
+###SITEURL###');
     /**
      * Filters the text of the email sent when a change of site admin email address is attempted.
      *
@@ -1535,26 +1317,22 @@ All at ###SITENAME###
      * }
      */
     $content = apply_filters('new_admin_email_content', $email_text, $new_admin_email);
-
     $current_user = wp_get_current_user();
-    $content      = str_replace('###USERNAME###', $current_user->user_login, $content);
-    $content      = str_replace('###ADMIN_URL###', esc_url(self_admin_url('options.php?adminhash=' . $hash)), $content);
-    $content      = str_replace('###EMAIL###', $value, $content);
-    $content      = str_replace('###SITENAME###', wp_specialchars_decode(get_option('blogname'), ENT_QUOTES), $content);
-    $content      = str_replace('###SITEURL###', home_url(), $content);
-
+    $content = str_replace('###USERNAME###', $current_user->user_login, $content);
+    $content = str_replace('###ADMIN_URL###', esc_url(self_admin_url('options.php?adminhash=' . $hash)), $content);
+    $content = str_replace('###EMAIL###', $value, $content);
+    $content = str_replace('###SITENAME###', wp_specialchars_decode(get_option('blogname'), ENT_QUOTES), $content);
+    $content = str_replace('###SITEURL###', home_url(), $content);
     if ('' !== get_option('blogname')) {
         $site_title = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
     } else {
         $site_title = parse_url(home_url(), PHP_URL_HOST);
     }
-
     $subject = sprintf(
         /* translators: New admin email address notification email subject. %s: Site title. */
         __('[%s] New Admin Email Address'),
         $site_title
     );
-
     /**
      * Filters the subject of the email sent when a change of site admin email address is attempted.
      *
@@ -1563,14 +1341,11 @@ All at ###SITENAME###
      * @param string $subject Subject of the email.
      */
     $subject = apply_filters('new_admin_email_subject', $subject);
-
     wp_mail($value, $subject, $content);
-
     if ($switched_locale) {
         restore_previous_locale();
     }
 }
-
 /**
  * Appends '(Draft)' to draft page titles in the privacy page dropdown
  * so that unpublished content is obvious.
@@ -1588,10 +1363,8 @@ function _wp_privacy_settings_filter_draft_page_titles($title, $page)
         /* translators: %s: Page title. */
         return sprintf(__('%s (Draft)'), $title);
     }
-
     return $title;
 }
-
 /**
  * Checks if the user needs to update PHP.
  *
@@ -1612,34 +1385,24 @@ function _wp_privacy_settings_filter_draft_page_titles($title, $page)
 function wp_check_php_version()
 {
     $version = PHP_VERSION;
-    $key     = md5($version);
-
+    $key = md5($version);
     $response = get_site_transient('php_check_' . $key);
-
     if (false === $response) {
         $url = 'http://api.wordpress.org/core/serve-happy/1.0/';
-
-        if (wp_http_supports([ 'ssl' ])) {
+        if (wp_http_supports(['ssl'])) {
             $url = set_url_scheme($url, 'https');
         }
-
         $url = add_query_arg('php_version', $version, $url);
-
         $response = wp_remote_get($url);
-
         if (is_wp_error($response) || 200 !== wp_remote_retrieve_response_code($response)) {
             return false;
         }
-
         $response = json_decode(wp_remote_retrieve_body($response), true);
-
-        if (! is_array($response)) {
+        if (!is_array($response)) {
             return false;
         }
-
         set_site_transient('php_check_' . $key, $response, WEEK_IN_SECONDS);
     }
-
     if (isset($response['is_acceptable']) && $response['is_acceptable']) {
         /**
          * Filters whether the active PHP version is considered acceptable by WordPress.
@@ -1656,16 +1419,12 @@ function wp_check_php_version()
          */
         $response['is_acceptable'] = (bool) apply_filters('wp_is_php_version_acceptable', true, $version);
     }
-
     $response['is_lower_than_future_minimum'] = false;
-
     // The minimum supported PHP version will be updated to at least 8.0 in the future. Check if the current version is lower.
     if (version_compare($version, '8.0', '<')) {
         $response['is_lower_than_future_minimum'] = true;
-
         // Force showing of warnings.
         $response['is_acceptable'] = false;
     }
-
     return $response;
 }

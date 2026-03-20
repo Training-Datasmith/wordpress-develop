@@ -1,22 +1,19 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Parse OPML XML files and store in globals.
  *
  * @package WordPress
  * @subpackage Administration
  */
-
-if (! defined('ABSPATH')) {
-    die();
+if (!defined('ABSPATH')) {
+    die;
 }
-
 /**
  * @global string $opml
  */
 global $opml;
-
 /**
  * Starts a new XML tag.
  *
@@ -35,9 +32,9 @@ global $opml;
  * @param string   $tag_name XML element name.
  * @param array    $attrs    XML element attributes.
  */
-function startElement($parser, $tag_name, array $attrs): void // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
-{global $names, $urls, $targets, $descriptions, $feeds;
-
+function start_element($parser, $tag_name, array $attrs): void
+{
+    global $names, $urls, $targets, $descriptions, $feeds;
     if ('OUTLINE' === $tag_name) {
         $name = '';
         if (isset($attrs['TEXT'])) {
@@ -53,16 +50,15 @@ function startElement($parser, $tag_name, array $attrs): void // phpcs:ignore Wo
         if (isset($attrs['HTMLURL'])) {
             $url = $attrs['HTMLURL'];
         }
-
         // Save the data away.
-        $names[]        = $name;
-        $urls[]         = $url;
-        $targets[]      = $attrs['TARGET'] ?? '';
-        $feeds[]        = $attrs['XMLURL'] ?? '';
+        $names[] = $name;
+        $urls[] = $url;
+        $targets[] = $attrs['TARGET'] ?? '';
+        $feeds[] = $attrs['XMLURL'] ?? '';
         $descriptions[] = $attrs['DESCRIPTION'] ?? '';
-    } // End if outline.
+    }
+    // End if outline.
 }
-
 /**
  * Ends a new XML tag.
  *
@@ -74,22 +70,19 @@ function startElement($parser, $tag_name, array $attrs): void // phpcs:ignore Wo
  * @param resource $parser   XML Parser resource.
  * @param string   $tag_name XML tag name.
  */
-function endElement($parser, $tag_name): void // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
-{// Nothing to do.
+function end_element($parser, $tag_name): void
+{
+    // Nothing to do.
 }
-
 // Create an XML parser.
-if (! function_exists('xml_parser_create')) {
+if (!function_exists('xml_parser_create')) {
     wp_trigger_error('', __("PHP's XML extension is not available. Please contact your hosting provider to enable PHP's XML extension."));
     wp_die(__("PHP's XML extension is not available. Please contact your hosting provider to enable PHP's XML extension."));
 }
-
 $xml_parser = xml_parser_create();
-
 // Set the functions to handle opening and closing tags.
 xml_set_element_handler($xml_parser, 'startElement', 'endElement');
-
-if (! xml_parse($xml_parser, $opml, true)) {
+if (!xml_parse($xml_parser, $opml, true)) {
     printf(
         /* translators: 1: Error message, 2: Line number. */
         __('XML Error: %1$s at line %2$s'),
@@ -97,10 +90,9 @@ if (! xml_parse($xml_parser, $opml, true)) {
         xml_get_current_line_number($xml_parser)
     );
 }
-
-if (PHP_VERSION_ID < 80000) { // xml_parser_free() has no effect as of PHP 8.0.
+if (PHP_VERSION_ID < 80000) {
+    // xml_parser_free() has no effect as of PHP 8.0.
     // Free up memory used by the XML parser.
     xml_parser_free($xml_parser);
 }
-
 unset($xml_parser);

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Multisite: Deprecated admin functions from past versions and WordPress MU
  *
@@ -11,7 +11,6 @@ declare(strict_types=1);
  * @subpackage Deprecated
  * @since 3.0.0
  */
-
 /**
  * Outputs the WPMU menu.
  *
@@ -22,18 +21,16 @@ function wpmu_menu(): void
     _deprecated_function(__FUNCTION__, '3.0.0');
     // Deprecated. See #11763.
 }
-
 /**
  * Determines if the available space defined by the admin has been exceeded by the user.
  *
  * @deprecated 3.0.0 Use is_upload_space_available()
  * @see is_upload_space_available()
  */
-function wpmu_checkAvailableSpace(): void
+function wpmu_check_available_space(): void
 {
     _deprecated_function(__FUNCTION__, '3.0.0', 'is_upload_space_available()');
-
-    if (! is_upload_space_available()) {
+    if (!is_upload_space_available()) {
         wp_die(sprintf(
             /* translators: %s: Allowed space allocation. */
             __('Sorry, you have used your space allocation of %s. Please delete some files to upload more files.'),
@@ -41,7 +38,6 @@ function wpmu_checkAvailableSpace(): void
         ));
     }
 }
-
 /**
  * WPMU options.
  *
@@ -52,7 +48,6 @@ function mu_options($options)
     _deprecated_function(__FUNCTION__, '3.0.0');
     return $options;
 }
-
 /**
  * Deprecated functionality for activating a network-only plugin.
  *
@@ -64,7 +59,6 @@ function activate_sitewide_plugin(): bool
     _deprecated_function(__FUNCTION__, '3.0.0', 'activate_plugin()');
     return false;
 }
-
 /**
  * Deprecated functionality for deactivating a network-only plugin.
  *
@@ -75,7 +69,6 @@ function deactivate_sitewide_plugin($plugin = false): void
 {
     _deprecated_function(__FUNCTION__, '3.0.0', 'deactivate_plugin()');
 }
-
 /**
  * Deprecated functionality for determining if the current plugin is network-only.
  *
@@ -87,7 +80,6 @@ function is_wpmu_sitewide_plugin($file)
     _deprecated_function(__FUNCTION__, '3.0.0', 'is_network_only_plugin()');
     return is_network_only_plugin($file);
 }
-
 /**
  * Deprecated functionality for getting themes network-enabled themes.
  *
@@ -99,7 +91,6 @@ function get_site_allowed_themes(): array
     _deprecated_function(__FUNCTION__, '3.4.0', 'WP_Theme::get_allowed_on_network()');
     return array_map('intval', WP_Theme::get_allowed_on_network());
 }
-
 /**
  * Deprecated functionality for getting themes allowed on a specific site.
  *
@@ -111,7 +102,6 @@ function wpmu_get_blog_allowedthemes($blog_id = 0): array
     _deprecated_function(__FUNCTION__, '3.4.0', 'WP_Theme::get_allowed_on_site()');
     return array_map('intval', WP_Theme::get_allowed_on_site($blog_id));
 }
-
 /**
  * Deprecated functionality for determining whether a file is deprecated.
  *
@@ -120,8 +110,7 @@ function wpmu_get_blog_allowedthemes($blog_id = 0): array
 function ms_deprecated_blogs_file(): void
 {
 }
-
-if (! function_exists('install_global_terms')) :
+if (!function_exists('install_global_terms')) {
     /**
      * Install global terms.
      *
@@ -133,8 +122,7 @@ if (! function_exists('install_global_terms')) :
     {
         _deprecated_function(__FUNCTION__, '6.1.0');
     }
-endif;
-
+}
 /**
  * Synchronizes category and post tag slugs when global terms are enabled.
  *
@@ -149,6 +137,5 @@ endif;
 function sync_category_tag_slugs($term, $taxonomy)
 {
     _deprecated_function(__FUNCTION__, '6.1.0');
-
     return $term;
 }

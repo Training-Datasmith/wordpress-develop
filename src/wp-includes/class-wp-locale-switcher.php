@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Locale API: WP_Locale_Switcher class
  *
@@ -8,13 +8,12 @@ declare(strict_types=1);
  * @subpackage i18n
  * @since 4.7.0
  */
-
 /**
  * Core class used for switching locales.
  *
  * @since 4.7.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_Locale_Switcher
 {
     /**
@@ -24,7 +23,6 @@ class WP_Locale_Switcher
      * @var array
      */
     private $stack = [];
-
     /**
      * Original locale.
      *
@@ -32,7 +30,6 @@ class WP_Locale_Switcher
      * @var string
      */
     private $original_locale;
-
     /**
      * Holds all available languages.
      *
@@ -40,7 +37,6 @@ class WP_Locale_Switcher
      * @var string[] An array of language codes (file names without the .mo extension).
      */
     private $available_languages;
-
     /**
      * Constructor.
      *
@@ -50,10 +46,9 @@ class WP_Locale_Switcher
      */
     public function __construct()
     {
-        $this->original_locale     = determine_locale();
-        $this->available_languages = array_merge([ 'en_US' ], get_available_languages());
+        $this->original_locale = determine_locale();
+        $this->available_languages = array_merge(['en_US'], get_available_languages());
     }
-
     /**
      * Initializes the locale switcher.
      *
@@ -64,10 +59,9 @@ class WP_Locale_Switcher
      */
     public function init()
     {
-        add_filter('locale', [ $this, 'filter_locale' ]);
-        add_filter('determine_locale', [ $this, 'filter_locale' ]);
+        add_filter('locale', [$this, 'filter_locale']);
+        add_filter('determine_locale', [$this, 'filter_locale']);
     }
-
     /**
      * Switches the translations according to the given locale.
      *
@@ -83,15 +77,11 @@ class WP_Locale_Switcher
         if ($current_locale === $locale) {
             return false;
         }
-
-        if (! in_array($locale, $this->available_languages, true)) {
+        if (!in_array($locale, $this->available_languages, true)) {
             return false;
         }
-
-        $this->stack[] = [ $locale, $user_id ];
-
+        $this->stack[] = [$locale, $user_id];
         $this->change_locale($locale);
-
         /**
          * Fires when the locale is switched.
          *
@@ -102,10 +92,8 @@ class WP_Locale_Switcher
          * @param false|int $user_id User ID for context if available.
          */
         do_action('switch_locale', $locale, $user_id);
-
         return true;
     }
-
     /**
      * Switches the translations according to the given user's locale.
      *
@@ -119,7 +107,6 @@ class WP_Locale_Switcher
         $locale = get_user_locale($user_id);
         return $this->switch_to_locale($locale, $user_id);
     }
-
     /**
      * Restores the translations according to the previous locale.
      *
@@ -130,22 +117,17 @@ class WP_Locale_Switcher
     public function restore_previous_locale()
     {
         $previous_locale = array_pop($this->stack);
-
         if (null === $previous_locale) {
             // The stack is empty, bail.
             return false;
         }
-
-        $entry  = end($this->stack);
+        $entry = end($this->stack);
         $locale = is_array($entry) ? $entry[0] : false;
-
-        if (! $locale) {
+        if (!$locale) {
             // There's nothing left in the stack: go back to the original locale.
             $locale = $this->original_locale;
         }
-
         $this->change_locale($locale);
-
         /**
          * Fires when the locale is restored to the previous one.
          *
@@ -155,10 +137,8 @@ class WP_Locale_Switcher
          * @param string $previous_locale The previous locale.
          */
         do_action('restore_previous_locale', $locale, $previous_locale[0]);
-
         return $locale;
     }
-
     /**
      * Restores the translations according to the original locale.
      *
@@ -171,12 +151,9 @@ class WP_Locale_Switcher
         if (empty($this->stack)) {
             return false;
         }
-
-        $this->stack = [ [ $this->original_locale, false ] ];
-
+        $this->stack = [[$this->original_locale, false]];
         return $this->restore_previous_locale();
     }
-
     /**
      * Whether switch_to_locale() is in effect.
      *
@@ -186,9 +163,8 @@ class WP_Locale_Switcher
      */
     public function is_switched()
     {
-        return ! empty($this->stack);
+        return !empty($this->stack);
     }
-
     /**
      * Returns the locale currently switched to.
      *
@@ -199,14 +175,11 @@ class WP_Locale_Switcher
     public function get_switched_locale()
     {
         $entry = end($this->stack);
-
         if ($entry) {
             return $entry[0];
         }
-
         return false;
     }
-
     /**
      * Returns the user ID related to the currently switched locale.
      *
@@ -217,14 +190,11 @@ class WP_Locale_Switcher
     public function get_switched_user_id()
     {
         $entry = end($this->stack);
-
         if ($entry) {
             return $entry[1];
         }
-
         return false;
     }
-
     /**
      * Filters the locale of the WordPress installation.
      *
@@ -236,14 +206,11 @@ class WP_Locale_Switcher
     public function filter_locale($locale)
     {
         $switched_locale = $this->get_switched_locale();
-
         if ($switched_locale) {
             return $switched_locale;
         }
-
         return $locale;
     }
-
     /**
      * Load translations for a given locale.
      *
@@ -258,17 +225,13 @@ class WP_Locale_Switcher
     private function load_translations($locale)
     {
         global $l10n;
-
         $domains = $l10n ? array_keys($l10n) : [];
-
         load_default_textdomain($locale);
-
         foreach ($domains as $domain) {
             // The default text domain is handled by `load_default_textdomain()`.
             if ('default' === $domain) {
                 continue;
             }
-
             /*
              * Unload current text domain but allow them to be reloaded
              * after switching back or to another locale.
@@ -277,7 +240,6 @@ class WP_Locale_Switcher
             get_translations_for_domain($domain);
         }
     }
-
     /**
      * Changes the site's locale to the given one.
      *
@@ -294,17 +256,12 @@ class WP_Locale_Switcher
     private function change_locale($locale)
     {
         global $wp_locale, $phpmailer;
-
         $this->load_translations($locale);
-
         $wp_locale = new WP_Locale();
-
         WP_Translation_Controller::get_instance()->set_locale($locale);
-
-        if ($phpmailer instanceof WP_PHPMailer) {
-            $phpmailer->setLanguage();
+        if ($phpmailer instanceof Wp_php_Mailer) {
+            $phpmailer->set_language();
         }
-
         /**
          * Fires when the locale is switched to or restored.
          *

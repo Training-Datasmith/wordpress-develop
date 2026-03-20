@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WordPress Customize Panel classes
  *
@@ -6,12 +7,10 @@
  * @subpackage Customize
  * @since 4.0.0
  */
-
 // Don't load directly.
-if (! defined('ABSPATH')) {
+if (!defined('ABSPATH')) {
     die('-1');
 }
-
 /**
  * Customize Panel class.
  *
@@ -21,7 +20,7 @@ if (! defined('ABSPATH')) {
  *
  * @see WP_Customize_Manager
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_Customize_Panel
 {
     /**
@@ -33,7 +32,6 @@ class WP_Customize_Panel
      * @var int
      */
     protected static $instance_count = 0;
-
     /**
      * Order in which this instance was created in relation to other instances.
      *
@@ -41,7 +39,6 @@ class WP_Customize_Panel
      * @var int
      */
     public $instance_number;
-
     /**
      * WP_Customize_Manager instance.
      *
@@ -49,7 +46,6 @@ class WP_Customize_Panel
      * @var WP_Customize_Manager
      */
     public $manager;
-
     /**
      * Unique identifier.
      *
@@ -57,7 +53,6 @@ class WP_Customize_Panel
      * @var string
      */
     public $id;
-
     /**
      * Priority of the panel, defining the display order of panels and sections.
      *
@@ -65,7 +60,6 @@ class WP_Customize_Panel
      * @var int
      */
     public $priority = 160;
-
     /**
      * Capability required for the panel.
      *
@@ -73,7 +67,6 @@ class WP_Customize_Panel
      * @var string
      */
     public $capability = 'edit_theme_options';
-
     /**
      * Theme features required to support the panel.
      *
@@ -81,7 +74,6 @@ class WP_Customize_Panel
      * @var mixed[]
      */
     public $theme_supports = '';
-
     /**
      * Title of the panel to show in UI.
      *
@@ -89,7 +81,6 @@ class WP_Customize_Panel
      * @var string
      */
     public $title = '';
-
     /**
      * Description to show in the UI.
      *
@@ -97,7 +88,6 @@ class WP_Customize_Panel
      * @var string
      */
     public $description = '';
-
     /**
      * Auto-expand a section in a panel when the panel is expanded when the panel only has the one section.
      *
@@ -105,7 +95,6 @@ class WP_Customize_Panel
      * @var bool
      */
     public $auto_expand_sole_section = false;
-
     /**
      * Customizer sections for this panel.
      *
@@ -113,7 +102,6 @@ class WP_Customize_Panel
      * @var array
      */
     public $sections;
-
     /**
      * Type of this panel.
      *
@@ -121,7 +109,6 @@ class WP_Customize_Panel
      * @var string
      */
     public $type = 'default';
-
     /**
      * Active callback.
      *
@@ -135,7 +122,6 @@ class WP_Customize_Panel
      *               being previewed).
      */
     public $active_callback = '';
-
     /**
      * Constructor.
      *
@@ -163,22 +149,20 @@ class WP_Customize_Panel
     {
         $keys = array_keys(get_object_vars($this));
         foreach ($keys as $key) {
-            if (isset($args[ $key ])) {
-                $this->$key = $args[ $key ];
+            if (isset($args[$key])) {
+                $this->{$key} = $args[$key];
             }
         }
-
         $this->manager = $manager;
-        $this->id      = $id;
+        $this->id = $id;
         if (empty($this->active_callback)) {
-            $this->active_callback = [ $this, 'active_callback' ];
+            $this->active_callback = [$this, 'active_callback'];
         }
         self::$instance_count += 1;
         $this->instance_number = self::$instance_count;
-
-        $this->sections = []; // Users cannot customize the $sections array.
+        $this->sections = [];
+        // Users cannot customize the $sections array.
     }
-
     /**
      * Check whether panel is active to current Customizer preview.
      *
@@ -188,9 +172,8 @@ class WP_Customize_Panel
      */
     final public function active()
     {
-        $panel  = $this;
+        $panel = $this;
         $active = call_user_func($this->active_callback, $this);
-
         /**
          * Filters response of WP_Customize_Panel::active().
          *
@@ -200,10 +183,8 @@ class WP_Customize_Panel
          * @param WP_Customize_Panel $panel  WP_Customize_Panel instance.
          */
         $active = apply_filters('customize_panel_active', $active, $panel);
-
         return $active;
     }
-
     /**
      * Default callback used when invoking WP_Customize_Panel::active().
      *
@@ -218,7 +199,6 @@ class WP_Customize_Panel
     {
         return true;
     }
-
     /**
      * Gather the parameters passed to client JavaScript via JSON.
      *
@@ -228,15 +208,14 @@ class WP_Customize_Panel
      */
     public function json()
     {
-        $array                          = wp_array_slice_assoc((array) $this, [ 'id', 'description', 'priority', 'type' ]);
-        $array['title']                 = html_entity_decode($this->title, ENT_QUOTES, get_bloginfo('charset'));
-        $array['content']               = $this->get_content();
-        $array['active']                = $this->active();
-        $array['instanceNumber']        = $this->instance_number;
+        $array = wp_array_slice_assoc((array) $this, ['id', 'description', 'priority', 'type']);
+        $array['title'] = html_entity_decode($this->title, ENT_QUOTES, get_bloginfo('charset'));
+        $array['content'] = $this->get_content();
+        $array['active'] = $this->active();
+        $array['instanceNumber'] = $this->instance_number;
         $array['autoExpandSoleSection'] = $this->auto_expand_sole_section;
         return $array;
     }
-
     /**
      * Checks required user capabilities and whether the theme has the
      * feature support required by the panel.
@@ -248,17 +227,14 @@ class WP_Customize_Panel
      */
     public function check_capabilities()
     {
-        if ($this->capability && ! current_user_can($this->capability)) {
+        if ($this->capability && !current_user_can($this->capability)) {
             return false;
         }
-
-        if ($this->theme_supports && ! current_theme_supports(...(array) $this->theme_supports)) {
+        if ($this->theme_supports && !current_theme_supports(...(array) $this->theme_supports)) {
             return false;
         }
-
         return true;
     }
-
     /**
      * Get the panel's content template for insertion into the Customizer pane.
      *
@@ -272,7 +248,6 @@ class WP_Customize_Panel
         $this->maybe_render();
         return trim(ob_get_clean());
     }
-
     /**
      * Check capabilities and render the panel.
      *
@@ -280,10 +255,9 @@ class WP_Customize_Panel
      */
     final public function maybe_render()
     {
-        if (! $this->check_capabilities()) {
+        if (!$this->check_capabilities()) {
             return;
         }
-
         /**
          * Fires before rendering a Customizer panel.
          *
@@ -292,7 +266,6 @@ class WP_Customize_Panel
          * @param WP_Customize_Panel $panel WP_Customize_Panel instance.
          */
         do_action('customize_render_panel', $this);
-
         /**
          * Fires before rendering a specific Customizer panel.
          *
@@ -302,10 +275,8 @@ class WP_Customize_Panel
          * @since 4.0.0
          */
         do_action("customize_render_panel_{$this->id}");
-
         $this->render();
     }
-
     /**
      * Render the panel container, and then its contents (via `this->render_content()`) in a subclass.
      *
@@ -316,7 +287,6 @@ class WP_Customize_Panel
     protected function render()
     {
     }
-
     /**
      * Render the panel UI in a subclass.
      *
@@ -327,7 +297,6 @@ class WP_Customize_Panel
     protected function render_content()
     {
     }
-
     /**
      * Render the panel's JS templates.
      *
@@ -341,15 +310,22 @@ class WP_Customize_Panel
     public function print_template()
     {
         ?>
-		<script type="text/html" id="tmpl-customize-panel-<?php echo esc_attr($this->type); ?>-content">
-			<?php $this->content_template(); ?>
+		<script type="text/html" id="tmpl-customize-panel-<?php 
+        echo esc_attr($this->type);
+        ?>-content">
+			<?php 
+        $this->content_template();
+        ?>
 		</script>
-		<script type="text/html" id="tmpl-customize-panel-<?php echo esc_attr($this->type); ?>">
-			<?php $this->render_template(); ?>
+		<script type="text/html" id="tmpl-customize-panel-<?php 
+        echo esc_attr($this->type);
+        ?>">
+			<?php 
+        $this->render_template();
+        ?>
 		</script>
-		<?php
+		<?php 
     }
-
     /**
      * An Underscore (JS) template for rendering this panel's container.
      *
@@ -371,9 +347,8 @@ class WP_Customize_Panel
 			</h3>
 			<ul class="accordion-sub-container control-panel-content" id="{{ data.id }}-content"></ul>
 		</li>
-		<?php
+		<?php 
     }
-
     /**
      * An Underscore (JS) template for this panel's content (but not its container).
      *
@@ -389,23 +364,23 @@ class WP_Customize_Panel
         ?>
 		<li class="panel-meta customize-info accordion-section <# if ( ! data.description ) { #> cannot-expand<# } #>">
 			<button class="customize-panel-back" tabindex="-1"><span class="screen-reader-text">
-				<?php
-                /* translators: Hidden accessibility text. */
-                _e('Back');
+				<?php 
+        /* translators: Hidden accessibility text. */
+        _e('Back');
         ?>
 			</span></button>
 			<div class="accordion-section-title">
 				<span class="preview-notice">
-				<?php
-            /* translators: %s: The site/panel title in the Customizer. */
-            printf(__('You are customizing %s'), '<strong class="panel-title">{{ data.title }}</strong>');
+				<?php 
+        /* translators: %s: The site/panel title in the Customizer. */
+        printf(__('You are customizing %s'), '<strong class="panel-title">{{ data.title }}</strong>');
         ?>
 				</span>
 				<# if ( data.description ) { #>
 					<button type="button" class="customize-help-toggle dashicons dashicons-editor-help" aria-expanded="false"><span class="screen-reader-text">
-						<?php
-                /* translators: Hidden accessibility text. */
-                _e('Help');
+						<?php 
+        /* translators: Hidden accessibility text. */
+        _e('Help');
         ?>
 					</span></button>
 				<# } #>
@@ -418,9 +393,8 @@ class WP_Customize_Panel
 
 			<div class="customize-control-notifications-container"></div>
 		</li>
-		<?php
+		<?php 
     }
 }
-
 /** WP_Customize_Nav_Menus_Panel class */
 require_once ABSPATH . WPINC . '/customize/class-wp-customize-nav-menus-panel.php';

@@ -1,19 +1,18 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Blocks API: WP_Block_Editor_Context class
  *
  * @package WordPress
  * @since 5.8.0
  */
-
 /**
  * Contains information about a block editor being rendered.
  *
  * @since 5.8.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 final class WP_Block_Editor_Context
 {
     /**
@@ -31,7 +30,6 @@ final class WP_Block_Editor_Context
      * @var string
      */
     public $name = 'core/edit-post';
-
     /**
      * The post being edited by the block editor. Optional.
      *
@@ -40,7 +38,6 @@ final class WP_Block_Editor_Context
      * @var WP_Post|null
      */
     public $post = null;
-
     /**
      * Constructor.
      *

@@ -1,19 +1,18 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Blocks API: WP_Block_Template class
  *
  * @package WordPress
  * @since 5.8.0
  */
-
 /**
  * Class representing a block template.
  *
  * @since 5.8.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_Block_Template
 {
     /**
@@ -23,7 +22,6 @@ class WP_Block_Template
      * @var string
      */
     public $type;
-
     /**
      * Theme.
      *
@@ -31,7 +29,6 @@ class WP_Block_Template
      * @var string
      */
     public $theme;
-
     /**
      * Template slug.
      *
@@ -39,7 +36,6 @@ class WP_Block_Template
      * @var string
      */
     public $slug;
-
     /**
      * ID.
      *
@@ -47,7 +43,6 @@ class WP_Block_Template
      * @var string
      */
     public $id;
-
     /**
      * Title.
      *
@@ -55,7 +50,6 @@ class WP_Block_Template
      * @var string
      */
     public $title = '';
-
     /**
      * Content.
      *
@@ -63,7 +57,6 @@ class WP_Block_Template
      * @var string
      */
     public $content = '';
-
     /**
      * Description.
      *
@@ -71,7 +64,6 @@ class WP_Block_Template
      * @var string
      */
     public $description = '';
-
     /**
      * Source of the content. `theme` and `custom` is used for now.
      *
@@ -79,7 +71,6 @@ class WP_Block_Template
      * @var string
      */
     public $source = 'theme';
-
     /**
      * Origin of the content when the content has been customized.
      * When customized, origin takes on the value of source and source becomes
@@ -89,7 +80,6 @@ class WP_Block_Template
      * @var string|null
      */
     public $origin;
-
     /**
      * Post ID.
      *
@@ -97,7 +87,6 @@ class WP_Block_Template
      * @var int|null
      */
     public $wp_id;
-
     /**
      * Template Status.
      *
@@ -105,7 +94,6 @@ class WP_Block_Template
      * @var string
      */
     public $status;
-
     /**
      * Whether a template is, or is based upon, an existing template file.
      *
@@ -113,7 +101,6 @@ class WP_Block_Template
      * @var bool
      */
     public $has_theme_file;
-
     /**
      * Whether a template is a custom template.
      *
@@ -122,7 +109,6 @@ class WP_Block_Template
      * @var bool
      */
     public $is_custom = true;
-
     /**
      * Author.
      *
@@ -132,7 +118,6 @@ class WP_Block_Template
      * @var int|null
      */
     public $author;
-
     /**
      * Plugin.
      *
@@ -140,7 +125,6 @@ class WP_Block_Template
      * @var string|null
      */
     public $plugin;
-
     /**
      * Post types.
      *
@@ -148,7 +132,6 @@ class WP_Block_Template
      * @var string[]|null
      */
     public $post_types;
-
     /**
      * Area.
      *
@@ -156,7 +139,6 @@ class WP_Block_Template
      * @var string|null
      */
     public $area;
-
     /**
      * Modified.
      *

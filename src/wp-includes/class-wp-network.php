@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Network API: WP_Network class
  *
@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @subpackage Multisite
  * @since 4.4.0
  */
-
 /**
  * Core class used for interacting with a multisite network.
  *
@@ -23,7 +22,7 @@ declare(strict_types=1);
  * @property int $id
  * @property int $site_id
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_Network
 {
     /**
@@ -36,7 +35,6 @@ class WP_Network
      * @var int
      */
     private $id;
-
     /**
      * Domain of the network.
      *
@@ -44,7 +42,6 @@ class WP_Network
      * @var string
      */
     public $domain = '';
-
     /**
      * Path of the network.
      *
@@ -52,7 +49,6 @@ class WP_Network
      * @var string
      */
     public $path = '';
-
     /**
      * The ID of the network's main site.
      *
@@ -65,7 +61,6 @@ class WP_Network
      * @var string
      */
     private $blog_id = '0';
-
     /**
      * Domain used to set cookies for this network.
      *
@@ -73,7 +68,6 @@ class WP_Network
      * @var string
      */
     public $cookie_domain = '';
-
     /**
      * Name of this network.
      *
@@ -83,7 +77,6 @@ class WP_Network
      * @var string
      */
     public $site_name = '';
-
     /**
      * Retrieves a network from the database by its ID.
      *
@@ -97,31 +90,23 @@ class WP_Network
     public static function get_instance($network_id)
     {
         global $wpdb;
-
         $network_id = (int) $network_id;
-        if (! $network_id) {
+        if (!$network_id) {
             return false;
         }
-
         $_network = wp_cache_get($network_id, 'networks');
-
         if (false === $_network) {
             $_network = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->site} WHERE id = %d LIMIT 1", $network_id));
-
             if (empty($_network) || is_wp_error($_network)) {
                 $_network = -1;
             }
-
             wp_cache_add($network_id, $_network, 'networks');
         }
-
         if (is_numeric($_network)) {
             return false;
         }
-
         return new WP_Network($_network);
     }
-
     /**
      * Creates a new WP_Network object.
      *
@@ -137,11 +122,9 @@ class WP_Network
         foreach (get_object_vars($network) as $key => $value) {
             $this->__set($key, $value);
         }
-
         $this->_set_site_name();
         $this->_set_cookie_domain();
     }
-
     /**
      * Getter.
      *
@@ -162,10 +145,8 @@ class WP_Network
             case 'site_id':
                 return $this->get_main_site_id();
         }
-
         return null;
     }
-
     /**
      * Isset-er.
      *
@@ -184,10 +165,8 @@ class WP_Network
             case 'site_id':
                 return true;
         }
-
         return false;
     }
-
     /**
      * Setter.
      *
@@ -209,10 +188,9 @@ class WP_Network
                 $this->blog_id = (string) $value;
                 break;
             default:
-                $this->$key = $value;
+                $this->{$key} = $value;
         }
     }
-
     /**
      * Returns the main site ID for the network.
      *
@@ -236,59 +214,37 @@ class WP_Network
          * @param WP_Network $network      The network object for which the main site was detected.
          */
         $main_site_id = (int) apply_filters('pre_get_main_site_id', null, $this);
-
         if (0 < $main_site_id) {
             return $main_site_id;
         }
-
         if (0 < (int) $this->blog_id) {
             return (int) $this->blog_id;
         }
-
-        if ((defined('DOMAIN_CURRENT_SITE') && defined('PATH_CURRENT_SITE')
-            && DOMAIN_CURRENT_SITE === $this->domain && PATH_CURRENT_SITE === $this->path)
-            || (defined('SITE_ID_CURRENT_SITE') && (int) SITE_ID_CURRENT_SITE === $this->id)
-        ) {
+        if (defined('DOMAIN_CURRENT_SITE') && defined('PATH_CURRENT_SITE') && DOMAIN_CURRENT_SITE === $this->domain && PATH_CURRENT_SITE === $this->path || defined('SITE_ID_CURRENT_SITE') && (int) SITE_ID_CURRENT_SITE === $this->id) {
             if (defined('BLOG_ID_CURRENT_SITE')) {
                 $this->blog_id = (string) BLOG_ID_CURRENT_SITE;
-
                 return (int) $this->blog_id;
             }
-
-            if (defined('BLOGID_CURRENT_SITE')) { // Deprecated.
+            if (defined('BLOGID_CURRENT_SITE')) {
+                // Deprecated.
                 $this->blog_id = (string) BLOGID_CURRENT_SITE;
-
                 return (int) $this->blog_id;
             }
         }
-
         $site = get_site();
         if ($site->domain === $this->domain && $site->path === $this->path) {
             $main_site_id = (int) $site->id;
         } else {
-
             $main_site_id = get_network_option($this->id, 'main_site');
             if (false === $main_site_id) {
-                $_sites       = get_sites(
-                    [
-                        'fields'     => 'ids',
-                        'number'     => 1,
-                        'domain'     => $this->domain,
-                        'path'       => $this->path,
-                        'network_id' => $this->id,
-                    ]
-                );
-                $main_site_id = ! empty($_sites) ? array_shift($_sites) : 0;
-
+                $_sites = get_sites(['fields' => 'ids', 'number' => 1, 'domain' => $this->domain, 'path' => $this->path, 'network_id' => $this->id]);
+                $main_site_id = !empty($_sites) ? array_shift($_sites) : 0;
                 update_network_option($this->id, 'main_site', $main_site_id);
             }
         }
-
         $this->blog_id = (string) $main_site_id;
-
         return (int) $this->blog_id;
     }
-
     /**
      * Sets the site name assigned to the network if one has not been populated.
      *
@@ -296,14 +252,12 @@ class WP_Network
      */
     private function _set_site_name()
     {
-        if (! empty($this->site_name)) {
+        if (!empty($this->site_name)) {
             return;
         }
-
-        $default         = ucfirst($this->domain);
+        $default = ucfirst($this->domain);
         $this->site_name = get_network_option($this->id, 'site_name', $default);
     }
-
     /**
      * Sets the cookie domain based on the network domain if one has
      * not been populated.
@@ -314,16 +268,15 @@ class WP_Network
      */
     private function _set_cookie_domain()
     {
-        if (! empty($this->cookie_domain)) {
+        if (!empty($this->cookie_domain)) {
             return;
         }
-        $domain              = parse_url($this->domain, PHP_URL_HOST);
+        $domain = parse_url($this->domain, PHP_URL_HOST);
         $this->cookie_domain = is_string($domain) ? $domain : $this->domain;
         if (str_starts_with($this->cookie_domain, 'www.')) {
             $this->cookie_domain = substr($this->cookie_domain, 4);
         }
     }
-
     /**
      * Retrieves the closest matching network for a domain and path.
      *
@@ -343,19 +296,17 @@ class WP_Network
      */
     public static function get_by_path($domain = '', $path = '', $segments = null)
     {
-        $domains = [ $domain ];
-        $pieces  = explode('.', $domain);
-
+        $domains = [$domain];
+        $pieces = explode('.', $domain);
         /*
          * It's possible one domain to search is 'com', but it might as well
          * be 'localhost' or some other locally mapped domain.
          */
         while (array_shift($pieces)) {
-            if (! empty($pieces)) {
+            if (!empty($pieces)) {
                 $domains[] = implode('.', $pieces);
             }
         }
-
         /*
          * If we've gotten to this function during normal execution, there is
          * more than one network installed. At this point, who knows how many
@@ -367,19 +318,11 @@ class WP_Network
          */
         $using_paths = true;
         if (wp_using_ext_object_cache()) {
-            $using_paths = get_networks(
-                [
-                    'number'       => 1,
-                    'count'        => true,
-                    'path__not_in' => '/',
-                ]
-            );
+            $using_paths = get_networks(['number' => 1, 'count' => true, 'path__not_in' => '/']);
         }
-
         $paths = [];
         if ($using_paths) {
             $path_segments = array_filter(explode('/', trim($path, '/')));
-
             /**
              * Filters the number of path segments to consider when searching for a site.
              *
@@ -392,19 +335,15 @@ class WP_Network
              * @param string   $path     The requested path, in full.
              */
             $segments = apply_filters('network_by_path_segments_count', $segments, $domain, $path);
-
-            if ((null !== $segments) && count($path_segments) > $segments) {
+            if (null !== $segments && count($path_segments) > $segments) {
                 $path_segments = array_slice($path_segments, 0, $segments);
             }
-
             while (count($path_segments)) {
                 $paths[] = '/' . implode('/', $path_segments) . '/';
                 array_pop($path_segments);
             }
-
             $paths[] = '/';
         }
-
         /**
          * Determines a network by its domain and path.
          *
@@ -429,36 +368,14 @@ class WP_Network
         if (null !== $pre) {
             return $pre;
         }
-
-        if (! $using_paths) {
-            $networks = get_networks(
-                [
-                    'number'     => 1,
-                    'orderby'    => [
-                        'domain_length' => 'DESC',
-                    ],
-                    'domain__in' => $domains,
-                ]
-            );
-
-            if (! empty($networks)) {
+        if (!$using_paths) {
+            $networks = get_networks(['number' => 1, 'orderby' => ['domain_length' => 'DESC'], 'domain__in' => $domains]);
+            if (!empty($networks)) {
                 return array_shift($networks);
             }
-
             return false;
         }
-
-        $networks = get_networks(
-            [
-                'orderby'    => [
-                    'domain_length' => 'DESC',
-                    'path_length'   => 'DESC',
-                ],
-                'domain__in' => $domains,
-                'path__in'   => $paths,
-            ]
-        );
-
+        $networks = get_networks(['orderby' => ['domain_length' => 'DESC', 'path_length' => 'DESC'], 'domain__in' => $domains, 'path__in' => $paths]);
         /*
          * Domains are sorted by length of domain, then by length of path.
          * The domain must match for the path to be considered. Otherwise,
@@ -466,7 +383,7 @@ class WP_Network
          */
         $found = false;
         foreach ($networks as $network) {
-            if (($network->domain === $domain) || ("www.{$network->domain}" === $domain)) {
+            if ($network->domain === $domain || "www.{$network->domain}" === $domain) {
                 if (in_array($network->path, $paths, true)) {
                     $found = true;
                     break;
@@ -477,11 +394,9 @@ class WP_Network
                 break;
             }
         }
-
         if (true === $found) {
             return $network;
         }
-
         return false;
     }
 }

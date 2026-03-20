@@ -1,19 +1,18 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Error Protection API: WP_Recovery_Mode_Key_Service class
  *
  * @package WordPress
  * @since 5.2.0
  */
-
 /**
  * Core class used to generate and validate keys used to enter Recovery Mode.
  *
  * @since 5.2.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 final class WP_Recovery_Mode_Key_Service
 {
     /**
@@ -23,7 +22,6 @@ final class WP_Recovery_Mode_Key_Service
      * @var string
      */
     private $option_name = 'recovery_keys';
-
     /**
      * Creates a recovery mode token.
      *
@@ -35,7 +33,6 @@ final class WP_Recovery_Mode_Key_Service
     {
         return wp_generate_password(22, false);
     }
-
     /**
      * Creates a recovery mode key.
      *
@@ -48,16 +45,9 @@ final class WP_Recovery_Mode_Key_Service
     public function generate_and_store_recovery_mode_key($token)
     {
         $key = wp_generate_password(22, false);
-
         $records = $this->get_keys();
-
-        $records[ $token ] = [
-            'hashed_key' => wp_fast_hash($key),
-            'created_at' => time(),
-        ];
-
+        $records[$token] = ['hashed_key' => wp_fast_hash($key), 'created_at' => time()];
         $this->update_keys($records);
-
         /**
          * Fires when a recovery mode key is generated.
          *
@@ -67,10 +57,8 @@ final class WP_Recovery_Mode_Key_Service
          * @param string $key   The recovery mode key.
          */
         do_action('generate_recovery_mode_key', $token, $key);
-
         return $key;
     }
-
     /**
      * Verifies if the recovery mode key is correct.
      *
@@ -86,30 +74,22 @@ final class WP_Recovery_Mode_Key_Service
     public function validate_recovery_mode_key($token, $key, $ttl)
     {
         $records = $this->get_keys();
-
-        if (! isset($records[ $token ])) {
+        if (!isset($records[$token])) {
             return new WP_Error('token_not_found', __('Recovery Mode not initialized.'));
         }
-
-        $record = $records[ $token ];
-
+        $record = $records[$token];
         $this->remove_key($token);
-
-        if (! is_array($record) || ! isset($record['hashed_key'], $record['created_at'])) {
+        if (!is_array($record) || !isset($record['hashed_key'], $record['created_at'])) {
             return new WP_Error('invalid_recovery_key_format', __('Invalid recovery key format.'));
         }
-
-        if (! wp_verify_fast_hash($key, $record['hashed_key'])) {
+        if (!wp_verify_fast_hash($key, $record['hashed_key'])) {
             return new WP_Error('hash_mismatch', __('Invalid recovery key.'));
         }
-
         if (time() > $record['created_at'] + $ttl) {
             return new WP_Error('key_expired', __('Recovery key expired.'));
         }
-
         return true;
     }
-
     /**
      * Removes expired recovery mode keys.
      *
@@ -119,18 +99,14 @@ final class WP_Recovery_Mode_Key_Service
      */
     public function clean_expired_keys($ttl)
     {
-
         $records = $this->get_keys();
-
         foreach ($records as $key => $record) {
-            if (! isset($record['created_at']) || time() > $record['created_at'] + $ttl) {
-                unset($records[ $key ]);
+            if (!isset($record['created_at']) || time() > $record['created_at'] + $ttl) {
+                unset($records[$key]);
             }
         }
-
         $this->update_keys($records);
     }
-
     /**
      * Removes a used recovery key.
      *
@@ -140,18 +116,13 @@ final class WP_Recovery_Mode_Key_Service
      */
     private function remove_key($token)
     {
-
         $records = $this->get_keys();
-
-        if (! isset($records[ $token ])) {
+        if (!isset($records[$token])) {
             return;
         }
-
-        unset($records[ $token ]);
-
+        unset($records[$token]);
         $this->update_keys($records);
     }
-
     /**
      * Gets the recovery key records.
      *
@@ -175,7 +146,6 @@ final class WP_Recovery_Mode_Key_Service
     {
         return (array) get_option($this->option_name, []);
     }
-
     /**
      * Updates the recovery key records.
      *

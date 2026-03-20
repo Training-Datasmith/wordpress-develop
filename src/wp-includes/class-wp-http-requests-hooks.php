@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * HTTP API: Requests hook bridge class
  *
@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @subpackage HTTP
  * @since 4.7.0
  */
-
 /**
  * Bridge to connect Requests internal hooks to WordPress actions.
  *
@@ -16,8 +15,8 @@ declare(strict_types=1);
  *
  * @see WpOrg\Requests\Hooks
  */
-#[AllowDynamicProperties]
-class WP_HTTP_Requests_Hooks extends WpOrg\Requests\Hooks
+#[Allow_Dynamic_Properties]
+class WP_HTTP_Requests_Hooks extends Wp_Org\Requests\Hooks
 {
     /**
      * Requested URL.
@@ -25,14 +24,12 @@ class WP_HTTP_Requests_Hooks extends WpOrg\Requests\Hooks
      * @var string Requested URL.
      */
     protected $url;
-
     /**
      * WordPress WP_HTTP request data.
      *
      * @var array Request data in WP_Http format.
      */
     protected $request = [];
-
     /**
      * Constructor.
      *
@@ -41,10 +38,9 @@ class WP_HTTP_Requests_Hooks extends WpOrg\Requests\Hooks
      */
     public function __construct($url, $request)
     {
-        $this->url     = $url;
+        $this->url = $url;
         $this->request = $request;
     }
-
     /**
      * Dispatch a Requests hook to a native WordPress action.
      *
@@ -55,15 +51,13 @@ class WP_HTTP_Requests_Hooks extends WpOrg\Requests\Hooks
     public function dispatch($hook, $parameters = [])
     {
         $result = parent::dispatch($hook, $parameters);
-
         // Handle back-compat actions.
         switch ($hook) {
             case 'curl.before_send':
                 /** This action is documented in wp-includes/class-wp-http-curl.php */
-                do_action_ref_array('http_api_curl', [ &$parameters[0], $this->request, $this->url ]);
+                do_action_ref_array('http_api_curl', [&$parameters[0], $this->request, $this->url]);
                 break;
         }
-
         /**
          * Transforms a native Request hook to a WordPress action.
          *
@@ -77,8 +71,8 @@ class WP_HTTP_Requests_Hooks extends WpOrg\Requests\Hooks
          * @param array $request Request data in WP_Http format.
          * @param string $url URL to request.
          */
-        do_action_ref_array("requests-{$hook}", $parameters, $this->request, $this->url); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
-
+        do_action_ref_array("requests-{$hook}", $parameters, $this->request, $this->url);
+        // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
         return $result;
     }
 }

@@ -9,9 +9,7 @@
  * @subpackage Abilities API
  * @since 6.9.0
  */
-
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * Manages the registration and lookup of abilities.
  *
@@ -26,7 +24,6 @@ final class WP_Abilities_Registry
      * @since 6.9.0
      */
     private static ?\WP_Abilities_Registry $instance = null;
-
     /**
      * Holds the registered abilities.
      *
@@ -34,7 +31,6 @@ final class WP_Abilities_Registry
      * @var WP_Ability[]
      */
     private $registered_abilities = [];
-
     /**
      * Registers a new ability.
      *
@@ -45,7 +41,7 @@ final class WP_Abilities_Registry
      * @see wp_register_ability()
      *
      * @param string               $name The name of the ability. Must be the fully-namespaced
- *                                       string identifier, e.g. `my-plugin/my-ability` or `my-plugin/resource/my-ability`.
+     *                                       string identifier, e.g. `my-plugin/my-ability` or `my-plugin/resource/my-ability`.
      * @param array<string, mixed> $args {
      *     An associative array of arguments for the ability.
      *
@@ -79,17 +75,10 @@ final class WP_Abilities_Registry
      */
     public function register(string $name, array $args): ?WP_Ability
     {
-        if (! preg_match('/^[a-z0-9-]+(?:\/[a-z0-9-]+){1,3}$/', $name)) {
-            _doing_it_wrong(
-                __METHOD__,
-                __(
-                    'Ability name must contain 2 to 4 segments separated by forward slashes, e.g. "my-plugin/my-ability" or "my-plugin/resource/my-ability". It can only contain lowercase alphanumeric characters, dashes, and forward slashes.'
-                ),
-                '6.9.0'
-            );
+        if (!preg_match('/^[a-z0-9-]+(?:\/[a-z0-9-]+){1,3}$/', $name)) {
+            _doing_it_wrong(__METHOD__, __('Ability name must contain 2 to 4 segments separated by forward slashes, e.g. "my-plugin/my-ability" or "my-plugin/resource/my-ability". It can only contain lowercase alphanumeric characters, dashes, and forward slashes.'), '6.9.0');
             return null;
         }
-
         if ($this->is_registered($name)) {
             _doing_it_wrong(
                 __METHOD__,
@@ -99,7 +88,6 @@ final class WP_Abilities_Registry
             );
             return null;
         }
-
         /**
          * Filters the ability arguments before they are validated and used to instantiate the ability.
          *
@@ -128,54 +116,36 @@ final class WP_Abilities_Registry
          * @param string               $name The name of the ability, with its namespace.
          */
         $args = apply_filters('wp_register_ability_args', $args, $name);
-
         // Validate ability category exists if provided (will be validated as required in WP_Ability).
         if (isset($args['category'])) {
-            if (! wp_has_ability_category($args['category'])) {
-                _doing_it_wrong(
-                    __METHOD__,
-                    sprintf(
-                        /* translators: %1$s: ability category slug, %2$s: ability name */
-                        __('Ability category "%1$s" is not registered. Please register the ability category before assigning it to ability "%2$s".'),
-                        esc_html($args['category']),
-                        esc_html($name)
-                    ),
-                    '6.9.0'
-                );
+            if (!wp_has_ability_category($args['category'])) {
+                _doing_it_wrong(__METHOD__, sprintf(
+                    /* translators: %1$s: ability category slug, %2$s: ability name */
+                    __('Ability category "%1$s" is not registered. Please register the ability category before assigning it to ability "%2$s".'),
+                    esc_html($args['category']),
+                    esc_html($name)
+                ), '6.9.0');
                 return null;
             }
         }
-
         // The class is only used to instantiate the ability, and is not a property of the ability itself.
-        if (isset($args['ability_class']) && ! is_a($args['ability_class'], WP_Ability::class, true)) {
-            _doing_it_wrong(
-                __METHOD__,
-                __('The ability args should provide a valid `ability_class` that extends WP_Ability.'),
-                '6.9.0'
-            );
+        if (isset($args['ability_class']) && !is_a($args['ability_class'], WP_Ability::class, true)) {
+            _doing_it_wrong(__METHOD__, __('The ability args should provide a valid `ability_class` that extends WP_Ability.'), '6.9.0');
             return null;
         }
-
         /** @var class-string<WP_Ability> */
         $ability_class = $args['ability_class'] ?? WP_Ability::class;
         unset($args['ability_class']);
-
         try {
             // WP_Ability::prepare_properties() will throw an exception if the properties are invalid.
             $ability = new $ability_class($name, $args);
         } catch (InvalidArgumentException $e) {
-            _doing_it_wrong(
-                __METHOD__,
-                $e->getMessage(),
-                '6.9.0'
-            );
+            _doing_it_wrong(__METHOD__, $e->get_message(), '6.9.0');
             return null;
         }
-
-        $this->registered_abilities[ $name ] = $ability;
+        $this->registered_abilities[$name] = $ability;
         return $ability;
     }
-
     /**
      * Unregisters an ability.
      *
@@ -190,7 +160,7 @@ final class WP_Abilities_Registry
      */
     public function unregister(string $name): ?WP_Ability
     {
-        if (! $this->is_registered($name)) {
+        if (!$this->is_registered($name)) {
             _doing_it_wrong(
                 __METHOD__,
                 /* translators: %s: Ability name. */
@@ -199,13 +169,10 @@ final class WP_Abilities_Registry
             );
             return null;
         }
-
-        $unregistered_ability = $this->registered_abilities[ $name ];
-        unset($this->registered_abilities[ $name ]);
-
+        $unregistered_ability = $this->registered_abilities[$name];
+        unset($this->registered_abilities[$name]);
         return $unregistered_ability;
     }
-
     /**
      * Retrieves the list of all registered abilities.
      *
@@ -221,7 +188,6 @@ final class WP_Abilities_Registry
     {
         return $this->registered_abilities;
     }
-
     /**
      * Checks if an ability is registered.
      *
@@ -236,9 +202,8 @@ final class WP_Abilities_Registry
      */
     public function is_registered(string $name): bool
     {
-        return isset($this->registered_abilities[ $name ]);
+        return isset($this->registered_abilities[$name]);
     }
-
     /**
      * Retrieves a registered ability.
      *
@@ -253,7 +218,7 @@ final class WP_Abilities_Registry
      */
     public function get_registered(string $name): ?WP_Ability
     {
-        if (! $this->is_registered($name)) {
+        if (!$this->is_registered($name)) {
             _doing_it_wrong(
                 __METHOD__,
                 /* translators: %s: Ability name. */
@@ -262,9 +227,8 @@ final class WP_Abilities_Registry
             );
             return null;
         }
-        return $this->registered_abilities[ $name ];
+        return $this->registered_abilities[$name];
     }
-
     /**
      * Utility method to retrieve the main instance of the registry class.
      *
@@ -276,26 +240,19 @@ final class WP_Abilities_Registry
      */
     public static function get_instance(): ?self
     {
-        if (! did_action('init')) {
-            _doing_it_wrong(
-                __METHOD__,
-                sprintf(
-                    // translators: %s: init action.
-                    __('Ability API should not be initialized before the %s action has fired.'),
-                    '<code>init</code>'
-                ),
-                '6.9.0'
-            );
+        if (!did_action('init')) {
+            _doing_it_wrong(__METHOD__, sprintf(
+                // translators: %s: init action.
+                __('Ability API should not be initialized before the %s action has fired.'),
+                '<code>init</code>'
+            ), '6.9.0');
             return null;
         }
-
         if (null === self::$instance) {
             self::$instance = new self();
-
             // Ensure ability category registry is initialized first to allow categories to be registered
             // before abilities that depend on them.
             WP_Ability_Categories_Registry::get_instance();
-
             /**
              * Fires when preparing abilities registry.
              *
@@ -308,10 +265,8 @@ final class WP_Abilities_Registry
              */
             do_action('wp_abilities_api_init', self::$instance);
         }
-
         return self::$instance;
     }
-
     /**
      * Wakeup magic method.
      *
@@ -323,7 +278,6 @@ final class WP_Abilities_Registry
     {
         throw new LogicException(self::class . ' should never be unserialized.');
     }
-
     /**
      * Sleep magic method.
      *

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * WP AI Client: WP_AI_Client_Event_Dispatcher class
  *
@@ -8,9 +8,7 @@ declare(strict_types=1);
  * @subpackage AI
  * @since 7.0.0
  */
-
-use WordPress\AiClientDependencies\Psr\EventDispatcher\EventDispatcherInterface;
-
+use Word_Press\Ai_Client_Dependencies\Psr\Event_Dispatcher\Event_Dispatcher_Interface;
 /**
  * WordPress-specific PSR-14 event dispatcher for the AI Client.
  *
@@ -21,7 +19,7 @@ use WordPress\AiClientDependencies\Psr\EventDispatcher\EventDispatcherInterface;
  * @internal Intended only to wire up the PHP AI Client SDK to WordPress's hook system.
  * @access private
  */
-class WP_AI_Client_Event_Dispatcher implements EventDispatcherInterface
+class WP_AI_Client_Event_Dispatcher implements Event_Dispatcher_Interface
 {
     /**
      * Dispatches an event to WordPress action hooks.
@@ -37,7 +35,6 @@ class WP_AI_Client_Event_Dispatcher implements EventDispatcherInterface
     public function dispatch(object $event): object
     {
         $event_name = $this->get_hook_name_portion_for_event($event);
-
         /**
          * Fires when an AI client event is dispatched.
          *
@@ -57,10 +54,8 @@ class WP_AI_Client_Event_Dispatcher implements EventDispatcherInterface
          * @param object $event The event object.
          */
         do_action("wp_ai_client_{$event_name}", $event);
-
         return $event;
     }
-
     /**
      * Converts an event object class name to a WordPress action hook name portion.
      *
@@ -72,17 +67,14 @@ class WP_AI_Client_Event_Dispatcher implements EventDispatcherInterface
     private function get_hook_name_portion_for_event(object $event): string
     {
         $class_name = get_class($event);
-        $pos        = strrpos($class_name, '\\');
+        $pos = strrpos($class_name, '\\');
         $short_name = false !== $pos ? substr($class_name, $pos + 1) : $class_name;
-
         // Convert PascalCase to snake_case.
         $snake_case = strtolower((string) preg_replace('/([a-z])([A-Z])/', '$1_$2', $short_name));
-
         // Strip '_event' suffix if present.
         if (str_ends_with($snake_case, '_event')) {
             $snake_case = (string) substr($snake_case, 0, -6);
         }
-
         return $snake_case;
     }
 }

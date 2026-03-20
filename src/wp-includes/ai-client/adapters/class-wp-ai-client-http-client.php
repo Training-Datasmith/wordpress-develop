@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * WP AI Client: WP_AI_Client_HTTP_Client class
  *
@@ -8,16 +8,14 @@ declare(strict_types=1);
  * @subpackage AI
  * @since 7.0.0
  */
-
-use WordPress\AiClient\Providers\Http\Contracts\ClientWithOptionsInterface;
-use WordPress\AiClient\Providers\Http\DTO\RequestOptions;
-use WordPress\AiClient\Providers\Http\Exception\NetworkException;
-use WordPress\AiClientDependencies\Psr\Http\Client\ClientInterface;
-use WordPress\AiClientDependencies\Psr\Http\Message\RequestInterface;
-use WordPress\AiClientDependencies\Psr\Http\Message\ResponseFactoryInterface;
-use WordPress\AiClientDependencies\Psr\Http\Message\ResponseInterface;
-use WordPress\AiClientDependencies\Psr\Http\Message\StreamFactoryInterface;
-
+use Word_Press\Ai_Client\Providers\Http\Contracts\Client_With_Options_Interface;
+use Word_Press\Ai_Client\Providers\Http\DTO\Request_Options;
+use Word_Press\Ai_Client\Providers\Http\Exception\Network_Exception;
+use Word_Press\Ai_Client_Dependencies\Psr\Http\Client\Client_Interface;
+use Word_Press\Ai_Client_Dependencies\Psr\Http\Message\Request_Interface;
+use Word_Press\Ai_Client_Dependencies\Psr\Http\Message\Response_Factory_Interface;
+use Word_Press\Ai_Client_Dependencies\Psr\Http\Message\Response_Interface;
+use Word_Press\Ai_Client_Dependencies\Psr\Http\Message\Stream_Factory_Interface;
 /**
  * PSR-18 HTTP Client adapter using WordPress HTTP API.
  *
@@ -28,7 +26,7 @@ use WordPress\AiClientDependencies\Psr\Http\Message\StreamFactoryInterface;
  * @internal Intended only to wire up the PHP AI Client SDK to WordPress's HTTP client.
  * @access private
  */
-class WP_AI_Client_HTTP_Client implements ClientInterface, ClientWithOptionsInterface
+class WP_AI_Client_HTTP_Client implements Client_Interface, Client_With_Options_Interface
 {
     /**
      * Response factory instance.
@@ -37,7 +35,6 @@ class WP_AI_Client_HTTP_Client implements ClientInterface, ClientWithOptionsInte
      * @var ResponseFactoryInterface
      */
     private $response_factory;
-
     /**
      * Stream factory instance.
      *
@@ -45,7 +42,6 @@ class WP_AI_Client_HTTP_Client implements ClientInterface, ClientWithOptionsInte
      * @var StreamFactoryInterface
      */
     private $stream_factory;
-
     /**
      * Constructor.
      *
@@ -54,12 +50,11 @@ class WP_AI_Client_HTTP_Client implements ClientInterface, ClientWithOptionsInte
      * @param ResponseFactoryInterface $response_factory PSR-17 Response factory.
      * @param StreamFactoryInterface   $stream_factory   PSR-17 Stream factory.
      */
-    public function __construct(ResponseFactoryInterface $response_factory, StreamFactoryInterface $stream_factory)
+    public function __construct(Response_Factory_Interface $response_factory, Stream_Factory_Interface $stream_factory)
     {
         $this->response_factory = $response_factory;
-        $this->stream_factory   = $stream_factory;
+        $this->stream_factory = $stream_factory;
     }
-
     /**
      * Sends a PSR-7 request and returns a PSR-7 response.
      *
@@ -70,27 +65,24 @@ class WP_AI_Client_HTTP_Client implements ClientInterface, ClientWithOptionsInte
      *
      * @throws NetworkException If the WordPress HTTP request fails.
      */
-    public function sendRequest(RequestInterface $request): ResponseInterface
+    public function send_request(Request_Interface $request): Response_Interface
     {
         $args = $this->prepare_wp_args($request);
-        $url  = (string) $request->getUri();
-
+        $url = (string) $request->get_uri();
         $response = wp_safe_remote_request($url, $args);
-
         if (is_wp_error($response)) {
             $message = sprintf(
                 /* translators: 1: HTTP method (e.g. GET, POST). 2: Request URL. 3: Error message. */
                 __('Network error occurred while sending %1$s request to %2$s: %3$s'),
-                $request->getMethod(),
+                $request->get_method(),
                 $url,
                 $response->get_error_message()
             );
-            throw new NetworkException($message); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+            throw new Network_Exception($message);
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         }
-
         return $this->create_psr_response($response);
     }
-
     /**
      * Sends a PSR-7 request with transport options and returns a PSR-7 response.
      *
@@ -102,13 +94,11 @@ class WP_AI_Client_HTTP_Client implements ClientInterface, ClientWithOptionsInte
      *
      * @throws NetworkException If the WordPress HTTP request fails.
      */
-    public function sendRequestWithOptions(RequestInterface $request, RequestOptions $options): ResponseInterface
+    public function send_request_with_options(Request_Interface $request, Request_Options $options): Response_Interface
     {
         $args = $this->prepare_wp_args($request, $options);
-        $url  = (string) $request->getUri();
-
+        $url = (string) $request->get_uri();
         $response = wp_safe_remote_request($url, $args);
-
         if (is_wp_error($response)) {
             $message = sprintf(
                 /* translators: 1: Request URL. 2: Error message. */
@@ -116,16 +106,14 @@ class WP_AI_Client_HTTP_Client implements ClientInterface, ClientWithOptionsInte
                 $url,
                 $response->get_error_message()
             );
-
-            throw new NetworkException(
-                $message, // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+            throw new Network_Exception(
+                $message,
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 $response->get_error_code() ? (int) $response->get_error_code() : 0
             );
         }
-
         return $this->create_psr_response($response);
     }
-
     /**
      * Prepares WordPress HTTP API arguments from a PSR-7 request.
      *
@@ -135,29 +123,19 @@ class WP_AI_Client_HTTP_Client implements ClientInterface, ClientWithOptionsInte
      * @param RequestOptions|null $options Optional transport options for the request.
      * @return array<string, mixed> WordPress HTTP API arguments.
      */
-    private function prepare_wp_args(RequestInterface $request, ?RequestOptions $options = null): array
+    private function prepare_wp_args(Request_Interface $request, ?Request_Options $options = null): array
     {
-        $args = [
-            'method'      => $request->getMethod(),
-            'headers'     => $this->prepare_headers($request),
-            'body'        => $this->prepare_body($request),
-            'httpversion' => $request->getProtocolVersion(),
-            'blocking'    => true,
-        ];
-
+        $args = ['method' => $request->get_method(), 'headers' => $this->prepare_headers($request), 'body' => $this->prepare_body($request), 'httpversion' => $request->get_protocol_version(), 'blocking' => true];
         if (null !== $options) {
-            if (null !== $options->getTimeout()) {
-                $args['timeout'] = $options->getTimeout();
+            if (null !== $options->get_timeout()) {
+                $args['timeout'] = $options->get_timeout();
             }
-
-            if (null !== $options->getMaxRedirects()) {
-                $args['redirection'] = $options->getMaxRedirects();
+            if (null !== $options->get_max_redirects()) {
+                $args['redirection'] = $options->get_max_redirects();
             }
         }
-
         return $args;
     }
-
     /**
      * Prepares headers for WordPress HTTP API.
      *
@@ -166,17 +144,14 @@ class WP_AI_Client_HTTP_Client implements ClientInterface, ClientWithOptionsInte
      * @param RequestInterface $request The PSR-7 request.
      * @return array<string, string> Headers array for WordPress HTTP API.
      */
-    private function prepare_headers(RequestInterface $request): array
+    private function prepare_headers(Request_Interface $request): array
     {
         $headers = [];
-
-        foreach ($request->getHeaders() as $name => $values) {
-            $headers[ (string) $name ] = implode(', ', $values);
+        foreach ($request->get_headers() as $name => $values) {
+            $headers[(string) $name] = implode(', ', $values);
         }
-
         return $headers;
     }
-
     /**
      * Prepares request body for WordPress HTTP API.
      *
@@ -185,21 +160,17 @@ class WP_AI_Client_HTTP_Client implements ClientInterface, ClientWithOptionsInte
      * @param RequestInterface $request The PSR-7 request.
      * @return string|null The request body.
      */
-    private function prepare_body(RequestInterface $request): ?string
+    private function prepare_body(Request_Interface $request): ?string
     {
-        $body = $request->getBody();
-
-        if ($body->getSize() === 0) {
+        $body = $request->get_body();
+        if ($body->get_size() === 0) {
             return null;
         }
-
-        if ($body->isSeekable()) {
+        if ($body->is_seekable()) {
             $body->rewind();
         }
-
         return (string) $body;
     }
-
     /**
      * Creates a PSR-7 response from a WordPress HTTP response.
      *
@@ -208,30 +179,25 @@ class WP_AI_Client_HTTP_Client implements ClientInterface, ClientWithOptionsInte
      * @param array<string, mixed> $wp_response WordPress HTTP API response array.
      * @return ResponseInterface PSR-7 response.
      */
-    private function create_psr_response(array $wp_response): ResponseInterface
+    private function create_psr_response(array $wp_response): Response_Interface
     {
-        $status_code   = wp_remote_retrieve_response_code($wp_response);
+        $status_code = wp_remote_retrieve_response_code($wp_response);
         $reason_phrase = wp_remote_retrieve_response_message($wp_response);
-        $headers       = wp_remote_retrieve_headers($wp_response);
-        $body          = wp_remote_retrieve_body($wp_response);
-
-        $response = $this->response_factory->createResponse((int) $status_code, $reason_phrase);
-
+        $headers = wp_remote_retrieve_headers($wp_response);
+        $body = wp_remote_retrieve_body($wp_response);
+        $response = $this->response_factory->create_response((int) $status_code, $reason_phrase);
         if ($headers instanceof WP_HTTP_Requests_Response) {
             $headers = $headers->get_headers();
         }
-
         if (is_array($headers) || $headers instanceof Traversable) {
             foreach ($headers as $name => $value) {
-                $response = $response->withHeader($name, $value);
+                $response = $response->with_header($name, $value);
             }
         }
-
-        if (! empty($body)) {
-            $stream   = $this->stream_factory->createStream($body);
-            $response = $response->withBody($stream);
+        if (!empty($body)) {
+            $stream = $this->stream_factory->create_stream($body);
+            $response = $response->with_body($stream);
         }
-
         return $response;
     }
 }

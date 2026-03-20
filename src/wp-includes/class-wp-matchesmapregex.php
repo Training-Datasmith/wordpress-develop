@@ -1,20 +1,19 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * WP_MatchesMapRegex helper class
  *
  * @package WordPress
  * @since 4.7.0
  */
-
 /**
  * Helper class to remove the need to use eval to replace $matches[] in query strings.
  *
  * @since 2.9.0
  */
-#[AllowDynamicProperties]
-class WP_MatchesMapRegex
+#[Allow_Dynamic_Properties]
+class Wp_matches_Map_Regex
 {
     /**
      * store for matches
@@ -22,28 +21,25 @@ class WP_MatchesMapRegex
      * @var array
      */
     private $_matches;
-
     /**
      * store for mapping result
      *
      * @var string
      */
     public $output;
-
     /**
      * subject to perform mapping on (query string containing $matches[] references
      *
      * @var string
      */
     private $_subject;
-
     /**
      * regexp pattern to match $matches[] references
      *
      * @var string
      */
-    public $_pattern = '(\$matches\[[1-9]+[0-9]*\])'; // Magic number.
-
+    public $_pattern = '(\$matches\[[1-9]+[0-9]*\])';
+    // Magic number.
     /**
      * constructor
      *
@@ -54,9 +50,8 @@ class WP_MatchesMapRegex
     {
         $this->_subject = $subject;
         $this->_matches = $matches;
-        $this->output   = $this->_map();
+        $this->output = $this->_map();
     }
-
     /**
      * Substitute substring matches in subject.
      *
@@ -68,10 +63,9 @@ class WP_MatchesMapRegex
      */
     public static function apply($subject, $matches)
     {
-        $result = new WP_MatchesMapRegex($subject, $matches);
+        $result = new Wp_matches_Map_Regex($subject, $matches);
         return $result->output;
     }
-
     /**
      * do the actual mapping
      *
@@ -79,10 +73,9 @@ class WP_MatchesMapRegex
      */
     private function _map()
     {
-        $callback = [ $this, 'callback' ];
+        $callback = [$this, 'callback'];
         return preg_replace_callback($this->_pattern, $callback, $this->_subject);
     }
-
     /**
      * preg_replace_callback hook
      *
@@ -92,6 +85,6 @@ class WP_MatchesMapRegex
     public function callback($matches)
     {
         $index = (int) substr($matches[0], 9, -1);
-        return (isset($this->_matches[ $index ]) ? urlencode($this->_matches[ $index ]) : '');
+        return isset($this->_matches[$index]) ? urlencode($this->_matches[$index]) : '';
     }
 }

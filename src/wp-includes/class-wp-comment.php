@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Comment API: WP_Comment class
  *
@@ -8,13 +8,12 @@ declare(strict_types=1);
  * @subpackage Comments
  * @since 4.4.0
  */
-
 /**
  * Core class used to organize comments as instantiated objects with defined members.
  *
  * @since 4.4.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 final class WP_Comment
 {
     /**
@@ -26,7 +25,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_ID;
-
     /**
      * ID of the post the comment is associated with.
      *
@@ -36,7 +34,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_post_ID = '0';
-
     /**
      * Comment author name.
      *
@@ -44,7 +41,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_author = '';
-
     /**
      * Comment author email address.
      *
@@ -52,7 +48,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_author_email = '';
-
     /**
      * Comment author URL.
      *
@@ -60,7 +55,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_author_url = '';
-
     /**
      * Comment author IP address (IPv4 format).
      *
@@ -68,7 +62,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_author_IP = '';
-
     /**
      * Comment date in YYYY-MM-DD HH:MM:SS format.
      *
@@ -76,7 +69,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_date = '0000-00-00 00:00:00';
-
     /**
      * Comment GMT date in YYYY-MM-DD HH::MM:SS format.
      *
@@ -84,7 +76,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_date_gmt = '0000-00-00 00:00:00';
-
     /**
      * Comment content.
      *
@@ -92,7 +83,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_content;
-
     /**
      * Comment karma count.
      *
@@ -102,7 +92,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_karma = '0';
-
     /**
      * Comment approval status.
      *
@@ -110,7 +99,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_approved = '1';
-
     /**
      * Comment author HTTP user agent.
      *
@@ -118,7 +106,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_agent = '';
-
     /**
      * Comment type.
      *
@@ -127,7 +114,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_type = 'comment';
-
     /**
      * Parent comment ID.
      *
@@ -137,7 +123,6 @@ final class WP_Comment
      * @var string
      */
     public $comment_parent = '0';
-
     /**
      * Comment author ID.
      *
@@ -147,7 +132,6 @@ final class WP_Comment
      * @var string
      */
     public $user_id = '0';
-
     /**
      * Comment children.
      *
@@ -155,7 +139,6 @@ final class WP_Comment
      * @var array
      */
     protected $children;
-
     /**
      * Whether children have been populated for this comment object.
      *
@@ -163,15 +146,13 @@ final class WP_Comment
      * @var bool
      */
     protected $populated_children = false;
-
     /**
      * Post fields.
      *
      * @since 4.4.0
      * @var array
      */
-    protected $post_fields = [ 'post_author', 'post_date', 'post_date_gmt', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'comment_status', 'ping_status', 'post_name', 'to_ping', 'pinged', 'post_modified', 'post_modified_gmt', 'post_content_filtered', 'post_parent', 'guid', 'menu_order', 'post_type', 'post_mime_type', 'comment_count' ];
-
+    protected $post_fields = ['post_author', 'post_date', 'post_date_gmt', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'comment_status', 'ping_status', 'post_name', 'to_ping', 'pinged', 'post_modified', 'post_modified_gmt', 'post_content_filtered', 'post_parent', 'guid', 'menu_order', 'post_type', 'post_mime_type', 'comment_count'];
     /**
      * Retrieves a WP_Comment instance.
      *
@@ -185,27 +166,20 @@ final class WP_Comment
     public static function get_instance($id)
     {
         global $wpdb;
-
         $comment_id = (int) $id;
-        if (! $comment_id) {
+        if (!$comment_id) {
             return false;
         }
-
         $_comment = wp_cache_get($comment_id, 'comment');
-
-        if (! $_comment) {
-            $_comment = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_ID = %d LIMIT 1", $comment_id));
-
-            if (! $_comment) {
+        if (!$_comment) {
+            $_comment = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->comments} WHERE comment_ID = %d LIMIT 1", $comment_id));
+            if (!$_comment) {
                 return false;
             }
-
             wp_cache_add($_comment->comment_ID, $_comment, 'comment');
         }
-
         return new WP_Comment($_comment);
     }
-
     /**
      * Constructor.
      *
@@ -218,10 +192,9 @@ final class WP_Comment
     public function __construct($comment)
     {
         foreach (get_object_vars($comment) as $key => $value) {
-            $this->$key = $value;
+            $this->{$key} = $value;
         }
     }
-
     /**
      * Converts object to array.
      *
@@ -233,7 +206,6 @@ final class WP_Comment
     {
         return get_object_vars($this);
     }
-
     /**
      * Gets the children of a comment.
      *
@@ -272,16 +244,9 @@ final class WP_Comment
      */
     public function get_children($args = [])
     {
-        $defaults = [
-            'format'       => 'tree',
-            'status'       => 'all',
-            'hierarchical' => 'threaded',
-            'orderby'      => '',
-        ];
-
-        $_args           = wp_parse_args($args, $defaults);
+        $defaults = ['format' => 'tree', 'status' => 'all', 'hierarchical' => 'threaded', 'orderby' => ''];
+        $_args = wp_parse_args($args, $defaults);
         $_args['parent'] = $this->comment_ID;
-
         if (is_null($this->children)) {
             if ($this->populated_children) {
                 $this->children = [];
@@ -289,24 +254,20 @@ final class WP_Comment
                 $this->children = get_comments($_args);
             }
         }
-
         if ('flat' === $_args['format']) {
             $children = [];
             foreach ($this->children as $child) {
-                $child_args           = $_args;
+                $child_args = $_args;
                 $child_args['format'] = 'flat';
                 // get_children() resets this value automatically.
                 unset($child_args['parent']);
-
-                $children = array_merge($children, [ $child ], $child->get_children($child_args));
+                $children = array_merge($children, [$child], $child->get_children($child_args));
             }
         } else {
             $children = $this->children;
         }
-
         return $children;
     }
-
     /**
      * Adds a child to the comment.
      *
@@ -318,9 +279,8 @@ final class WP_Comment
      */
     public function add_child(WP_Comment $child)
     {
-        $this->children[ $child->comment_ID ] = $child;
+        $this->children[$child->comment_ID] = $child;
     }
-
     /**
      * Gets a child comment by ID.
      *
@@ -331,9 +291,8 @@ final class WP_Comment
      */
     public function get_child($child_id)
     {
-        return $this->children[ $child_id ] ?? false;
+        return $this->children[$child_id] ?? false;
     }
-
     /**
      * Sets the 'populated_children' flag.
      *
@@ -348,7 +307,6 @@ final class WP_Comment
     {
         $this->populated_children = (bool) $set;
     }
-
     /**
      * Determines whether a non-public property is set.
      *
@@ -365,10 +323,8 @@ final class WP_Comment
             $post = get_post($this->comment_post_ID);
             return property_exists($post, $name);
         }
-
         return false;
     }
-
     /**
      * Magic getter.
      *
@@ -383,7 +339,7 @@ final class WP_Comment
     {
         if (in_array($name, $this->post_fields, true)) {
             $post = get_post($this->comment_post_ID);
-            return $post->$name;
+            return $post->{$name};
         }
     }
 }

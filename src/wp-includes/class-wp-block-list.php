@@ -1,19 +1,18 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Blocks API: WP_Block_List class
  *
  * @package WordPress
  * @since 5.5.0
  */
-
 /**
  * Class representing a list of block instances.
  *
  * @since 5.5.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_Block_List implements Iterator, ArrayAccess, Countable
 {
     /**
@@ -23,7 +22,6 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      * @var array[]|WP_Block[]
      */
     protected $blocks;
-
     /**
      * All available context of the current hierarchy.
      *
@@ -31,7 +29,6 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      * @var array
      */
     protected $available_context;
-
     /**
      * Block type registry to use in constructing block instances.
      *
@@ -39,7 +36,6 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      * @var WP_Block_Type_Registry
      */
     protected $registry;
-
     /**
      * Constructor.
      *
@@ -53,15 +49,13 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      */
     public function __construct($blocks, $available_context = [], $registry = null)
     {
-        if (! $registry instanceof WP_Block_Type_Registry) {
+        if (!$registry instanceof WP_Block_Type_Registry) {
             $registry = WP_Block_Type_Registry::get_instance();
         }
-
-        $this->blocks            = $blocks;
+        $this->blocks = $blocks;
         $this->available_context = $available_context;
-        $this->registry          = $registry;
+        $this->registry = $registry;
     }
-
     /**
      * Returns true if a block exists by the specified block offset, or false
      * otherwise.
@@ -73,12 +67,11 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      * @param int $offset Offset of block to check for.
      * @return bool Whether block exists.
      */
-    #[ReturnTypeWillChange]
+    #[Return_Type_Will_Change]
     public function offsetExists($offset)
     {
-        return isset($this->blocks[ $offset ]);
+        return isset($this->blocks[$offset]);
     }
-
     /**
      * Returns the value by the specified block offset.
      *
@@ -89,20 +82,16 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      * @param int $offset Offset of block value to retrieve.
      * @return WP_Block|null Block value if exists, or null.
      */
-    #[ReturnTypeWillChange]
+    #[Return_Type_Will_Change]
     public function offsetGet($offset)
     {
-        $block = $this->blocks[ $offset ];
-
+        $block = $this->blocks[$offset];
         if (isset($block) && is_array($block)) {
             $block = new WP_Block($block, $this->available_context, $this->registry);
-
-            $this->blocks[ $offset ] = $block;
+            $this->blocks[$offset] = $block;
         }
-
         return $block;
     }
-
     /**
      * Assign a block value by the specified block offset.
      *
@@ -113,16 +102,15 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      * @param int            $offset Offset of block value to set.
      * @param array|WP_Block $value  Block value.
      */
-    #[ReturnTypeWillChange]
+    #[Return_Type_Will_Change]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->blocks[] = $value;
         } else {
-            $this->blocks[ $offset ] = $value;
+            $this->blocks[$offset] = $value;
         }
     }
-
     /**
      * Unset a block.
      *
@@ -132,12 +120,11 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      *
      * @param int $offset Offset of block value to unset.
      */
-    #[ReturnTypeWillChange]
+    #[Return_Type_Will_Change]
     public function offsetUnset($offset)
     {
-        unset($this->blocks[ $offset ]);
+        unset($this->blocks[$offset]);
     }
-
     /**
      * Rewinds back to the first element of the Iterator.
      *
@@ -145,12 +132,11 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      *
      * @link https://www.php.net/manual/en/iterator.rewind.php
      */
-    #[ReturnTypeWillChange]
+    #[Return_Type_Will_Change]
     public function rewind()
     {
         reset($this->blocks);
     }
-
     /**
      * Returns the current element of the block list.
      *
@@ -160,12 +146,11 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      *
      * @return WP_Block|null Current element.
      */
-    #[ReturnTypeWillChange]
+    #[Return_Type_Will_Change]
     public function current()
     {
         return $this->offsetGet($this->key());
     }
-
     /**
      * Returns the key of the current element of the block list.
      *
@@ -175,12 +160,11 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      *
      * @return int|null Key of the current element.
      */
-    #[ReturnTypeWillChange]
+    #[Return_Type_Will_Change]
     public function key()
     {
         return key($this->blocks);
     }
-
     /**
      * Moves the current position of the block list to the next element.
      *
@@ -188,12 +172,11 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      *
      * @link https://www.php.net/manual/en/iterator.next.php
      */
-    #[ReturnTypeWillChange]
+    #[Return_Type_Will_Change]
     public function next()
     {
         next($this->blocks);
     }
-
     /**
      * Checks if current position is valid.
      *
@@ -201,12 +184,11 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      *
      * @link https://www.php.net/manual/en/iterator.valid.php
      */
-    #[ReturnTypeWillChange]
+    #[Return_Type_Will_Change]
     public function valid()
     {
         return null !== key($this->blocks);
     }
-
     /**
      * Returns the count of blocks in the list.
      *
@@ -216,7 +198,7 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable
      *
      * @return int Block count.
      */
-    #[ReturnTypeWillChange]
+    #[Return_Type_Will_Change]
     public function count()
     {
         return count($this->blocks);

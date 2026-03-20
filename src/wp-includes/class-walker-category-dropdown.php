@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Taxonomy API: Walker_CategoryDropdown class
  *
@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @subpackage Template
  * @since 4.4.0
  */
-
 /**
  * Core class used to create an HTML dropdown list of Categories.
  *
@@ -16,7 +15,7 @@ declare(strict_types=1);
  *
  * @see Walker
  */
-class Walker_CategoryDropdown extends Walker
+class Walker_category_Dropdown extends Walker
 {
     /**
      * What the class handles.
@@ -27,7 +26,6 @@ class Walker_CategoryDropdown extends Walker
      * @see Walker::$tree_type
      */
     public $tree_type = 'category';
-
     /**
      * Database fields to use.
      *
@@ -37,11 +35,7 @@ class Walker_CategoryDropdown extends Walker
      *
      * @see Walker::$db_fields
      */
-    public $db_fields = [
-        'parent' => 'parent',
-        'id'     => 'term_id',
-    ];
-
+    public $db_fields = ['parent' => 'parent', 'id' => 'term_id'];
     /**
      * Starts the element output.
      *
@@ -62,20 +56,15 @@ class Walker_CategoryDropdown extends Walker
     {
         // Restores the more descriptive, specific name for use within this method.
         $category = $data_object;
-
         $pad = str_repeat('&nbsp;', $depth * 3);
-
         /** This filter is documented in wp-includes/category-template.php */
         $cat_name = apply_filters('list_cats', $category->name, $category);
-
         if (isset($args['value_field']) && isset($category->{$args['value_field']})) {
             $value_field = $args['value_field'];
         } else {
             $value_field = 'term_id';
         }
-
-        $output .= "\t<option class=\"level-$depth\" value=\"" . esc_attr($category->{$value_field}) . '"';
-
+        $output .= "\t<option class=\"level-{$depth}\" value=\"" . esc_attr($category->{$value_field}) . '"';
         // Type-juggling causes false matches, so we force everything to a string.
         if ((string) $category->{$value_field} === (string) $args['selected']) {
             $output .= ' selected="selected"';

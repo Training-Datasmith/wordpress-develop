@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Feed API: WP_Feed_Cache_Transient class
  *
@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @subpackage Feed
  * @since 4.7.0
  */
-
 /**
  * Core class used to implement feed cache transients.
  *
@@ -16,8 +15,8 @@ declare(strict_types=1);
  * @since 6.7.0 Now properly implements the SimplePie\Cache\Base interface.
  * @since 6.9.0 Switched to Multisite's global cache via the `*_site_transient()` functions.
  */
-#[AllowDynamicProperties]
-class WP_Feed_Cache_Transient implements SimplePie\Cache\Base
+#[Allow_Dynamic_Properties]
+class WP_Feed_Cache_Transient implements Simple_Pie\Cache\Base
 {
     /**
      * Holds the transient name.
@@ -26,7 +25,6 @@ class WP_Feed_Cache_Transient implements SimplePie\Cache\Base
      * @var string
      */
     public $name;
-
     /**
      * Holds the transient mod name.
      *
@@ -34,7 +32,6 @@ class WP_Feed_Cache_Transient implements SimplePie\Cache\Base
      * @var string
      */
     public $mod_name;
-
     /**
      * Holds the cache duration in seconds.
      *
@@ -44,7 +41,6 @@ class WP_Feed_Cache_Transient implements SimplePie\Cache\Base
      * @var int
      */
     public $lifetime = 43200;
-
     /**
      * Creates a new (transient) cache object.
      *
@@ -59,9 +55,8 @@ class WP_Feed_Cache_Transient implements SimplePie\Cache\Base
      */
     public function __construct($location, $name, $type)
     {
-        $this->name     = 'feed_' . $name;
+        $this->name = 'feed_' . $name;
         $this->mod_name = 'feed_mod_' . $name;
-
         $lifetime = $this->lifetime;
         /**
          * Filters the transient lifetime of the feed cache.
@@ -73,7 +68,6 @@ class WP_Feed_Cache_Transient implements SimplePie\Cache\Base
          */
         $this->lifetime = apply_filters('wp_feed_cache_transient_lifetime', $lifetime, $name);
     }
-
     /**
      * Saves data to the transient.
      *
@@ -85,15 +79,13 @@ class WP_Feed_Cache_Transient implements SimplePie\Cache\Base
      */
     public function save($data)
     {
-        if ($data instanceof SimplePie\SimplePie) {
+        if ($data instanceof Simple_Pie\Simple_Pie) {
             $data = $data->data;
         }
-
         set_site_transient($this->name, $data, $this->lifetime);
         set_site_transient($this->mod_name, time(), $this->lifetime);
         return true;
     }
-
     /**
      * Retrieves the data saved in the transient.
      *
@@ -105,7 +97,6 @@ class WP_Feed_Cache_Transient implements SimplePie\Cache\Base
     {
         return get_site_transient($this->name);
     }
-
     /**
      * Gets mod transient.
      *
@@ -117,7 +108,6 @@ class WP_Feed_Cache_Transient implements SimplePie\Cache\Base
     {
         return get_site_transient($this->mod_name);
     }
-
     /**
      * Sets mod transient.
      *
@@ -129,7 +119,6 @@ class WP_Feed_Cache_Transient implements SimplePie\Cache\Base
     {
         return set_site_transient($this->mod_name, time(), $this->lifetime);
     }
-
     /**
      * Deletes transients.
      *

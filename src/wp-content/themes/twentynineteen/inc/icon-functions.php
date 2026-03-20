@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * SVG icons related functions
  *
@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @subpackage Twenty_Nineteen
  * @since Twenty Nineteen 1.0
  */
-
 /**
  * Gets the SVG code for a given icon.
  *
@@ -17,9 +16,8 @@ declare(strict_types=1);
  */
 function twentynineteen_get_icon_svg($icon, $size = 24)
 {
-    return TwentyNineteen_SVG_Icons::get_svg('ui', $icon, $size);
+    return Twenty_Nineteen_svg_icons::get_svg('ui', $icon, $size);
 }
-
 /**
  * Gets the SVG code for a given social icon.
  *
@@ -28,9 +26,8 @@ function twentynineteen_get_icon_svg($icon, $size = 24)
  */
 function twentynineteen_get_social_icon_svg($icon, $size = 24)
 {
-    return TwentyNineteen_SVG_Icons::get_svg('social', $icon, $size);
+    return Twenty_Nineteen_svg_icons::get_svg('social', $icon, $size);
 }
-
 /**
  * Detects the social network from a URL and returns the SVG code for its icon.
  *
@@ -39,9 +36,8 @@ function twentynineteen_get_social_icon_svg($icon, $size = 24)
  */
 function twentynineteen_get_social_link_svg($uri, $size = 24)
 {
-    return TwentyNineteen_SVG_Icons::get_social_link_svg($uri, $size);
+    return Twenty_Nineteen_svg_icons::get_social_link_svg($uri, $size);
 }
-
 /**
  * Displays SVG icons in social links menu.
  *
@@ -61,11 +57,9 @@ function twentynineteen_nav_menu_social_icons($item_output, $item, $depth, $args
         }
         $item_output = str_replace($args->link_after, '</span>' . $svg, $item_output);
     }
-
     return $item_output;
 }
 add_filter('walker_nav_menu_start_el', 'twentynineteen_nav_menu_social_icons', 10, 4);
-
 /**
  * Adds a dropdown icon to top-level menu items.
  *
@@ -77,47 +71,23 @@ add_filter('walker_nav_menu_start_el', 'twentynineteen_nav_menu_social_icons', 1
  */
 function twentynineteen_add_dropdown_icons($item_output, $item, $depth, $args)
 {
-
     // Only add class to 'top level' items on the 'primary' menu.
-    if (! isset($args->theme_location) || 'menu-1' !== $args->theme_location) {
+    if (!isset($args->theme_location) || 'menu-1' !== $args->theme_location) {
         return $item_output;
     }
-
     if (in_array('mobile-parent-nav-menu-item', $item->classes, true) && isset($item->original_id)) {
         // Inject the keyboard_arrow_left SVG inside the parent nav menu item, and let the item link to the parent item.
         // @todo Only do this for nested submenus? If on a first-level submenu, then really the link could be "#" since the desire is to remove the target entirely.
-        $link = sprintf(
-            '<button class="menu-item-link-return" tabindex="-1">%s',
-            twentynineteen_get_icon_svg('chevron_left', 24)
-        );
-
+        $link = sprintf('<button class="menu-item-link-return" tabindex="-1">%s', twentynineteen_get_icon_svg('chevron_left', 24));
         // Replace opening <a> with <button>.
-        $item_output = preg_replace(
-            '/<a\s.*?>/',
-            $link,
-            $item_output,
-            1 // Limit.
-        );
-
+        $item_output = preg_replace('/<a\s.*?>/', $link, $item_output, 1);
         // Replace closing </a> with </button>.
-        $item_output = preg_replace(
-            '#</a>#i',
-            '</button>',
-            $item_output,
-            1 // Limit.
-        );
-
+        $item_output = preg_replace('#</a>#i', '</button>', $item_output, 1);
     } elseif (in_array('menu-item-has-children', $item->classes, true)) {
-
         // Add SVG icon to parent items.
         $icon = twentynineteen_get_icon_svg('keyboard_arrow_down', 24);
-
-        $item_output .= sprintf(
-            '<button class="submenu-expand" tabindex="-1">%s</button>',
-            $icon
-        );
+        $item_output .= sprintf('<button class="submenu-expand" tabindex="-1">%s</button>', $icon);
     }
-
     return $item_output;
 }
 add_filter('walker_nav_menu_start_el', 'twentynineteen_add_dropdown_icons', 10, 4);

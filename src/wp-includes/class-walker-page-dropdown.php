@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Post API: Walker_PageDropdown class
  *
@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @subpackage Post
  * @since 4.4.0
  */
-
 /**
  * Core class used to create an HTML drop-down list of pages.
  *
@@ -16,7 +15,7 @@ declare(strict_types=1);
  *
  * @see Walker
  */
-class Walker_PageDropdown extends Walker
+class Walker_page_Dropdown extends Walker
 {
     /**
      * What the class handles.
@@ -27,7 +26,6 @@ class Walker_PageDropdown extends Walker
      * @see Walker::$tree_type
      */
     public $tree_type = 'page';
-
     /**
      * Database fields to use.
      *
@@ -37,11 +35,7 @@ class Walker_PageDropdown extends Walker
      * @see Walker::$db_fields
      * @todo Decouple this
      */
-    public $db_fields = [
-        'parent' => 'post_parent',
-        'id'     => 'ID',
-    ];
-
+    public $db_fields = ['parent' => 'post_parent', 'id' => 'ID'];
     /**
      * Starts the element output.
      *
@@ -65,25 +59,20 @@ class Walker_PageDropdown extends Walker
     {
         // Restores the more descriptive, specific name for use within this method.
         $page = $data_object;
-
         $pad = str_repeat('&nbsp;', $depth * 3);
-
-        if (! isset($args['value_field']) || ! isset($page->{$args['value_field']})) {
+        if (!isset($args['value_field']) || !isset($page->{$args['value_field']})) {
             $args['value_field'] = 'ID';
         }
-
-        $output .= "\t<option class=\"level-$depth\" value=\"" . esc_attr($page->{$args['value_field']}) . '"';
+        $output .= "\t<option class=\"level-{$depth}\" value=\"" . esc_attr($page->{$args['value_field']}) . '"';
         if ($page->ID === (int) $args['selected']) {
             $output .= ' selected="selected"';
         }
         $output .= '>';
-
         $title = $page->post_title;
         if ('' === $title) {
             /* translators: %d: ID of a post. */
             $title = sprintf(__('#%d (no title)'), $page->ID);
         }
-
         /**
          * Filters the page title when creating an HTML drop-down list of pages.
          *
@@ -93,7 +82,6 @@ class Walker_PageDropdown extends Walker
          * @param WP_Post $page  Page data object.
          */
         $title = apply_filters('list_pages', $title, $page);
-
         $output .= $pad . esc_html($title);
         $output .= "</option>\n";
     }

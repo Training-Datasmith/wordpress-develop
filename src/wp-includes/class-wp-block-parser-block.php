@@ -1,12 +1,11 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Block Serialization Parser
  *
  * @package WordPress
  */
-
 /**
  * Class WP_Block_Parser_Block
  *
@@ -24,8 +23,8 @@ class WP_Block_Parser_Block
      * @since 5.0.0
      * @var string
      */
-    public $blockName; // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-
+    public $block_name;
+    // phpcs:ignore WordPress.NamingConventions.ValidVariableName
     /**
      * Optional set of attributes from block comment delimiters
      *
@@ -36,15 +35,14 @@ class WP_Block_Parser_Block
      * @var array|null
      */
     public $attrs;
-
     /**
      * List of inner blocks (of this same class)
      *
      * @since 5.0.0
      * @var WP_Block_Parser_Block[]
      */
-    public $innerBlocks; // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-
+    public $inner_blocks;
+    // phpcs:ignore WordPress.NamingConventions.ValidVariableName
     /**
      * Resultant HTML from inside block comment delimiters
      * after removing inner blocks
@@ -54,8 +52,8 @@ class WP_Block_Parser_Block
      * @since 5.0.0
      * @var string
      */
-    public $innerHTML; // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-
+    public $inner_html;
+    // phpcs:ignore WordPress.NamingConventions.ValidVariableName
     /**
      * List of string fragments and null markers where inner blocks were found
      *
@@ -68,8 +66,8 @@ class WP_Block_Parser_Block
      * @since 5.0.0
      * @var array
      */
-    public $innerContent; // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-
+    public $inner_content;
+    // phpcs:ignore WordPress.NamingConventions.ValidVariableName
     /**
      * Constructor.
      *
@@ -85,10 +83,14 @@ class WP_Block_Parser_Block
      */
     public function __construct($name, $attrs, $inner_blocks, $inner_html, $inner_content)
     {
-        $this->blockName    = $name;          // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-        $this->attrs        = $attrs;
-        $this->innerBlocks  = $inner_blocks;  // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-        $this->innerHTML    = $inner_html;    // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-        $this->innerContent = $inner_content; // phpcs:ignore WordPress.NamingConventions.ValidVariableName
+        $this->block_name = $name;
+        // phpcs:ignore WordPress.NamingConventions.ValidVariableName
+        $this->attrs = $attrs;
+        $this->inner_blocks = $inner_blocks;
+        // phpcs:ignore WordPress.NamingConventions.ValidVariableName
+        $this->inner_html = $inner_html;
+        // phpcs:ignore WordPress.NamingConventions.ValidVariableName
+        $this->inner_content = $inner_content;
+        // phpcs:ignore WordPress.NamingConventions.ValidVariableName
     }
 }

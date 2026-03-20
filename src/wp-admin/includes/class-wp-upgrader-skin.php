@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Upgrader API: WP_Upgrader_Skin class
  *
@@ -8,14 +8,13 @@ declare(strict_types=1);
  * @subpackage Upgrader
  * @since 4.6.0
  */
-
 /**
  * Generic Skin for the WordPress Upgrader classes. This skin is designed to be extended for specific purposes.
  *
  * @since 2.8.0
  * @since 4.6.0 Moved to its own file from wp-admin/includes/class-wp-upgrader-skins.php.
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_Upgrader_Skin
 {
     /**
@@ -25,7 +24,6 @@ class WP_Upgrader_Skin
      * @var WP_Upgrader
      */
     public $upgrader;
-
     /**
      * Whether header is done.
      *
@@ -33,7 +31,6 @@ class WP_Upgrader_Skin
      * @var bool
      */
     public $done_header = false;
-
     /**
      * Whether footer is done.
      *
@@ -41,7 +38,6 @@ class WP_Upgrader_Skin
      * @var bool
      */
     public $done_footer = false;
-
     /**
      * Holds the result of an upgrade.
      *
@@ -49,7 +45,6 @@ class WP_Upgrader_Skin
      * @var string|bool|WP_Error
      */
     public $result = false;
-
     /**
      * Holds the options of an upgrade.
      *
@@ -57,7 +52,6 @@ class WP_Upgrader_Skin
      * @var array
      */
     public $options = [];
-
     /**
      * Constructor.
      *
@@ -70,15 +64,9 @@ class WP_Upgrader_Skin
      */
     public function __construct($args = [])
     {
-        $defaults      = [
-            'url'     => '',
-            'nonce'   => '',
-            'title'   => '',
-            'context' => false,
-        ];
+        $defaults = ['url' => '', 'nonce' => '', 'title' => '', 'context' => false];
         $this->options = wp_parse_args($args, $defaults);
     }
-
     /**
      * Sets the relationship between the skin being used and the upgrader.
      *
@@ -89,11 +77,10 @@ class WP_Upgrader_Skin
     public function set_upgrader(&$upgrader): void
     {
         if (is_object($upgrader)) {
-            $this->upgrader = & $upgrader;
+            $this->upgrader =& $upgrader;
         }
         $this->add_strings();
     }
-
     /**
      * Sets up the strings used in the update process.
      *
@@ -102,7 +89,6 @@ class WP_Upgrader_Skin
     public function add_strings()
     {
     }
-
     /**
      * Sets the result of an upgrade.
      *
@@ -114,7 +100,6 @@ class WP_Upgrader_Skin
     {
         $this->result = $result;
     }
-
     /**
      * Displays a form to the user to request for their FTP/SSH details in order
      * to connect to the filesystem.
@@ -134,18 +119,15 @@ class WP_Upgrader_Skin
     public function request_filesystem_credentials($error = false, $context = '', $allow_relaxed_file_ownership = false)
     {
         $url = $this->options['url'];
-        if (! $context) {
+        if (!$context) {
             $context = $this->options['context'];
         }
-        if (! empty($this->options['nonce'])) {
+        if (!empty($this->options['nonce'])) {
             $url = wp_nonce_url($url, $this->options['nonce']);
         }
-
         $extra_fields = [];
-
         return request_filesystem_credentials($url, '', $error, $context, $extra_fields, $allow_relaxed_file_ownership);
     }
-
     /**
      * Displays the header before the update process.
      *
@@ -160,7 +142,6 @@ class WP_Upgrader_Skin
         echo '<div class="wrap">';
         echo '<h1>' . $this->options['title'] . '</h1>';
     }
-
     /**
      * Displays the footer following the update process.
      *
@@ -174,7 +155,6 @@ class WP_Upgrader_Skin
         $this->done_footer = true;
         echo '</div>';
     }
-
     /**
      * Displays an error message about the update.
      *
@@ -184,7 +164,7 @@ class WP_Upgrader_Skin
      */
     public function error($errors): void
     {
-        if (! $this->done_header) {
+        if (!$this->done_header) {
             $this->header();
         }
         if (is_string($errors)) {
@@ -199,7 +179,6 @@ class WP_Upgrader_Skin
             }
         }
     }
-
     /**
      * Displays a message about the update.
      *
@@ -211,14 +190,13 @@ class WP_Upgrader_Skin
      */
     public function feedback($feedback, ...$args): void
     {
-        if (isset($this->upgrader->strings[ $feedback ])) {
-            $feedback = $this->upgrader->strings[ $feedback ];
+        if (isset($this->upgrader->strings[$feedback])) {
+            $feedback = $this->upgrader->strings[$feedback];
         }
-
         if (str_contains($feedback, '%')) {
             if ($args) {
-                $args     = array_map('strip_tags', $args);
-                $args     = array_map('esc_html', $args);
+                $args = array_map('strip_tags', $args);
+                $args = array_map('esc_html', $args);
                 $feedback = vsprintf($feedback, $args);
             }
         }
@@ -227,7 +205,6 @@ class WP_Upgrader_Skin
         }
         show_message($feedback);
     }
-
     /**
      * Performs an action before an update.
      *
@@ -236,7 +213,6 @@ class WP_Upgrader_Skin
     public function before()
     {
     }
-
     /**
      * Performs an action following an update.
      *
@@ -245,7 +221,6 @@ class WP_Upgrader_Skin
     public function after()
     {
     }
-
     /**
      * Outputs JavaScript that calls function to decrement the update counts.
      *
@@ -256,10 +231,9 @@ class WP_Upgrader_Skin
      */
     protected function decrement_update_count(string $type)
     {
-        if (! $this->result || is_wp_error($this->result) || 'up_to_date' === $this->result) {
+        if (!$this->result || is_wp_error($this->result) || 'up_to_date' === $this->result) {
             return;
         }
-
         if (defined('IFRAME_REQUEST')) {
             echo '<script>
 					if ( window.postMessage && JSON ) {
@@ -283,7 +257,6 @@ class WP_Upgrader_Skin
 				</script>';
         }
     }
-
     /**
      * Displays the header before the bulk update process.
      *
@@ -292,7 +265,6 @@ class WP_Upgrader_Skin
     public function bulk_header()
     {
     }
-
     /**
      * Displays the footer following the bulk update process.
      *
@@ -301,7 +273,6 @@ class WP_Upgrader_Skin
     public function bulk_footer()
     {
     }
-
     /**
      * Hides the `process_failed` error message when updating by uploading a zip file.
      *

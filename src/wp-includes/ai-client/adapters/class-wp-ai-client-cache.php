@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * WP AI Client: WP_AI_Client_Cache class
  *
@@ -8,9 +8,7 @@ declare(strict_types=1);
  * @subpackage AI
  * @since 7.0.0
  */
-
-use WordPress\AiClientDependencies\Psr\SimpleCache\CacheInterface;
-
+use Word_Press\Ai_Client_Dependencies\Psr\Simple_Cache\Cache_Interface;
 /**
  * WordPress-specific PSR-16 cache adapter for the AI Client.
  *
@@ -21,7 +19,7 @@ use WordPress\AiClientDependencies\Psr\SimpleCache\CacheInterface;
  * @internal Intended only to wire up the PHP AI Client SDK to WordPress's caching system.
  * @access private
  */
-class WP_AI_Client_Cache implements CacheInterface
+class WP_AI_Client_Cache implements Cache_Interface
 {
     /**
      * Cache group used for all cache operations.
@@ -30,7 +28,6 @@ class WP_AI_Client_Cache implements CacheInterface
      * @var string
      */
     private const CACHE_GROUP = 'wp_ai_client';
-
     /**
      * Fetches a value from the cache.
      *
@@ -44,14 +41,11 @@ class WP_AI_Client_Cache implements CacheInterface
     {
         $found = false;
         $value = wp_cache_get($key, self::CACHE_GROUP, false, $found);
-
-        if (! $found) {
+        if (!$found) {
             return $default_value;
         }
-
         return $value;
     }
-
     /**
      * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
      *
@@ -65,10 +59,8 @@ class WP_AI_Client_Cache implements CacheInterface
     public function set($key, $value, $ttl = null): bool
     {
         $expire = $this->ttl_to_seconds($ttl);
-
         return wp_cache_set($key, $value, self::CACHE_GROUP, $expire);
     }
-
     /**
      * Delete an item from the cache by its unique key.
      *
@@ -81,7 +73,6 @@ class WP_AI_Client_Cache implements CacheInterface
     {
         return wp_cache_delete($key, self::CACHE_GROUP);
     }
-
     /**
      * Wipes clean the entire cache's keys.
      *
@@ -94,13 +85,11 @@ class WP_AI_Client_Cache implements CacheInterface
      */
     public function clear(): bool
     {
-        if (! function_exists('wp_cache_supports') || ! wp_cache_supports('flush_group')) {
+        if (!function_exists('wp_cache_supports') || !wp_cache_supports('flush_group')) {
             return false;
         }
-
         return wp_cache_flush_group(self::CACHE_GROUP);
     }
-
     /**
      * Obtains multiple cache items by their unique keys.
      *
@@ -110,7 +99,7 @@ class WP_AI_Client_Cache implements CacheInterface
      * @param mixed            $default_value Default value to return for keys that do not exist.
      * @return array<string, mixed> A list of key => value pairs.
      */
-    public function getMultiple($keys, $default_value = null)
+    public function get_multiple($keys, $default_value = null)
     {
         /**
          * Keys array.
@@ -118,21 +107,18 @@ class WP_AI_Client_Cache implements CacheInterface
          * @var array<string> $keys_array
          */
         $keys_array = $this->iterable_to_array($keys);
-        $values     = wp_cache_get_multiple($keys_array, self::CACHE_GROUP);
-        $result     = [];
-
+        $values = wp_cache_get_multiple($keys_array, self::CACHE_GROUP);
+        $result = [];
         foreach ($keys_array as $key) {
-            if (false === $values[ $key ]) {
+            if (false === $values[$key]) {
                 // Could be a stored false or a cache miss — disambiguate via get().
-                $result[ $key ] = $this->get($key, $default_value);
+                $result[$key] = $this->get($key, $default_value);
             } else {
-                $result[ $key ] = $values[ $key ];
+                $result[$key] = $values[$key];
             }
         }
-
         return $result;
     }
-
     /**
      * Persists a set of key => value pairs in the cache, with an optional TTL.
      *
@@ -142,16 +128,14 @@ class WP_AI_Client_Cache implements CacheInterface
      * @param null|int|DateInterval   $ttl    Optional. The TTL value of this item.
      * @return bool True on success and false on failure.
      */
-    public function setMultiple($values, $ttl = null): bool
+    public function set_multiple($values, $ttl = null): bool
     {
         $values_array = $this->iterable_to_array($values);
-        $expire       = $this->ttl_to_seconds($ttl);
-        $results      = wp_cache_set_multiple($values_array, self::CACHE_GROUP, $expire);
-
+        $expire = $this->ttl_to_seconds($ttl);
+        $results = wp_cache_set_multiple($values_array, self::CACHE_GROUP, $expire);
         // Return true only if all operations succeeded.
-        return ! in_array(false, $results, true);
+        return !in_array(false, $results, true);
     }
-
     /**
      * Deletes multiple cache items in a single operation.
      *
@@ -160,15 +144,13 @@ class WP_AI_Client_Cache implements CacheInterface
      * @param iterable<string> $keys A list of string-based keys to be deleted.
      * @return bool True if the items were successfully removed. False if there was an error.
      */
-    public function deleteMultiple($keys): bool
+    public function delete_multiple($keys): bool
     {
         $keys_array = $this->iterable_to_array($keys);
-        $results    = wp_cache_delete_multiple($keys_array, self::CACHE_GROUP);
-
+        $results = wp_cache_delete_multiple($keys_array, self::CACHE_GROUP);
         // Return true only if all operations succeeded.
-        return ! in_array(false, $results, true);
+        return !in_array(false, $results, true);
     }
-
     /**
      * Determines whether an item is present in the cache.
      *
@@ -181,10 +163,8 @@ class WP_AI_Client_Cache implements CacheInterface
     {
         $found = false;
         wp_cache_get($key, self::CACHE_GROUP, false, $found);
-
         return (bool) $found;
     }
-
     /**
      * Converts a PSR-16 TTL value to seconds for WordPress cache functions.
      *
@@ -198,17 +178,13 @@ class WP_AI_Client_Cache implements CacheInterface
         if (null === $ttl) {
             return 0;
         }
-
         if ($ttl instanceof DateInterval) {
             $now = new DateTime();
             $end = (clone $now)->add($ttl);
-
-            return $end->getTimestamp() - $now->getTimestamp();
+            return $end->get_timestamp() - $now->get_timestamp();
         }
-
         return max(0, (int) $ttl);
     }
-
     /**
      * Converts an iterable to an array.
      *
@@ -222,7 +198,6 @@ class WP_AI_Client_Cache implements CacheInterface
         if (is_array($items)) {
             return $items;
         }
-
         return iterator_to_array($items);
     }
 }

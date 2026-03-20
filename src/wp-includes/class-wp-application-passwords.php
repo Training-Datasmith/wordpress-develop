@@ -1,19 +1,18 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * WP_Application_Passwords class
  *
  * @package WordPress
  * @since   5.6.0
  */
-
 /**
  * Class for displaying, modifying, and sanitizing application passwords.
  *
  * @package WordPress
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_Application_Passwords
 {
     /**
@@ -24,7 +23,6 @@ class WP_Application_Passwords
      * @var string
      */
     public const USERMETA_KEY_APPLICATION_PASSWORDS = '_application_passwords';
-
     /**
      * The option name used to store whether application passwords are in use.
      *
@@ -33,7 +31,6 @@ class WP_Application_Passwords
      * @var string
      */
     public const OPTION_KEY_IN_USE = 'using_application_passwords';
-
     /**
      * The generated application password length.
      *
@@ -42,7 +39,6 @@ class WP_Application_Passwords
      * @var int
      */
     public const PW_LENGTH = 24;
-
     /**
      * Checks if application passwords are being used by the site.
      *
@@ -57,7 +53,6 @@ class WP_Application_Passwords
         $network_id = get_main_network_id();
         return (bool) get_network_option($network_id, self::OPTION_KEY_IN_USE);
     }
-
     /**
      * Creates a new application password.
      *
@@ -91,40 +86,25 @@ class WP_Application_Passwords
      */
     public static function create_new_application_password($user_id, $args = [])
     {
-        if (! empty($args['name'])) {
+        if (!empty($args['name'])) {
             $args['name'] = sanitize_text_field($args['name']);
         }
-
         if (empty($args['name'])) {
-            return new WP_Error('application_password_empty_name', __('An application name is required to create an application password.'), [ 'status' => 400 ]);
+            return new WP_Error('application_password_empty_name', __('An application name is required to create an application password.'), ['status' => 400]);
         }
-
-        $new_password    = wp_generate_password(static::PW_LENGTH, false);
+        $new_password = wp_generate_password(static::PW_LENGTH, false);
         $hashed_password = self::hash_password($new_password);
-
-        $new_item = [
-            'uuid'      => wp_generate_uuid4(),
-            'app_id'    => empty($args['app_id']) ? '' : $args['app_id'],
-            'name'      => $args['name'],
-            'password'  => $hashed_password,
-            'created'   => time(),
-            'last_used' => null,
-            'last_ip'   => null,
-        ];
-
-        $passwords   = static::get_user_application_passwords($user_id);
+        $new_item = ['uuid' => wp_generate_uuid4(), 'app_id' => empty($args['app_id']) ? '' : $args['app_id'], 'name' => $args['name'], 'password' => $hashed_password, 'created' => time(), 'last_used' => null, 'last_ip' => null];
+        $passwords = static::get_user_application_passwords($user_id);
         $passwords[] = $new_item;
-        $saved       = static::set_user_application_passwords($user_id, $passwords);
-
-        if (! $saved) {
+        $saved = static::set_user_application_passwords($user_id, $passwords);
+        if (!$saved) {
             return new WP_Error('db_error', __('Could not save application password.'));
         }
-
         $network_id = get_main_network_id();
-        if (! get_network_option($network_id, self::OPTION_KEY_IN_USE)) {
+        if (!get_network_option($network_id, self::OPTION_KEY_IN_USE)) {
             update_network_option($network_id, self::OPTION_KEY_IN_USE, true);
         }
-
         /**
          * Fires when an application password is created.
          *
@@ -152,10 +132,8 @@ class WP_Application_Passwords
          * }
          */
         do_action('wp_create_application_password', $user_id, $new_item, $new_password, $args);
-
-        return [ $new_password, $new_item ];
+        return [$new_password, $new_item];
     }
-
     /**
      * Gets a user's application passwords.
      *
@@ -179,27 +157,21 @@ class WP_Application_Passwords
     public static function get_user_application_passwords($user_id)
     {
         $passwords = get_user_meta($user_id, static::USERMETA_KEY_APPLICATION_PASSWORDS, true);
-
-        if (! is_array($passwords)) {
+        if (!is_array($passwords)) {
             return [];
         }
-
         $save = false;
-
         foreach ($passwords as $i => $password) {
-            if (! isset($password['uuid'])) {
-                $passwords[ $i ]['uuid'] = wp_generate_uuid4();
-                $save                    = true;
+            if (!isset($password['uuid'])) {
+                $passwords[$i]['uuid'] = wp_generate_uuid4();
+                $save = true;
             }
         }
-
         if ($save) {
             static::set_user_application_passwords($user_id, $passwords);
         }
-
         return $passwords;
     }
-
     /**
      * Gets a user's application password with the given UUID.
      *
@@ -222,16 +194,13 @@ class WP_Application_Passwords
     public static function get_user_application_password($user_id, $uuid)
     {
         $passwords = static::get_user_application_passwords($user_id);
-
         foreach ($passwords as $password) {
             if ($password['uuid'] === $uuid) {
                 return $password;
             }
         }
-
         return null;
     }
-
     /**
      * Checks if an application password with the given name exists for this user.
      *
@@ -244,16 +213,13 @@ class WP_Application_Passwords
     public static function application_name_exists_for_user($user_id, $name)
     {
         $passwords = static::get_user_application_passwords($user_id);
-
         foreach ($passwords as $password) {
             if (strtolower($password['name']) === strtolower($name)) {
                 return true;
             }
         }
-
         return false;
     }
-
     /**
      * Updates an application password.
      *
@@ -278,31 +244,24 @@ class WP_Application_Passwords
     public static function update_application_password($user_id, $uuid, $update = [])
     {
         $passwords = static::get_user_application_passwords($user_id);
-
         foreach ($passwords as &$item) {
             if ($item['uuid'] !== $uuid) {
                 continue;
             }
-
-            if (! empty($update['name'])) {
+            if (!empty($update['name'])) {
                 $update['name'] = sanitize_text_field($update['name']);
             }
-
             $save = false;
-
-            if (! empty($update['name']) && $item['name'] !== $update['name']) {
+            if (!empty($update['name']) && $item['name'] !== $update['name']) {
                 $item['name'] = $update['name'];
-                $save         = true;
+                $save = true;
             }
-
             if ($save) {
                 $saved = static::set_user_application_passwords($user_id, $passwords);
-
-                if (! $saved) {
+                if (!$saved) {
                     return new WP_Error('db_error', __('Could not save application password.'));
                 }
             }
-
             /**
              * Fires when an application password is updated.
              *
@@ -325,13 +284,10 @@ class WP_Application_Passwords
              * @param array $update  The information to update.
              */
             do_action('wp_update_application_password', $user_id, $item, $update);
-
             return true;
         }
-
         return new WP_Error('application_password_not_found', __('Could not find an application password with that id.'));
     }
-
     /**
      * Records that an application password has been used.
      *
@@ -344,33 +300,25 @@ class WP_Application_Passwords
     public static function record_application_password_usage($user_id, $uuid)
     {
         $passwords = static::get_user_application_passwords($user_id);
-
         foreach ($passwords as &$password) {
             if ($password['uuid'] !== $uuid) {
                 continue;
             }
-
             // Only record activity once a day.
             if ($password['last_used'] + DAY_IN_SECONDS > time()) {
                 return true;
             }
-
             $password['last_used'] = time();
-            $password['last_ip']   = $_SERVER['REMOTE_ADDR'];
-
+            $password['last_ip'] = $_SERVER['REMOTE_ADDR'];
             $saved = static::set_user_application_passwords($user_id, $passwords);
-
-            if (! $saved) {
+            if (!$saved) {
                 return new WP_Error('db_error', __('Could not save application password.'));
             }
-
             return true;
         }
-
         // Specified application password not found!
         return new WP_Error('application_password_not_found', __('Could not find an application password with that id.'));
     }
-
     /**
      * Deletes an application password.
      *
@@ -383,16 +331,13 @@ class WP_Application_Passwords
     public static function delete_application_password($user_id, $uuid)
     {
         $passwords = static::get_user_application_passwords($user_id);
-
         foreach ($passwords as $key => $item) {
             if ($item['uuid'] === $uuid) {
-                unset($passwords[ $key ]);
+                unset($passwords[$key]);
                 $saved = static::set_user_application_passwords($user_id, $passwords);
-
-                if (! $saved) {
+                if (!$saved) {
                     return new WP_Error('db_error', __('Could not delete application password.'));
                 }
-
                 /**
                  * Fires when an application password is deleted.
                  *
@@ -402,14 +347,11 @@ class WP_Application_Passwords
                  * @param array $item    The data about the application password.
                  */
                 do_action('wp_delete_application_password', $user_id, $item);
-
                 return true;
             }
         }
-
         return new WP_Error('application_password_not_found', __('Could not find an application password with that id.'));
     }
-
     /**
      * Deletes all application passwords for the given user.
      *
@@ -421,25 +363,19 @@ class WP_Application_Passwords
     public static function delete_all_application_passwords($user_id)
     {
         $passwords = static::get_user_application_passwords($user_id);
-
         if ($passwords) {
             $saved = static::set_user_application_passwords($user_id, []);
-
-            if (! $saved) {
+            if (!$saved) {
                 return new WP_Error('db_error', __('Could not delete application passwords.'));
             }
-
             foreach ($passwords as $item) {
                 /** This action is documented in wp-includes/class-wp-application-passwords.php */
                 do_action('wp_delete_application_password', $user_id, $item);
             }
-
             return count($passwords);
         }
-
         return 0;
     }
-
     /**
      * Sets a user's application passwords.
      *
@@ -467,7 +403,6 @@ class WP_Application_Passwords
     {
         return update_user_meta($user_id, static::USERMETA_KEY_APPLICATION_PASSWORDS, $passwords);
     }
-
     /**
      * Sanitizes and then splits a password into smaller chunks.
      *
@@ -477,14 +412,13 @@ class WP_Application_Passwords
      * @return string The chunked password.
      */
     public static function chunk_password(
-        #[\SensitiveParameter]
+        #[\Sensitive_Parameter]
         $raw_password
-    ) {
+    )
+    {
         $raw_password = preg_replace('/[^a-z\d]/i', '', $raw_password);
-
         return trim(chunk_split($raw_password, 4, ' '));
     }
-
     /**
      * Hashes a plaintext application password.
      *
@@ -494,12 +428,12 @@ class WP_Application_Passwords
      * @return string Hashed password.
      */
     public static function hash_password(
-        #[\SensitiveParameter]
+        #[\Sensitive_Parameter]
         string $password
-    ): string {
+    ): string
+    {
         return wp_fast_hash($password);
     }
-
     /**
      * Checks a plaintext application password against a hashed password.
      *
@@ -510,18 +444,18 @@ class WP_Application_Passwords
      * @return bool Whether the password matches the hashed password.
      */
     public static function check_password(
-        #[\SensitiveParameter]
+        #[\Sensitive_Parameter]
         string $password,
         string $hash
-    ): bool {
-        if (! str_starts_with($hash, '$generic$')) {
+    ): bool
+    {
+        if (!str_starts_with($hash, '$generic$')) {
             /*
              * If the hash doesn't start with `$generic$`, it is a hash created with `wp_hash_password()`.
              * This is the case for application passwords created before 6.8.0.
              */
             return wp_check_password($password, $hash);
         }
-
         return wp_verify_fast_hash($password, $hash);
     }
 }

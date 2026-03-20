@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Blocks API: WP_Block_Styles_Registry class
  *
@@ -8,13 +8,12 @@ declare(strict_types=1);
  * @subpackage Blocks
  * @since 5.3.0
  */
-
 /**
  * Class used for interacting with block styles.
  *
  * @since 5.3.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 final class WP_Block_Styles_Registry
 {
     /**
@@ -25,7 +24,6 @@ final class WP_Block_Styles_Registry
      * @var array[]
      */
     private $registered_block_styles = [];
-
     /**
      * Container for the main instance of the class.
      *
@@ -34,7 +32,6 @@ final class WP_Block_Styles_Registry
      * @var WP_Block_Styles_Registry|null
      */
     private static $instance = null;
-
     /**
      * Registers a block style for the given block type.
      *
@@ -66,52 +63,32 @@ final class WP_Block_Styles_Registry
      */
     public function register($block_name, $style_properties)
     {
-
-        if (! is_string($block_name) && ! is_array($block_name)) {
-            _doing_it_wrong(
-                __METHOD__,
-                __('Block name must be a string or array.'),
-                '6.6.0'
-            );
+        if (!is_string($block_name) && !is_array($block_name)) {
+            _doing_it_wrong(__METHOD__, __('Block name must be a string or array.'), '6.6.0');
             return false;
         }
-
-        if (! isset($style_properties['name']) || ! is_string($style_properties['name'])) {
-            _doing_it_wrong(
-                __METHOD__,
-                __('Block style name must be a string.'),
-                '5.3.0'
-            );
+        if (!isset($style_properties['name']) || !is_string($style_properties['name'])) {
+            _doing_it_wrong(__METHOD__, __('Block style name must be a string.'), '5.3.0');
             return false;
         }
-
         if (str_contains($style_properties['name'], ' ')) {
-            _doing_it_wrong(
-                __METHOD__,
-                __('Block style name must not contain any spaces.'),
-                '5.9.0'
-            );
+            _doing_it_wrong(__METHOD__, __('Block style name must not contain any spaces.'), '5.9.0');
             return false;
         }
-
         $block_style_name = $style_properties['name'];
-        $block_names      = is_string($block_name) ? [ $block_name ] : $block_name;
-
+        $block_names = is_string($block_name) ? [$block_name] : $block_name;
         // Ensure there is a label defined.
         if (empty($style_properties['label'])) {
             $style_properties['label'] = $block_style_name;
         }
-
         foreach ($block_names as $name) {
-            if (! isset($this->registered_block_styles[ $name ])) {
-                $this->registered_block_styles[ $name ] = [];
+            if (!isset($this->registered_block_styles[$name])) {
+                $this->registered_block_styles[$name] = [];
             }
-            $this->registered_block_styles[ $name ][ $block_style_name ] = $style_properties;
+            $this->registered_block_styles[$name][$block_style_name] = $style_properties;
         }
-
         return true;
     }
-
     /**
      * Unregisters a block style of the given block type.
      *
@@ -123,7 +100,7 @@ final class WP_Block_Styles_Registry
      */
     public function unregister($block_name, $block_style_name)
     {
-        if (! $this->is_registered($block_name, $block_style_name)) {
+        if (!$this->is_registered($block_name, $block_style_name)) {
             _doing_it_wrong(
                 __METHOD__,
                 /* translators: 1: Block name, 2: Block style name. */
@@ -132,12 +109,9 @@ final class WP_Block_Styles_Registry
             );
             return false;
         }
-
-        unset($this->registered_block_styles[ $block_name ][ $block_style_name ]);
-
+        unset($this->registered_block_styles[$block_name][$block_style_name]);
         return true;
     }
-
     /**
      * Retrieves the properties of a registered block style for the given block type.
      *
@@ -149,13 +123,11 @@ final class WP_Block_Styles_Registry
      */
     public function get_registered($block_name, $block_style_name)
     {
-        if (! $this->is_registered($block_name, $block_style_name)) {
+        if (!$this->is_registered($block_name, $block_style_name)) {
             return null;
         }
-
-        return $this->registered_block_styles[ $block_name ][ $block_style_name ];
+        return $this->registered_block_styles[$block_name][$block_style_name];
     }
-
     /**
      * Retrieves all registered block styles.
      *
@@ -167,7 +139,6 @@ final class WP_Block_Styles_Registry
     {
         return $this->registered_block_styles;
     }
-
     /**
      * Retrieves registered block styles for a specific block type.
      *
@@ -178,9 +149,8 @@ final class WP_Block_Styles_Registry
      */
     public function get_registered_styles_for_block($block_name)
     {
-        return $this->registered_block_styles[ $block_name ] ?? [];
+        return $this->registered_block_styles[$block_name] ?? [];
     }
-
     /**
      * Checks if a block style is registered for the given block type.
      *
@@ -192,9 +162,8 @@ final class WP_Block_Styles_Registry
      */
     public function is_registered($block_name, $block_style_name)
     {
-        return isset($block_name, $block_style_name, $this->registered_block_styles[ $block_name ][ $block_style_name ]);
+        return isset($block_name, $block_style_name, $this->registered_block_styles[$block_name][$block_style_name]);
     }
-
     /**
      * Utility method to retrieve the main instance of the class.
      *
@@ -209,7 +178,6 @@ final class WP_Block_Styles_Registry
         if (null === self::$instance) {
             self::$instance = new self();
         }
-
         return self::$instance;
     }
 }

@@ -1,19 +1,18 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Base WordPress Filesystem
  *
  * @package WordPress
  * @subpackage Filesystem
  */
-
 /**
  * Base WordPress Filesystem class which Filesystem implementations extend.
  *
  * @since 2.5.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_Filesystem_Base
 {
     /**
@@ -23,7 +22,6 @@ class WP_Filesystem_Base
      * @var bool
      */
     public $verbose = false;
-
     /**
      * Cached list of local filepaths to mapped remote filepaths.
      *
@@ -31,7 +29,6 @@ class WP_Filesystem_Base
      * @var array
      */
     public $cache = [];
-
     /**
      * The Access method of the current connection, Set automatically.
      *
@@ -39,16 +36,13 @@ class WP_Filesystem_Base
      * @var string
      */
     public $method = '';
-
     /**
      * @var WP_Error
      */
     public $errors;
-
     /**
      */
     public $options = [];
-
     /**
      * Returns the path on the remote filesystem of ABSPATH.
      *
@@ -59,18 +53,15 @@ class WP_Filesystem_Base
     public function abspath()
     {
         $folder = $this->find_folder(ABSPATH);
-
         /*
          * Perhaps the FTP folder is rooted at the WordPress install.
          * Check for wp-includes folder in root. Could have some false positives, but rare.
          */
-        if (! $folder && $this->is_dir('/' . WPINC)) {
+        if (!$folder && $this->is_dir('/' . WPINC)) {
             return '/';
         }
-
         return $folder;
     }
-
     /**
      * Returns the path on the remote filesystem of WP_CONTENT_DIR.
      *
@@ -82,7 +73,6 @@ class WP_Filesystem_Base
     {
         return $this->find_folder(WP_CONTENT_DIR);
     }
-
     /**
      * Returns the path on the remote filesystem of WP_PLUGIN_DIR.
      *
@@ -94,7 +84,6 @@ class WP_Filesystem_Base
     {
         return $this->find_folder(WP_PLUGIN_DIR);
     }
-
     /**
      * Returns the path on the remote filesystem of the Themes Directory.
      *
@@ -107,15 +96,12 @@ class WP_Filesystem_Base
     public function wp_themes_dir($theme = false)
     {
         $theme_root = get_theme_root($theme);
-
         // Account for relative theme roots.
-        if ('/themes' === $theme_root || ! is_dir($theme_root)) {
+        if ('/themes' === $theme_root || !is_dir($theme_root)) {
             $theme_root = WP_CONTENT_DIR . $theme_root;
         }
-
         return $this->find_folder($theme_root);
     }
-
     /**
      * Returns the path on the remote filesystem of WP_LANG_DIR.
      *
@@ -127,7 +113,6 @@ class WP_Filesystem_Base
     {
         return $this->find_folder(WP_LANG_DIR);
     }
-
     /**
      * Locates a folder on the remote filesystem.
      *
@@ -149,7 +134,6 @@ class WP_Filesystem_Base
         $this->verbose = $verbose;
         return $this->abspath();
     }
-
     /**
      * Locates a folder on the remote filesystem.
      *
@@ -171,7 +155,6 @@ class WP_Filesystem_Base
         $this->verbose = $verbose;
         return $this->abspath();
     }
-
     /**
      * Locates a folder on the remote filesystem.
      *
@@ -185,75 +168,59 @@ class WP_Filesystem_Base
      */
     public function find_folder($folder)
     {
-        if (isset($this->cache[ $folder ])) {
-            return $this->cache[ $folder ];
+        if (isset($this->cache[$folder])) {
+            return $this->cache[$folder];
         }
-
         if (stripos($this->method, 'ftp') !== false) {
-            $constant_overrides = [
-                'FTP_BASE'        => ABSPATH,
-                'FTP_CONTENT_DIR' => WP_CONTENT_DIR,
-                'FTP_PLUGIN_DIR'  => WP_PLUGIN_DIR,
-                'FTP_LANG_DIR'    => WP_LANG_DIR,
-            ];
-
+            $constant_overrides = ['FTP_BASE' => ABSPATH, 'FTP_CONTENT_DIR' => WP_CONTENT_DIR, 'FTP_PLUGIN_DIR' => WP_PLUGIN_DIR, 'FTP_LANG_DIR' => WP_LANG_DIR];
             // Direct matches ( folder = CONSTANT/ ).
             foreach ($constant_overrides as $constant => $dir) {
-                if (! defined($constant)) {
+                if (!defined($constant)) {
                     continue;
                 }
-
                 if ($folder === $dir) {
                     return trailingslashit(constant($constant));
                 }
             }
-
             // Prefix matches ( folder = CONSTANT/subdir ),
             foreach ($constant_overrides as $constant => $dir) {
-                if (! defined($constant)) {
+                if (!defined($constant)) {
                     continue;
                 }
-
-                if (0 === stripos($folder, (string) $dir)) { // $folder starts with $dir.
+                if (0 === stripos($folder, (string) $dir)) {
+                    // $folder starts with $dir.
                     $potential_folder = preg_replace('#^' . preg_quote($dir, '#') . '/#i', trailingslashit(constant($constant)), $folder);
                     $potential_folder = trailingslashit($potential_folder);
-
                     if ($this->is_dir($potential_folder)) {
-                        $this->cache[ $folder ] = $potential_folder;
-
+                        $this->cache[$folder] = $potential_folder;
                         return $potential_folder;
                     }
                 }
             }
         } elseif ('direct' === $this->method) {
-            $folder = str_replace('\\', '/', $folder); // Windows path sanitization.
-
+            $folder = str_replace('\\', '/', $folder);
+            // Windows path sanitization.
             return trailingslashit($folder);
         }
-
-        $folder = preg_replace('|^([a-z]{1}):|i', '', $folder); // Strip out Windows drive letter if it's there.
-        $folder = str_replace('\\', '/', $folder); // Windows path sanitization.
-
-        if (isset($this->cache[ $folder ])) {
-            return $this->cache[ $folder ];
+        $folder = preg_replace('|^([a-z]{1}):|i', '', $folder);
+        // Strip out Windows drive letter if it's there.
+        $folder = str_replace('\\', '/', $folder);
+        // Windows path sanitization.
+        if (isset($this->cache[$folder])) {
+            return $this->cache[$folder];
         }
-
-        if ($this->exists($folder)) { // Folder exists at that absolute path.
-            $folder                 = trailingslashit($folder);
-            $this->cache[ $folder ] = $folder;
-
+        if ($this->exists($folder)) {
+            // Folder exists at that absolute path.
+            $folder = trailingslashit($folder);
+            $this->cache[$folder] = $folder;
             return $folder;
         }
-
         $return = $this->search_for_folder($folder);
-
         if ($return) {
-            $this->cache[ $folder ] = $return;
+            $this->cache[$folder] = $return;
         }
-
         return $return;
     }
-
     /**
      * Locates a folder on the remote filesystem.
      *
@@ -271,26 +238,21 @@ class WP_Filesystem_Base
         if (empty($base) || '.' === $base) {
             $base = trailingslashit($this->cwd());
         }
-
         $folder = untrailingslashit($folder);
-
         if ($this->verbose) {
             /* translators: 1: Folder to locate, 2: Folder to start searching from. */
             printf("\n" . __('Looking for %1$s in %2$s') . "<br />\n", $folder, $base);
         }
-
-        $folder_parts     = explode('/', $folder);
+        $folder_parts = explode('/', $folder);
         $folder_part_keys = array_keys($folder_parts);
-        $last_index       = array_pop($folder_part_keys);
-        $last_path        = $folder_parts[ $last_index ];
-
+        $last_index = array_pop($folder_part_keys);
+        $last_path = $folder_parts[$last_index];
         $files = $this->dirlist($base);
-
         foreach ($folder_parts as $index => $key) {
             if ($index === $last_index) {
-                continue; // We want this to be caught by the next code block.
+                continue;
+                // We want this to be caught by the next code block.
             }
-
             /*
              * Working from /home/ to /user/ to /wordpress/ see if that file exists within
              * the current folder, If it's found, change into it and follow through looking
@@ -298,39 +260,32 @@ class WP_Filesystem_Base
              * folder level, and see if that matches, and so on. If it reaches the end, and still
              * can't find it, it'll return false for the entire function.
              */
-            if (isset($files[ $key ])) {
-
+            if (isset($files[$key])) {
                 // Let's try that folder:
                 $newdir = trailingslashit(path_join($base, $key));
-
                 if ($this->verbose) {
                     /* translators: %s: Directory name. */
                     printf("\n" . __('Changing to %s') . "<br />\n", $newdir);
                 }
-
                 // Only search for the remaining path tokens in the directory, not the full path again.
                 $newfolder = implode('/', array_slice($folder_parts, $index + 1));
-                $ret       = $this->search_for_folder($newfolder, $newdir, $loop);
-
+                $ret = $this->search_for_folder($newfolder, $newdir, $loop);
                 if ($ret) {
                     return $ret;
                 }
             }
         }
-
         /*
          * Only check this as a last resort, to prevent locating the incorrect install.
          * All above procedures will fail quickly if this is the right branch to take.
          */
-        if (isset($files[ $last_path ])) {
+        if (isset($files[$last_path])) {
             if ($this->verbose) {
                 /* translators: %s: Directory name. */
                 printf("\n" . __('Found %s') . "<br />\n", $base . $last_path);
             }
-
             return trailingslashit($base . $last_path);
         }
-
         /*
          * Prevent this function from looping again.
          * No need to proceed if we've just searched in `/`.
@@ -338,14 +293,12 @@ class WP_Filesystem_Base
         if ($loop || '/' === $base) {
             return false;
         }
-
         /*
          * As an extra last resort, Change back to / if the folder wasn't found.
          * This comes into effect when the CWD is /home/user/ but WP is at /var/www/....
          */
         return $this->search_for_folder($folder, '/', true);
     }
-
     /**
      * Returns the *nix-style file permissions for a file.
      *
@@ -361,49 +314,45 @@ class WP_Filesystem_Base
     public function gethchmod($file): string
     {
         $perms = intval($this->getchmod($file), 8);
-
-        if (($perms & 0xC000) === 0xC000) { // Socket.
+        if (($perms & 0xc000) === 0xc000) {
+            // Socket.
             $info = 's';
-        } elseif (($perms & 0xA000) === 0xA000) { // Symbolic Link.
+        } elseif (($perms & 0xa000) === 0xa000) {
+            // Symbolic Link.
             $info = 'l';
-        } elseif (($perms & 0x8000) === 0x8000) { // Regular.
+        } elseif (($perms & 0x8000) === 0x8000) {
+            // Regular.
             $info = '-';
-        } elseif (($perms & 0x6000) === 0x6000) { // Block special.
+        } elseif (($perms & 0x6000) === 0x6000) {
+            // Block special.
             $info = 'b';
-        } elseif (($perms & 0x4000) === 0x4000) { // Directory.
+        } elseif (($perms & 0x4000) === 0x4000) {
+            // Directory.
             $info = 'd';
-        } elseif (($perms & 0x2000) === 0x2000) { // Character special.
+        } elseif (($perms & 0x2000) === 0x2000) {
+            // Character special.
             $info = 'c';
-        } elseif (($perms & 0x1000) === 0x1000) { // FIFO pipe.
+        } elseif (($perms & 0x1000) === 0x1000) {
+            // FIFO pipe.
             $info = 'p';
-        } else { // Unknown.
+        } else {
+            // Unknown.
             $info = 'u';
         }
-
         // Owner.
-        $info .= (($perms & 0x0100) ? 'r' : '-');
-        $info .= (($perms & 0x0080) ? 'w' : '-');
-        $info .= (($perms & 0x0040) ?
-                    (($perms & 0x0800) ? 's' : 'x') :
-                    (($perms & 0x0800) ? 'S' : '-'));
-
+        $info .= $perms & 0x100 ? 'r' : '-';
+        $info .= $perms & 0x80 ? 'w' : '-';
+        $info .= $perms & 0x40 ? $perms & 0x800 ? 's' : 'x' : ($perms & 0x800 ? 'S' : '-');
         // Group.
-        $info .= (($perms & 0x0020) ? 'r' : '-');
-        $info .= (($perms & 0x0010) ? 'w' : '-');
-        $info .= (($perms & 0x0008) ?
-                    (($perms & 0x0400) ? 's' : 'x') :
-                    (($perms & 0x0400) ? 'S' : '-'));
-
+        $info .= $perms & 0x20 ? 'r' : '-';
+        $info .= $perms & 0x10 ? 'w' : '-';
+        $info .= $perms & 0x8 ? $perms & 0x400 ? 's' : 'x' : ($perms & 0x400 ? 'S' : '-');
         // World.
-        $info .= (($perms & 0x0004) ? 'r' : '-');
-        $info .= (($perms & 0x0002) ? 'w' : '-');
-        $info .= (($perms & 0x0001) ?
-                    (($perms & 0x0200) ? 't' : 'x') :
-                    (($perms & 0x0200) ? 'T' : '-'));
-
+        $info .= $perms & 0x4 ? 'r' : '-';
+        $info .= $perms & 0x2 ? 'w' : '-';
+        $info .= $perms & 0x1 ? $perms & 0x200 ? 't' : 'x' : ($perms & 0x200 ? 'T' : '-');
         return $info;
     }
-
     /**
      * Gets the permissions of the specified file or filepath in their octal format.
      *
@@ -416,7 +365,6 @@ class WP_Filesystem_Base
     {
         return '777';
     }
-
     /**
      * Converts *nix-style file permissions to an octal number.
      *
@@ -433,33 +381,22 @@ class WP_Filesystem_Base
     public function getnumchmodfromh($mode): string
     {
         $realmode = '';
-        $legal    = [ '', 'w', 'r', 'x', '-' ];
+        $legal = ['', 'w', 'r', 'x', '-'];
         $attarray = preg_split('//', $mode);
-
         for ($i = 0, $c = count($attarray); $i < $c; $i++) {
-            $key = array_search($attarray[ $i ], $legal, true);
-
+            $key = array_search($attarray[$i], $legal, true);
             if ($key) {
-                $realmode .= $legal[ $key ];
+                $realmode .= $legal[$key];
             }
         }
-
-        $mode  = str_pad($realmode, 10, '-', STR_PAD_LEFT);
-        $trans = [
-            '-' => '0',
-            'r' => '4',
-            'w' => '2',
-            'x' => '1',
-        ];
-        $mode  = strtr($mode, $trans);
-
-        $newmode  = $mode[0];
+        $mode = str_pad($realmode, 10, '-', STR_PAD_LEFT);
+        $trans = ['-' => '0', 'r' => '4', 'w' => '2', 'x' => '1'];
+        $mode = strtr($mode, $trans);
+        $newmode = $mode[0];
         $newmode .= $mode[1] + $mode[2] + $mode[3];
         $newmode .= $mode[4] + $mode[5] + $mode[6];
-
         return $newmode . ($mode[7] + $mode[8] + $mode[9]);
     }
-
     /**
      * Determines if the string provided contains binary characters.
      *
@@ -470,9 +407,9 @@ class WP_Filesystem_Base
      */
     public function is_binary($text): bool
     {
-        return (bool) preg_match('|[^\x20-\x7E]|', $text); // chr(32)..chr(127)
+        return (bool) preg_match('|[^\x20-\x7E]|', $text);
+        // chr(32)..chr(127)
     }
-
     /**
      * Changes the owner of a file or directory.
      *
@@ -490,7 +427,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Connects filesystem.
      *
@@ -503,7 +439,6 @@ class WP_Filesystem_Base
     {
         return true;
     }
-
     /**
      * Reads entire file into a string.
      *
@@ -517,7 +452,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Reads entire file into an array.
      *
@@ -531,7 +465,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Writes a string to a file.
      *
@@ -548,7 +481,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Gets the current working directory.
      *
@@ -561,7 +493,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Changes current directory.
      *
@@ -575,7 +506,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Changes the file group.
      *
@@ -592,7 +522,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Changes filesystem permissions.
      *
@@ -610,7 +539,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Gets the file owner.
      *
@@ -624,7 +552,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Gets the file's group.
      *
@@ -638,7 +565,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Copies a file.
      *
@@ -657,7 +583,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Moves a file.
      *
@@ -674,7 +599,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Deletes a file or directory.
      *
@@ -692,7 +616,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Checks if a file or directory exists.
      *
@@ -706,7 +629,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Checks if resource is a file.
      *
@@ -720,7 +642,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Checks if resource is a directory.
      *
@@ -734,7 +655,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Checks if a file is readable.
      *
@@ -748,7 +668,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Checks if a file or directory is writable.
      *
@@ -762,7 +681,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Gets the file's last access time.
      *
@@ -776,7 +694,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Gets the file modification time.
      *
@@ -790,7 +707,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Gets the file size (in bytes).
      *
@@ -804,7 +720,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Sets the access and modification times of a file.
      *
@@ -824,7 +739,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Creates a directory.
      *
@@ -844,7 +758,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Deletes a directory.
      *
@@ -860,7 +773,6 @@ class WP_Filesystem_Base
     {
         return false;
     }
-
     /**
      * Gets details for files in a directory or a specific file.
      *

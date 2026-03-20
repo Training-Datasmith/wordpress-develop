@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Administration API: WP_Site_Icon class
  *
@@ -8,13 +8,12 @@ declare(strict_types=1);
  * @subpackage Administration
  * @since 4.3.0
  */
-
 /**
  * Core class used to implement site icon functionality.
  *
  * @since 4.3.0
  */
-#[AllowDynamicProperties]
+#[Allow_Dynamic_Properties]
 class WP_Site_Icon
 {
     /**
@@ -24,7 +23,6 @@ class WP_Site_Icon
      * @var int
      */
     public $min_size = 512;
-
     /**
      * The size to which to crop the image so that we can display it in the UI nicely.
      *
@@ -32,7 +30,6 @@ class WP_Site_Icon
      * @var int
      */
     public $page_crop = 512;
-
     /**
      * List of site icon sizes.
      *
@@ -46,7 +43,6 @@ class WP_Site_Icon
          * See https://msdn.microsoft.com/library/dn455106(v=vs.85).aspx
          */
         270,
-
         /*
          * App icon for Android/Chrome.
          *
@@ -54,18 +50,15 @@ class WP_Site_Icon
          * @link https://developer.chrome.com/multidevice/android/installtohomescreen
          */
         192,
-
         /*
          * App icons up to iPhone 6 Plus.
          *
          * See https://developer.apple.com/library/prerelease/ios/documentation/UserExperience/Conceptual/MobileHIG/IconMatrix.html
          */
         180,
-
         // Our regular Favicon.
         32,
     ];
-
     /**
      * Registers actions and filters.
      *
@@ -73,10 +66,9 @@ class WP_Site_Icon
      */
     public function __construct()
     {
-        add_action('delete_attachment', [ $this, 'delete_attachment_data' ]);
-        add_filter('get_post_metadata', [ $this, 'get_post_metadata' ], 10, 4);
+        add_action('delete_attachment', [$this, 'delete_attachment_data']);
+        add_filter('get_post_metadata', [$this, 'get_post_metadata'], 10, 4);
     }
-
     /**
      * Creates an attachment 'object'.
      *
@@ -90,24 +82,13 @@ class WP_Site_Icon
     public function create_attachment_object($cropped, $parent_attachment_id): array
     {
         _deprecated_function(__METHOD__, '6.5.0', 'wp_copy_parent_attachment_properties()');
-
-        $parent     = get_post($parent_attachment_id);
+        $parent = get_post($parent_attachment_id);
         $parent_url = wp_get_attachment_url($parent->ID);
-        $url        = str_replace(wp_basename($parent_url), wp_basename($cropped), $parent_url);
-
-        $size       = wp_getimagesize($cropped);
-        $image_type = ($size) ? $size['mime'] : 'image/jpeg';
-
-        return [
-            'ID'             => $parent_attachment_id,
-            'post_title'     => wp_basename($cropped),
-            'post_content'   => $url,
-            'post_mime_type' => $image_type,
-            'guid'           => $url,
-            'context'        => 'site-icon',
-        ];
+        $url = str_replace(wp_basename($parent_url), wp_basename($cropped), $parent_url);
+        $size = wp_getimagesize($cropped);
+        $image_type = $size ? $size['mime'] : 'image/jpeg';
+        return ['ID' => $parent_attachment_id, 'post_title' => wp_basename($cropped), 'post_content' => $url, 'post_mime_type' => $image_type, 'guid' => $url, 'context' => 'site-icon'];
     }
-
     /**
      * Inserts an attachment.
      *
@@ -120,8 +101,7 @@ class WP_Site_Icon
     public function insert_attachment($attachment, $file)
     {
         $attachment_id = wp_insert_attachment($attachment, $file);
-        $metadata      = wp_generate_attachment_metadata($attachment_id, $file);
-
+        $metadata = wp_generate_attachment_metadata($attachment_id, $file);
         /**
          * Filters the site icon attachment metadata.
          *
@@ -133,10 +113,8 @@ class WP_Site_Icon
          */
         $metadata = apply_filters('site_icon_attachment_metadata', $metadata);
         wp_update_attachment_metadata($attachment_id, $metadata);
-
         return $attachment_id;
     }
-
     /**
      * Adds additional sizes to be made when creating the site icon images.
      *
@@ -148,7 +126,6 @@ class WP_Site_Icon
     public function additional_sizes($sizes = []): array
     {
         $only_crop_sizes = [];
-
         /**
          * Filters the different dimensions that a site icon is saved in.
          *
@@ -157,31 +134,22 @@ class WP_Site_Icon
          * @param int[] $site_icon_sizes Array of sizes available for the Site Icon.
          */
         $this->site_icon_sizes = apply_filters('site_icon_image_sizes', $this->site_icon_sizes);
-
         // Use a natural sort of numbers.
         natsort($this->site_icon_sizes);
         $this->site_icon_sizes = array_reverse($this->site_icon_sizes);
-
         // Ensure that we only resize the image into sizes that allow cropping.
         foreach ($sizes as $name => $size_array) {
             if (isset($size_array['crop'])) {
-                $only_crop_sizes[ $name ] = $size_array;
+                $only_crop_sizes[$name] = $size_array;
             }
         }
-
         foreach ($this->site_icon_sizes as $size) {
             if ($size < $this->min_size) {
-                $only_crop_sizes[ 'site_icon-' . $size ] = [
-                    'width ' => $size,
-                    'height' => $size,
-                    'crop'   => true,
-                ];
+                $only_crop_sizes['site_icon-' . $size] = ['width ' => $size, 'height' => $size, 'crop' => true];
             }
         }
-
         return $only_crop_sizes;
     }
-
     /**
      * Adds Site Icon sizes to the array of image sizes on demand.
      *
@@ -197,10 +165,8 @@ class WP_Site_Icon
         foreach ($this->site_icon_sizes as $size) {
             $sizes[] = 'site_icon-' . $size;
         }
-
         return $sizes;
     }
-
     /**
      * Deletes the Site Icon when the image file is deleted.
      *
@@ -211,12 +177,10 @@ class WP_Site_Icon
     public function delete_attachment_data($post_id): void
     {
         $site_icon_id = (int) get_option('site_icon');
-
         if ($site_icon_id && $post_id === $site_icon_id) {
             delete_option('site_icon');
         }
     }
-
     /**
      * Adds custom image sizes when meta data for an image is requested, that happens to be used as Site Icon.
      *
@@ -233,12 +197,10 @@ class WP_Site_Icon
     {
         if ($single && '_wp_attachment_backup_sizes' === $meta_key) {
             $site_icon_id = (int) get_option('site_icon');
-
             if ($post_id === $site_icon_id) {
-                add_filter('intermediate_image_sizes', [ $this, 'intermediate_image_sizes' ]);
+                add_filter('intermediate_image_sizes', [$this, 'intermediate_image_sizes']);
             }
         }
-
         return $value;
     }
 }
