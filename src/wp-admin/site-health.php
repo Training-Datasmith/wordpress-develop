@@ -1,4 +1,5 @@
 <?php
+/* @lint-intentional: WordPress admin template; PHP-with-embedded-HTML — see tools/rename-redo/lint-ignore.tsv */
 /**
  * Tools Administration Screen.
  *
