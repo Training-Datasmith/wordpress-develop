@@ -57,7 +57,7 @@ class WP_HTTP_IXR_Client extends IXR_Client
      *
      * @return bool True if the request succeeded, false otherwise.
      */
-    public function query(...$args)
+    public function query(...$args): bool
     {
         $method  = array_shift($args);
         $request = new IXR_Request($method, $args);

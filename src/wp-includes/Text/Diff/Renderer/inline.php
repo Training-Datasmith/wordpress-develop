@@ -92,12 +92,12 @@ class Text_Diff_Renderer_inline extends Text_Diff_Renderer
      */
     public $_split_level = 'lines';
 
-    public function _blockHeader($xbeg, $xlen, $ybeg, $ylen)
+    public function _blockHeader(string $xbeg, $xlen, string $ybeg, $ylen): string
     {
         return $this->_block_header;
     }
 
-    public function _startBlock($header)
+    public function _startBlock(string $header): string
     {
         return $header;
     }

@@ -64,7 +64,7 @@ class _WP_List_Table_Compat extends WP_List_Table
      *
      * @return array
      */
-    public function get_columns()
+    public function get_columns(): array
     {
         return $this->_columns;
     }

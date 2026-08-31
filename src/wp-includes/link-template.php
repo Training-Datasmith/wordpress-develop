@@ -3554,6 +3554,10 @@ function get_home_url($blog_id = null, $path = '', $scheme = null)
         restore_current_blog();
     }
 
+    if (! is_string($url)) {
+        $url = '';
+    }
+
     if (! in_array($scheme, [ 'http', 'https', 'relative' ], true)) {
         if (is_ssl()) {
             $scheme = 'https';
@@ -3626,6 +3630,10 @@ function get_site_url($blog_id = null, $path = '', $scheme = null)
         switch_to_blog($blog_id);
         $url = get_option('siteurl');
         restore_current_blog();
+    }
+
+    if (! is_string($url)) {
+        $url = '';
     }
 
     $url = set_url_scheme($url, $scheme);
@@ -4035,6 +4043,10 @@ function set_url_scheme($url, $scheme = null)
         $scheme = is_ssl() || force_ssl_admin() ? 'https' : 'http';
     } elseif ('http' !== $scheme && 'https' !== $scheme && 'relative' !== $scheme) {
         $scheme = is_ssl() ? 'https' : 'http';
+    }
+
+    if (! is_string($url)) {
+        $url = '';
     }
 
     $url = trim($url);

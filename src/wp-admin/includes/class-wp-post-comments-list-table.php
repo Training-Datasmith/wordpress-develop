@@ -32,7 +32,7 @@ class WP_Post_Comments_List_Table extends WP_Comments_List_Table
     /**
      * @return array
      */
-    protected function get_table_classes()
+    protected function get_table_classes(): array
     {
         $classes   = parent::get_table_classes();
         $classes[] = 'wp-list-table';

@@ -21,7 +21,7 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table
     /**
      * @return bool Whether the user can install themes.
      */
-    public function ajax_user_can()
+    public function ajax_user_can(): bool
     {
         return current_user_can('install_themes');
     }
@@ -184,7 +184,7 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table
      * @global string $tab
      * @return array<string, string> An array of links for the available views.
      */
-    protected function get_views()
+    protected function get_views(): array
     {
         global $tabs, $tab;
 

@@ -49,15 +49,15 @@ class Tests_XMLRPC_Message extends WP_UnitTestCase
             public $tag_close_call_counter = 0;
             public $cdata_call_counter     = 0;
 
-            public function tag_open($parser, $tag, $attr)
+            public function tag_open($parser, $tag, $attr): void
             {
                 ++$this->tag_open_call_counter;
             }
-            public function cdata($parser, $cdata)
+            public function cdata($parser, $cdata): void
             {
                 ++$this->cdata_call_counter;
             }
-            public function tag_close($parser, $tag)
+            public function tag_close($parser, $tag): void
             {
                 ++$this->tag_close_call_counter;
             }

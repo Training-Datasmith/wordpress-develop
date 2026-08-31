@@ -25,7 +25,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table
     /**
      * @return bool
      */
-    public function ajax_user_can()
+    public function ajax_user_can(): bool
     {
         return current_user_can('install_plugins');
     }
@@ -313,7 +313,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table
      *
      * @return array
      */
-    protected function get_views()
+    protected function get_views(): array
     {
         global $tabs, $tab;
 

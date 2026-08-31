@@ -2210,7 +2210,7 @@ function sanitize_key($key)
     $sanitized_key = '';
 
     if (is_scalar($key)) {
-        $sanitized_key = strtolower($key);
+        $sanitized_key = strtolower((string) $key);
         $sanitized_key = preg_replace('/[^a-z0-9_\-]/', '', $sanitized_key);
     }
 

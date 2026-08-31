@@ -72,7 +72,7 @@ class WP_Plugins_List_Table extends WP_List_Table
     /**
      * @return bool
      */
-    public function ajax_user_can()
+    public function ajax_user_can(): bool
     {
         return current_user_can('activate_plugins');
     }
@@ -491,7 +491,7 @@ class WP_Plugins_List_Table extends WP_List_Table
      * @global string $status
      * @return array
      */
-    protected function get_views()
+    protected function get_views(): array
     {
         global $totals, $status;
 

@@ -2890,7 +2890,7 @@ function wp_set_object_terms($object_id, $terms, $taxonomy, $append = false)
     $new_tt_ids = [];
 
     foreach ((array) $terms as $term) {
-        if ('' === trim($term)) {
+        if ('' === trim((string) $term)) {
             continue;
         }
 
@@ -3062,7 +3062,7 @@ function wp_remove_object_terms($object_id, $terms, $taxonomy)
     $tt_ids = [];
 
     foreach ((array) $terms as $term) {
-        if ('' === trim($term)) {
+        if ('' === trim((string) $term)) {
             continue;
         }
 

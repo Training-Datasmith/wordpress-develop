@@ -38,7 +38,7 @@ class WP_Links_List_Table extends WP_List_Table
     /**
      * @return bool
      */
-    public function ajax_user_can()
+    public function ajax_user_can(): bool
     {
         return current_user_can('manage_links');
     }
@@ -356,7 +356,7 @@ class WP_Links_List_Table extends WP_List_Table
      * @return string Row actions output for links, or an empty string
      *                if the current column is not the primary column.
      */
-    protected function handle_row_actions($item, $column_name, $primary)
+    protected function handle_row_actions($item, $column_name, $primary): string
     {
         if ($primary !== $column_name) {
             return '';

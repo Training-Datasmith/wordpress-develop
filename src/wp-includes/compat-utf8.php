@@ -154,7 +154,7 @@ function _wp_scan_utf8(string $bytes, int &$at, int &$invalid_length, ?int $max_
 
             // Covers the range U+FDD0–U+FDEF, U+FFFE, U+FFFF.
             if (0xEF === $b1) {
-                $has_noncharacters |= (
+                $has_noncharacters = $has_noncharacters || (
                     (0xB7 === $b2 && $b3 >= 0x90 && $b3 <= 0xAF) ||
                     (0xBF === $b2 && (0xBE === $b3 || 0xBF === $b3))
                 );
@@ -179,7 +179,7 @@ function _wp_scan_utf8(string $bytes, int &$at, int &$invalid_length, ?int $max_
             $i += 3;
 
             // Covers U+1FFFE, U+1FFFF, U+2FFFE, U+2FFFF, …, U+10FFFE, U+10FFFF.
-            $has_noncharacters |= (
+            $has_noncharacters = $has_noncharacters || (
                 (0x0F === ($b2 & 0x0F)) &&
                 0xBF === $b3 &&
                 (0xBE === $b4 || 0xBF === $b4)

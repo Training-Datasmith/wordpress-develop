@@ -2278,8 +2278,12 @@ function WP_Filesystem($args = false, $context = false, $allow_relaxed_file_owne
  *                                             Default false.
  * @return string The transport to use, see description for valid return values.
  */
-function get_filesystem_method(array $args = [], $context = '', $allow_relaxed_file_ownership = false)
+function get_filesystem_method($args = [], $context = '', $allow_relaxed_file_ownership = false)
 {
+    if (! is_array($args)) {
+        $args = [];
+    }
+
     // Please ensure that this is either 'direct', 'ssh2', 'ftpext', or 'ftpsockets'.
     $method = defined('FS_METHOD') ? FS_METHOD : false;
 

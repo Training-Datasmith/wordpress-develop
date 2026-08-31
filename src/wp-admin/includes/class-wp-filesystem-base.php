@@ -513,7 +513,7 @@ class WP_Filesystem_Base
      * @param string $file Name of the file to read.
      * @return string|false Read data on success, false on failure.
      */
-    public function get_contents($file): bool
+    public function get_contents($file): string|false
     {
         return false;
     }
@@ -527,7 +527,7 @@ class WP_Filesystem_Base
      * @param string $file Path to the file.
      * @return array|false File contents in an array on success, false on failure.
      */
-    public function get_contents_array($file): bool
+    public function get_contents_array($file): array|false
     {
         return false;
     }
@@ -557,7 +557,7 @@ class WP_Filesystem_Base
      *
      * @return string|false The current working directory on success, false on failure.
      */
-    public function cwd(): bool
+    public function cwd(): string|false
     {
         return false;
     }
@@ -620,7 +620,7 @@ class WP_Filesystem_Base
      * @param string $file Path to the file.
      * @return string|false Username of the owner on success, false on failure.
      */
-    public function owner($file): bool
+    public function owner($file): string|int|false
     {
         return false;
     }
@@ -634,7 +634,7 @@ class WP_Filesystem_Base
      * @param string $file Path to the file.
      * @return string|false The group on success, false on failure.
      */
-    public function group($file): bool
+    public function group($file): string|int|false
     {
         return false;
     }
@@ -772,7 +772,7 @@ class WP_Filesystem_Base
      * @param string $file Path to file.
      * @return int|false Unix timestamp representing last access time, false on failure.
      */
-    public function atime($file): bool
+    public function atime($file): int|false
     {
         return false;
     }
@@ -786,7 +786,7 @@ class WP_Filesystem_Base
      * @param string $file Path to file.
      * @return int|false Unix timestamp representing modification time, false on failure.
      */
-    public function mtime($file): bool
+    public function mtime($file): int|false
     {
         return false;
     }
@@ -800,7 +800,7 @@ class WP_Filesystem_Base
      * @param string $file Path to file.
      * @return int|false Size of the file in bytes on success, false on failure.
      */
-    public function size($file): bool
+    public function size($file): int|false
     {
         return false;
     }
@@ -897,7 +897,7 @@ class WP_Filesystem_Base
      *     }
      * }
      */
-    public function dirlist($path, $include_hidden = true, $recursive = false): bool
+    public function dirlist($path, $include_hidden = true, $recursive = false): array|false
     {
         return false;
     }

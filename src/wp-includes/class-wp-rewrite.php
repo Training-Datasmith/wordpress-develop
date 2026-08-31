@@ -1957,7 +1957,10 @@ class WP_Rewrite
         $this->non_wp_rules        = [];
         $this->endpoints           = [];
         $this->permalink_structure = get_option('permalink_structure');
-        $this->front               = substr($this->permalink_structure, 0, strpos($this->permalink_structure, '%'));
+        if (! is_string($this->permalink_structure)) {
+            $this->permalink_structure = '';
+        }
+        $this->front               = substr($this->permalink_structure, 0, strpos($this->permalink_structure, '%') ?: 0);
         $this->root                = '';
 
         if ($this->using_index_permalinks()) {

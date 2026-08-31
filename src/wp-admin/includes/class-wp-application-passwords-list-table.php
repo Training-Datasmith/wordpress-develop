@@ -23,7 +23,7 @@ class WP_Application_Passwords_List_Table extends WP_List_Table
      *
      * @return string[] Array of column titles keyed by their column name.
      */
-    public function get_columns()
+    public function get_columns(): array
     {
         return [
             'name'      => __('Name'),
@@ -41,7 +41,7 @@ class WP_Application_Passwords_List_Table extends WP_List_Table
      *
      * @global int $user_id User ID.
      */
-    public function prepare_items()
+    public function prepare_items(): void
     {
         global $user_id;
         $this->items = array_reverse(WP_Application_Passwords::get_user_application_passwords($user_id));
@@ -184,7 +184,7 @@ class WP_Application_Passwords_List_Table extends WP_List_Table
      *
      * @param array $item The current item.
      */
-    public function single_row($item)
+    public function single_row($item): void
     {
         echo '<tr data-uuid="' . esc_attr($item['uuid']) . '">';
         $this->single_row_columns($item);

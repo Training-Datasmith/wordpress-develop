@@ -5859,9 +5859,14 @@ final class WP_Customize_Manager
             ]
         );
 
+        $stylesheet = get_stylesheet();
+        if (! is_string($stylesheet) || '' === $stylesheet) {
+            $stylesheet = 'stylesheet';
+        }
+
         $custom_css_setting = new WP_Customize_Custom_CSS_Setting(
             $this,
-            sprintf('custom_css[%s]', get_stylesheet()),
+            sprintf('custom_css[%s]', $stylesheet),
             [
                 'capability' => 'edit_css',
                 'default'    => '',

@@ -860,6 +860,11 @@ function post_exists($title, $content = '', $date = '', $type = '', $status = ''
 {
     global $wpdb;
 
+    $content = null === $content ? '' : $content;
+    $date    = null === $date ? '' : $date;
+    $type    = null === $type ? '' : $type;
+    $status  = null === $status ? '' : $status;
+
     $post_title   = wp_unslash(sanitize_post_field('post_title', $title, 0, 'db'));
     $post_content = wp_unslash(sanitize_post_field('post_content', $content, 0, 'db'));
     $post_date    = wp_unslash(sanitize_post_field('post_date', $date, 0, 'db'));
@@ -1532,8 +1537,9 @@ function get_sample_permalink($post, $title = null, $name = null)
         $uri = get_page_uri($post);
         if ($uri) {
             $uri = untrailingslashit($uri);
-            $uri = strrev(stristr(strrev($uri), '/'));
-            $uri = untrailingslashit($uri);
+            $slash = stristr(strrev($uri), '/');
+            $uri   = false === $slash ? '' : strrev($slash);
+            $uri   = untrailingslashit($uri);
         }
 
         /** This filter is documented in wp-admin/edit-tag-form.php */

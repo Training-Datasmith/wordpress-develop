@@ -22,7 +22,7 @@ class MockPHPMailer extends WP_PHPMailer
 {
     public $mock_sent = [];
 
-    public function preSend()
+    public function preSend(): bool
     {
         return parent::preSend();
     }
@@ -30,7 +30,7 @@ class MockPHPMailer extends WP_PHPMailer
     /**
      * Override postSend() so mail isn't actually sent.
      */
-    public function postSend()
+    public function postSend(): bool
     {
         $this->mock_sent[] = [
             'to'      => $this->to,

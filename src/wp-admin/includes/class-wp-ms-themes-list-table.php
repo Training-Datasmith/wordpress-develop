@@ -89,7 +89,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table
      *
      * @return bool True if the current user has permissions, false otherwise.
      */
-    public function ajax_user_can()
+    public function ajax_user_can(): bool
     {
         if ($this->is_site_themes) {
             return current_user_can('manage_sites');
@@ -390,7 +390,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table
      *
      * @return array<string, string> The list of views.
      */
-    protected function get_views()
+    protected function get_views(): array
     {
         global $totals, $status;
 

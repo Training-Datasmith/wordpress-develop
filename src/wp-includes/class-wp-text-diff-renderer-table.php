@@ -126,7 +126,7 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer
      * @param string $header
      * @return string
      */
-    public function _startBlock($header)
+    public function _startBlock(string $header): string
     {
         return '';
     }
@@ -137,8 +137,9 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer
      * @param array  $lines
      * @param string $prefix
      */
-    public function _lines($lines, $prefix = ' ')
+    public function _lines($lines, string $prefix = ' '): string
     {
+        return '';
     }
 
     /**
@@ -296,7 +297,7 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer
      * @param array $final
      * @return string
      */
-    public function _changed($orig, $final) // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.finalFound
+    public function _changed($orig, $final): string // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.finalFound
     {$r = '';
 
         /*

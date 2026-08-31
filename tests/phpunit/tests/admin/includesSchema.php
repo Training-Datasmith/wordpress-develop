@@ -89,6 +89,18 @@ class Tests_Admin_IncludesSchema extends WP_UnitTestCase
         $wpdb->query("DROP TABLE IF EXISTS {$blogmeta}");
         $wpdb->query("DROP TABLE IF EXISTS {$sitemeta}");
         // phpcs:enable
+
+        self::reset_wpdb_table_names();
+    }
+
+    /**
+     * Restore $wpdb table pointers after schema tests swap them to scratch tables.
+     */
+    private static function reset_wpdb_table_names(): void
+    {
+        global $wpdb;
+
+        $wpdb->set_prefix($wpdb->base_prefix);
     }
 
     /**
@@ -99,21 +111,24 @@ class Tests_Admin_IncludesSchema extends WP_UnitTestCase
     {
         global $wpdb;
 
-        $orig_options  = $wpdb->options;
-        $wpdb->options = self::$options;
+        $scratch_options = self::$options;
+        $orig_options    = $wpdb->options;
+        $wpdb->options   = $scratch_options;
 
-        populate_options($options);
+        try {
+            populate_options($options);
 
-        wp_cache_delete('alloptions', 'options');
+            wp_cache_delete('alloptions', 'options');
 
-        $results = [];
-        foreach ($expected as $option => $value) {
-            $results[ $option ] = get_option($option);
+            $results = [];
+            foreach ($expected as $option => $value) {
+                $results[ $option ] = get_option($option);
+            }
+
+            $wpdb->query("TRUNCATE TABLE {$scratch_options}");
+        } finally {
+            $wpdb->options = $orig_options;
         }
-
-        $wpdb->query("TRUNCATE TABLE {$wpdb->options}");
-
-        $wpdb->options = $orig_options;
 
         $this->assertSame($expected, $results);
     }
@@ -192,9 +207,9 @@ class Tests_Admin_IncludesSchema extends WP_UnitTestCase
     {
         global $wpdb;
 
-        // Back up.
-        $orig_options  = $wpdb->options;
-        $wpdb->options = self::$options;
+        $scratch_options = self::$options;
+        $orig_options    = $wpdb->options;
+        $wpdb->options   = $scratch_options;
 
         // Set the "default" value for the timezone to a deprecated timezone.
         add_filter(
@@ -210,18 +225,18 @@ class Tests_Admin_IncludesSchema extends WP_UnitTestCase
             3
         );
 
-        // Test.
-        populate_options();
+        try {
+            populate_options();
 
-        wp_cache_delete('alloptions', 'options');
+            wp_cache_delete('alloptions', 'options');
 
-        $result = get_option('timezone_string');
+            $result = get_option('timezone_string');
 
-        // Reset.
-        $wpdb->query("TRUNCATE TABLE {$wpdb->options}");
-        $wpdb->options = $orig_options;
+            $wpdb->query("TRUNCATE TABLE {$scratch_options}");
+        } finally {
+            $wpdb->options = $orig_options;
+        }
 
-        // Assert.
         $this->assertSame('America/Buenos_Aires', $result);
     }
 
@@ -235,19 +250,22 @@ class Tests_Admin_IncludesSchema extends WP_UnitTestCase
     {
         global $wpdb;
 
-        $orig_blogmeta  = $wpdb->blogmeta;
-        $wpdb->blogmeta = self::$blogmeta;
+        $scratch_blogmeta = self::$blogmeta;
+        $orig_blogmeta    = $wpdb->blogmeta;
+        $wpdb->blogmeta   = $scratch_blogmeta;
 
-        populate_site_meta(42, $meta);
+        try {
+            populate_site_meta(42, $meta);
 
-        $results = [];
-        foreach ($expected as $meta_key => $value) {
-            $results[ $meta_key ] = get_site_meta(42, $meta_key, true);
+            $results = [];
+            foreach ($expected as $meta_key => $value) {
+                $results[ $meta_key ] = get_site_meta(42, $meta_key, true);
+            }
+
+            $wpdb->query("TRUNCATE TABLE {$scratch_blogmeta}");
+        } finally {
+            $wpdb->blogmeta = $orig_blogmeta;
         }
-
-        $wpdb->query("TRUNCATE TABLE {$wpdb->blogmeta}");
-
-        $wpdb->blogmeta = $orig_blogmeta;
 
         $this->assertSame($expected, $results);
     }
@@ -281,23 +299,26 @@ class Tests_Admin_IncludesSchema extends WP_UnitTestCase
     {
         global $wpdb;
 
-        $orig_sitemeta  = $wpdb->sitemeta;
-        $wpdb->sitemeta = self::$sitemeta;
+        $scratch_sitemeta = self::$sitemeta;
+        $orig_sitemeta    = $wpdb->sitemeta;
+        $wpdb->sitemeta   = $scratch_sitemeta;
 
-        populate_network_meta(42, $meta);
+        try {
+            populate_network_meta(42, $meta);
 
-        $results = [];
-        foreach ($expected as $meta_key => $value) {
-            if (is_multisite()) {
-                $results[ $meta_key ] = get_network_option(42, $meta_key);
-            } else {
-                $results[ $meta_key ] = $wpdb->get_var($wpdb->prepare("SELECT meta_value FROM {$wpdb->sitemeta} WHERE meta_key = %s AND site_id = %d", $meta_key, 42));
+            $results = [];
+            foreach ($expected as $meta_key => $value) {
+                if (is_multisite()) {
+                    $results[ $meta_key ] = get_network_option(42, $meta_key);
+                } else {
+                    $results[ $meta_key ] = $wpdb->get_var($wpdb->prepare("SELECT meta_value FROM {$scratch_sitemeta} WHERE meta_key = %s AND site_id = %d", $meta_key, 42));
+                }
             }
+
+            $wpdb->query("TRUNCATE TABLE {$scratch_sitemeta}");
+        } finally {
+            $wpdb->sitemeta = $orig_sitemeta;
         }
-
-        $wpdb->query("TRUNCATE TABLE {$wpdb->sitemeta}");
-
-        $wpdb->sitemeta = $orig_sitemeta;
 
         $this->assertSame($expected, $results);
     }

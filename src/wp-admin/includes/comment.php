@@ -38,8 +38,8 @@ function comment_exists($comment_author, $comment_date, $timezone = 'blog')
         $wpdb->prepare(
             "SELECT comment_post_ID FROM $wpdb->comments
 			WHERE comment_author = %s AND $date_field = %s",
-            stripslashes($comment_author),
-            stripslashes($comment_date)
+            stripslashes((string) $comment_author),
+            stripslashes((string) $comment_date)
         )
     );
 }

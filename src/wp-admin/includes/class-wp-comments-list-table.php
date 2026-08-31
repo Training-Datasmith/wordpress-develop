@@ -76,7 +76,7 @@ class WP_Comments_List_Table extends WP_List_Table
      *
      * @return bool Whether the user can edit posts.
      */
-    public function ajax_user_can()
+    public function ajax_user_can(): bool
     {
         return current_user_can('edit_posts');
     }
@@ -253,7 +253,7 @@ class WP_Comments_List_Table extends WP_List_Table
      *
      * @return array<string, string> Comment status HTML links keyed by view.
      */
-    protected function get_views()
+    protected function get_views(): array
     {
         global $post_id, $comment_status, $comment_type;
 
@@ -682,7 +682,7 @@ class WP_Comments_List_Table extends WP_List_Table
      *
      * @param WP_Comment $item The comment object.
      */
-    public function single_row($item)
+    public function single_row($item): void
     {
         global $post, $comment;
 
@@ -700,7 +700,7 @@ class WP_Comments_List_Table extends WP_List_Table
                 || ! current_user_can('read_post', $comment->comment_post_ID))
         ) {
             // The user has no access to the post and thus cannot see the comments.
-            return false;
+            return;
         }
 
         $the_comment_class = wp_get_comment_status($comment);

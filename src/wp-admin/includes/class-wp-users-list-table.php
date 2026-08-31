@@ -65,7 +65,7 @@ class WP_Users_List_Table extends WP_List_Table
      *
      * @return bool
      */
-    public function ajax_user_can()
+    public function ajax_user_can(): bool
     {
         if ($this->is_site_users) {
             return current_user_can('manage_sites');
@@ -174,7 +174,7 @@ class WP_Users_List_Table extends WP_List_Table
      *
      * @return string[] An array of HTML links keyed by their view.
      */
-    protected function get_views()
+    protected function get_views(): array
     {
         global $role;
 

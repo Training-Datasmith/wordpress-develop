@@ -141,7 +141,7 @@ class WP_Posts_List_Table extends WP_List_Table
     /**
      * @return bool
      */
-    public function ajax_user_can()
+    public function ajax_user_can(): bool
     {
         return current_user_can(get_post_type_object($this->screen->post_type)->cap->edit_posts);
     }
@@ -213,7 +213,7 @@ class WP_Posts_List_Table extends WP_List_Table
     /**
      * @return bool
      */
-    public function has_items()
+    public function has_items(): bool
     {
         return have_posts();
     }
@@ -293,7 +293,7 @@ class WP_Posts_List_Table extends WP_List_Table
      * @global array $avail_post_stati
      * @return array
      */
-    protected function get_views()
+    protected function get_views(): array
     {
         global $locked_post_status, $avail_post_stati;
 
@@ -663,7 +663,7 @@ class WP_Posts_List_Table extends WP_List_Table
     /**
      * @return string[] Array of column titles keyed by their column name.
      */
-    public function get_columns()
+    public function get_columns(): array
     {
         $post_type = $this->screen->post_type;
 
@@ -1486,7 +1486,7 @@ class WP_Posts_List_Table extends WP_List_Table
      * @return string Row actions output for posts, or an empty string
      *                if the current column is not the primary column.
      */
-    protected function handle_row_actions($item, $column_name, $primary)
+    protected function handle_row_actions($item, $column_name, $primary): string
     {
         if ($primary !== $column_name) {
             return '';

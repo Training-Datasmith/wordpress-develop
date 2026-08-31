@@ -290,7 +290,7 @@ class WP_List_Table
      * @since 3.1.0
      * @abstract
      */
-    public function ajax_user_can(): void
+    public function ajax_user_can(): bool
     {
         die('function WP_List_Table::ajax_user_can() must be overridden in a subclass.');
     }
@@ -1201,7 +1201,7 @@ class WP_List_Table
      *
      * @return array<string, string> An associative array of columns.
      */
-    public function get_columns(): void
+    public function get_columns(): array
     {
         die('function WP_List_Table::get_columns() must be overridden in a subclass.');
     }
@@ -1765,7 +1765,7 @@ class WP_List_Table
      *
      * @param object|array $item The current item
      */
-    public function single_row($item): void
+    public function single_row($item)
     {
         echo '<tr>';
         $this->single_row_columns($item);

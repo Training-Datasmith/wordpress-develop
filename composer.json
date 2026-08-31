@@ -30,7 +30,10 @@
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true
 		},
-		"lock": false
+		"lock": false,
+		"audit": {
+			"block-insecure": false
+		}
 	},
 	"scripts": {
 		"phpstan": "@php ./vendor/bin/phpstan analyse --memory-limit=2G",

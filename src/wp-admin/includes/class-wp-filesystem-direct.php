@@ -36,7 +36,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $file Name of the file to read.
      * @return string|false Read data on success, false on failure.
      */
-    public function get_contents($file)
+    public function get_contents($file): string|false
     {
         return @file_get_contents($file);
     }
@@ -49,7 +49,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $file Path to the file.
      * @return array|false File contents in an array on success, false on failure.
      */
-    public function get_contents_array($file)
+    public function get_contents_array($file): array|false
     {
         return @file($file);
     }
@@ -99,7 +99,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      *
      * @return string|false The current working directory on success, false on failure.
      */
-    public function cwd()
+    public function cwd(): string|false
     {
         return getcwd();
     }
@@ -112,7 +112,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $dir The new current directory.
      * @return bool True on success, false on failure.
      */
-    public function chdir($dir)
+    public function chdir($dir): bool
     {
         return @chdir($dir);
     }
@@ -128,7 +128,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      *                              Default false.
      * @return bool True on success, false on failure.
      */
-    public function chgrp($file, $group, $recursive = false)
+    public function chgrp($file, $group, $recursive = false): bool
     {
         if (! $this->exists($file)) {
             return false;
@@ -165,7 +165,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      *                             Default false.
      * @return bool True on success, false on failure.
      */
-    public function chmod($file, $mode = false, $recursive = false)
+    public function chmod($file, $mode = false, $recursive = false): bool
     {
         if (! $mode) {
             if ($this->is_file($file)) {
@@ -219,7 +219,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      *                              Default false.
      * @return bool True on success, false on failure.
      */
-    public function chown($file, $owner, $recursive = false)
+    public function chown($file, $owner, $recursive = false): bool
     {
         if (! $this->exists($file)) {
             return false;
@@ -251,7 +251,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $file Path to the file.
      * @return string|false Username of the owner on success, false on failure.
      */
-    public function owner($file)
+    public function owner($file): string|int|false
     {
         $owneruid = @fileowner($file);
 
@@ -298,7 +298,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $file Path to the file.
      * @return string|false The group on success, false on failure.
      */
-    public function group($file)
+    public function group($file): string|int|false
     {
         $gid = @filegroup($file);
 
@@ -332,7 +332,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      *                               0755 for dirs. Default false.
      * @return bool True on success, false on failure.
      */
-    public function copy($source, $destination, $overwrite = false, $mode = false)
+    public function copy($source, $destination, $overwrite = false, $mode = false): bool
     {
         if (! $overwrite && $this->exists($destination)) {
             return false;
@@ -402,7 +402,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      *                                Default false.
      * @return bool True on success, false on failure.
      */
-    public function delete($file, $recursive = false, $type = false)
+    public function delete($file, $recursive = false, $type = false): bool
     {
         if (empty($file)) {
             // Some filesystems report this as /, which can cause non-expected recursive deletion of all files in the filesystem.
@@ -448,7 +448,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $path Path to file or directory.
      * @return bool Whether $path exists or not.
      */
-    public function exists($path)
+    public function exists($path): bool
     {
         return @file_exists($path);
     }
@@ -461,7 +461,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $file File path.
      * @return bool Whether $file is a file.
      */
-    public function is_file($file)
+    public function is_file($file): bool
     {
         return @is_file($file);
     }
@@ -474,7 +474,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $path Directory path.
      * @return bool Whether $path is a directory.
      */
-    public function is_dir($path)
+    public function is_dir($path): bool
     {
         return @is_dir($path);
     }
@@ -487,7 +487,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $file Path to file.
      * @return bool Whether $file is readable.
      */
-    public function is_readable($file)
+    public function is_readable($file): bool
     {
         return @is_readable($file);
     }
@@ -500,7 +500,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $path Path to file or directory.
      * @return bool Whether $path is writable.
      */
-    public function is_writable($path)
+    public function is_writable($path): bool
     {
         return @is_writable($path);
     }
@@ -513,7 +513,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $file Path to file.
      * @return int|false Unix timestamp representing last access time, false on failure.
      */
-    public function atime($file)
+    public function atime($file): int|false
     {
         return @fileatime($file);
     }
@@ -526,7 +526,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $file Path to file.
      * @return int|false Unix timestamp representing modification time, false on failure.
      */
-    public function mtime($file)
+    public function mtime($file): int|false
     {
         return @filemtime($file);
     }
@@ -539,7 +539,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      * @param string $file Path to file.
      * @return int|false Size of the file in bytes on success, false on failure.
      */
-    public function size($file)
+    public function size($file): int|false
     {
         return @filesize($file);
     }
@@ -625,7 +625,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      *                          Default false.
      * @return bool True on success, false on failure.
      */
-    public function rmdir($path, $recursive = false)
+    public function rmdir($path, $recursive = false): bool
     {
         return $this->delete($path, $recursive);
     }
@@ -665,7 +665,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base
      *     }
      * }
      */
-    public function dirlist($path, $include_hidden = true, $recursive = false)
+    public function dirlist($path, $include_hidden = true, $recursive = false): array|false
     {
         if ($this->is_file($path)) {
             $limit_file = basename($path);

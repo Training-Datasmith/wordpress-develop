@@ -1947,6 +1947,10 @@ function wp_kses_bad_protocol($content, $allowed_protocols)
  */
 function wp_kses_no_null($content, $options = null)
 {
+    if (! is_string($content)) {
+        $content = (string) $content;
+    }
+
     if (! isset($options['slash_zero'])) {
         $options = [ 'slash_zero' => 'remove' ];
     }
@@ -2415,6 +2419,10 @@ function wp_filter_post_kses($data)
  */
 function wp_filter_global_styles_post($data)
 {
+    if (! is_string($data)) {
+        return $data;
+    }
+
     $decoded_data        = json_decode(wp_unslash($data), true);
     $json_decoding_error = json_last_error();
     if (
