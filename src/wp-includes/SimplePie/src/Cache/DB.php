@@ -21,7 +21,6 @@ abstract class DB implements Base
      *
      * Converts a given {@see SimplePie} object into data to be stored
      *
-     * @param \SimplePie\SimplePie $data
      * @return array{string, array<string, Item>} First item is the serialized data for storage, second item is the unique ID for this item
      */
     protected static function prepare_simplepie_object_for_cache(\SimplePie\SimplePie $data)
@@ -81,4 +80,4 @@ abstract class DB implements Base
     }
 }
 
-class_alias('SimplePie\Cache\DB', 'SimplePie_Cache_DB');
+class_alias(\SimplePie\Cache\DB::class, 'SimplePie_Cache_DB');

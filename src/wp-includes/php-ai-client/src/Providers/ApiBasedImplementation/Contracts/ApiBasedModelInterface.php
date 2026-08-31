@@ -1,10 +1,12 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\ApiBasedImplementation\Contracts;
 
 use WordPress\AiClient\Providers\Http\DTO\RequestOptions;
 use WordPress\AiClient\Providers\Models\Contracts\ModelInterface;
+
 /**
  * Interface for API-based AI models that support HTTP transport configuration.
  *

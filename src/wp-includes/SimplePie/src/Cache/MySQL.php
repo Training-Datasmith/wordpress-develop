@@ -22,10 +22,8 @@ class MySQL extends DB
 {
     /**
      * PDO instance
-     *
-     * @var \PDO|null
      */
-    protected $mysql;
+    protected ?\PDO $mysql;
 
     /**
      * Options
@@ -36,10 +34,8 @@ class MySQL extends DB
 
     /**
      * Cache ID
-     *
-     * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * Create a new cache object
@@ -58,7 +54,7 @@ class MySQL extends DB
             'path' => '',
             'extras' => [
                 'prefix' => '',
-                'cache_purge_time' => 2592000
+                'cache_purge_time' => 2592000,
             ],
         ];
 
@@ -89,7 +85,7 @@ class MySQL extends DB
         if (!in_array($this->options['extras']['prefix'] . 'cache_data', $db)) {
             $query = $this->mysql->exec('CREATE TABLE `' . $this->options['extras']['prefix'] . 'cache_data` (`id` TEXT CHARACTER SET utf8 NOT NULL, `items` SMALLINT NOT NULL DEFAULT 0, `data` BLOB NOT NULL, `mtime` INT UNSIGNED NOT NULL, UNIQUE (`id`(125)))');
             if ($query === false) {
-                trigger_error("Can't create " . $this->options['extras']['prefix'] . "cache_data table, check permissions", \E_USER_WARNING);
+                trigger_error("Can't create " . $this->options['extras']['prefix'] . 'cache_data table, check permissions', \E_USER_WARNING);
                 $this->mysql = null;
                 return;
             }
@@ -98,7 +94,7 @@ class MySQL extends DB
         if (!in_array($this->options['extras']['prefix'] . 'items', $db)) {
             $query = $this->mysql->exec('CREATE TABLE `' . $this->options['extras']['prefix'] . 'items` (`feed_id` TEXT CHARACTER SET utf8 NOT NULL, `id` TEXT CHARACTER SET utf8 NOT NULL, `data` MEDIUMBLOB NOT NULL, `posted` INT UNSIGNED NOT NULL, INDEX `feed_id` (`feed_id`(125)))');
             if ($query === false) {
-                trigger_error("Can't create " . $this->options['extras']['prefix'] . "items table, check permissions", \E_USER_WARNING);
+                trigger_error("Can't create " . $this->options['extras']['prefix'] . 'items table, check permissions', \E_USER_WARNING);
                 $this->mysql = null;
                 return;
             }
@@ -111,7 +107,7 @@ class MySQL extends DB
      * @param array<string>|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
-    public function save($data)
+    public function save($data): bool
     {
         if ($this->mysql === null) {
             return false;
@@ -341,4 +337,4 @@ class MySQL extends DB
     }
 }
 
-class_alias('SimplePie\Cache\MySQL', 'SimplePie_Cache_MySQL');
+class_alias(\SimplePie\Cache\MySQL::class, 'SimplePie_Cache_MySQL');

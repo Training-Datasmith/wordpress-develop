@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * IXR_Client
  *
@@ -9,23 +11,26 @@
  */
 class IXR_Client
 {
-    var $server;
-    var $port;
-    var $path;
-    var $useragent;
-    var $response;
-    var $message = false;
-    var $debug = false;
-    var $timeout;
-    var $headers = array();
+    public $server;
+    public $port;
+    public $path;
+    /**
+     * @var 'The Incutio XML-RPC PHP Library'
+     */
+    public $useragent;
+    public $response;
+    public $message = false;
+    public $debug = false;
+    public $timeout;
+    public $headers = [];
 
     // Storage place for an error message
-    var $error = false;
+    public $error = false;
 
-	/**
-	 * PHP5 constructor.
-	 */
-    function __construct( $server, $path = false, $port = 80, $timeout = 15 )
+    /**
+     * PHP5 constructor.
+     */
+    public function __construct($server, $path = false, $port = 80, $timeout = 15)
     {
         if (!$path) {
             // Assume we have been given a URL instead
@@ -39,7 +44,7 @@ class IXR_Client
                 $this->path = '/';
             }
 
-            if ( ! empty( $bits['query'] ) ) {
+            if (! empty($bits['query'])) {
                 $this->path .= '?' . $bits['query'];
             }
         } else {
@@ -51,21 +56,20 @@ class IXR_Client
         $this->timeout = $timeout;
     }
 
-	/**
-	 * PHP4 constructor.
-	 */
-	public function IXR_Client( $server, $path = false, $port = 80, $timeout = 15 ) {
-		self::__construct( $server, $path, $port, $timeout );
-	}
+    /**
+     * PHP4 constructor.
+     */
+    public function IXR_Client($server, $path = false, $port = 80, $timeout = 15): void
+    {
+        self::__construct($server, $path, $port, $timeout);
+    }
 
-	/**
-	 * @since 1.5.0
-	 * @since 5.5.0 Formalized the existing `...$args` parameter by adding it
-	 *              to the function signature.
-	 *
-	 * @return bool
-	 */
-    function query( ...$args )
+    /**
+     * @since 1.5.0
+     * @since 5.5.0 Formalized the existing `...$args` parameter by adding it
+     *              to the function signature.
+     */
+    public function query(...$args): bool
     {
         $method = array_shift($args);
         $request = new IXR_Request($method, $args);
@@ -78,9 +82,9 @@ class IXR_Client
         $this->headers['Host']          = $this->server;
         $this->headers['Content-Type']  = 'text/xml';
         $this->headers['User-Agent']    = $this->useragent;
-        $this->headers['Content-Length']= $length;
+        $this->headers['Content-Length'] = $length;
 
-        foreach( $this->headers as $header => $value ) {
+        foreach ($this->headers as $header => $value) {
             $request .= "{$header}: {$value}{$r}";
         }
         $request .= $r;
@@ -120,11 +124,11 @@ class IXR_Client
                 $gettingHeaders = false;
             }
             if (!$gettingHeaders) {
-            	// merged from WP #12559 - remove trim
+                // merged from WP #12559 - remove trim
                 $contents .= $line;
             }
             if ($this->debug) {
-            	$debugContents .= $line;
+                $debugContents .= $line;
             }
         }
         if ($this->debug) {
@@ -149,23 +153,23 @@ class IXR_Client
         return true;
     }
 
-    function getResponse()
+    public function getResponse()
     {
         // methodResponses can only have one param - return that
         return $this->message->params[0];
     }
 
-    function isError()
+    public function isError(): bool
     {
         return (is_object($this->error));
     }
 
-    function getErrorCode()
+    public function getErrorCode()
     {
         return $this->error->code;
     }
 
-    function getErrorMessage()
+    public function getErrorMessage()
     {
         return $this->error->message;
     }

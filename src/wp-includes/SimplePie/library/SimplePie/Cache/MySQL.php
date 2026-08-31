@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Cache\MySQL;
 
-class_exists('SimplePie\Cache\MySQL');
+class_exists(\SimplePie\Cache\MySQL::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Cache_MySQL" class is deprecated since SimplePie 1.7.0, use "SimplePie\Cache\MySQL" instead.'), \E_USER_DEPRECATED);
 

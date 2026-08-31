@@ -27,8 +27,6 @@ final class Psr16 implements DataCache
 
     /**
      * PSR-16 cache implementation
-     *
-     * @param CacheInterface $cache
      */
     public function __construct(CacheInterface $cache)
     {

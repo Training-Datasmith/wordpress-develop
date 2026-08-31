@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core_X25519', false)) {
     return;
 }
@@ -97,7 +99,6 @@ abstract class ParagonIE_Sodium_Core_X25519 extends ParagonIE_Sodium_Core_Curve2
         $h8 += $carry7;
         $h7 -= $carry7 << 25;
 
-
         $carry0 = ($h0 + (1 << 25)) >> 26;
         $h1 += $carry0;
         $h0 -= $carry0 << 26;
@@ -164,8 +165,8 @@ abstract class ParagonIE_Sodium_Core_X25519 extends ParagonIE_Sodium_Core_Curve2
             # b = e[pos / 8] >> (pos & 7);
             /** @var int $b */
             $b = self::chrToInt(
-                    $e[(int) floor($pos / 8)]
-                ) >> ($pos & 7);
+                $e[(int) floor($pos / 8)]
+            ) >> ($pos & 7);
             # b &= 1;
             $b &= 1;
             # swap ^= b;

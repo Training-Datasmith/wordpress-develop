@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Cache\DB;
 
-class_exists('SimplePie\Cache\DB');
+class_exists(\SimplePie\Cache\DB::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Cache_DB" class is deprecated since SimplePie 1.7.0, use "SimplePie\Cache\DB" instead.'), \E_USER_DEPRECATED);
 

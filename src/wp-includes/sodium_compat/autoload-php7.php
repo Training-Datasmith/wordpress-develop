@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  This file should only ever be loaded on PHP 7+
  */

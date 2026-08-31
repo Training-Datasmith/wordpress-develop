@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Class ParagonIE_Sodium_Core_SecretStream_State
  */
@@ -29,7 +31,8 @@ class ParagonIE_Sodium_Core_SecretStream_State
         if (is_null($nonce)) {
             $nonce = str_repeat("\0", 12);
         }
-        $this->nonce = str_pad($nonce, 12, "\0", STR_PAD_RIGHT);;
+        $this->nonce = str_pad($nonce, 12, "\0", STR_PAD_RIGHT);
+        ;
         $this->_pad = str_repeat("\0", 4);
     }
 

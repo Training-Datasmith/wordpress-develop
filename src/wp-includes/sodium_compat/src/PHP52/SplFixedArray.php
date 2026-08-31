@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('SplFixedArray')) {
     return;
 }
@@ -14,7 +16,7 @@ if (class_exists('SplFixedArray')) {
 class SplFixedArray implements Iterator, ArrayAccess, Countable
 {
     /** @var array<int, mixed> */
-    private $internalArray = array();
+    private $internalArray = [];
 
     /** @var int $size */
     private $size = 0;
@@ -26,7 +28,7 @@ class SplFixedArray implements Iterator, ArrayAccess, Countable
     public function __construct($size = 0)
     {
         $this->size = $size;
-        $this->internalArray = array();
+        $this->internalArray = [];
     }
 
     /**
@@ -56,8 +58,8 @@ class SplFixedArray implements Iterator, ArrayAccess, Countable
     public static function fromArray(array $array, $save_indexes = true)
     {
         $self = new SplFixedArray(count($array));
-        if($save_indexes) {
-            foreach($array as $key => $value) {
+        if ($save_indexes) {
+            foreach ($array as $key => $value) {
                 $self[(int) $key] = $value;
             }
         } else {

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * WP_Exception class
  *
@@ -13,4 +15,6 @@
  *
  * @since 6.7.0
  */
-class WP_Exception extends Exception {}
+class WP_Exception extends Exception
+{
+}

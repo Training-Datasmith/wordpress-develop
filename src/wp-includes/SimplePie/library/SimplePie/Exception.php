@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Exception as SimplePieException;
 
-class_exists('SimplePie\Exception');
+class_exists(\SimplePie\Exception::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Exception" class is deprecated since SimplePie 1.7.0, use "SimplePie\Exception" instead.'), \E_USER_DEPRECATED);
 

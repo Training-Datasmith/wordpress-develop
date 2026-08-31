@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Spacing block support flag.
  *
@@ -17,19 +19,20 @@
  *
  * @param WP_Block_Type $block_type Block Type.
  */
-function wp_register_spacing_support( $block_type ) {
-	$has_spacing_support = block_has_support( $block_type, 'spacing', false );
+function wp_register_spacing_support($block_type)
+{
+    $has_spacing_support = block_has_support($block_type, 'spacing', false);
 
-	// Setup attributes and styles within that if needed.
-	if ( ! $block_type->attributes ) {
-		$block_type->attributes = array();
-	}
+    // Setup attributes and styles within that if needed.
+    if (! $block_type->attributes) {
+        $block_type->attributes = [];
+    }
 
-	if ( $has_spacing_support && ! array_key_exists( 'style', $block_type->attributes ) ) {
-		$block_type->attributes['style'] = array(
-			'type' => 'object',
-		);
-	}
+    if ($has_spacing_support && ! array_key_exists('style', $block_type->attributes)) {
+        $block_type->attributes['style'] = [
+            'type' => 'object',
+        ];
+    }
 }
 
 /**
@@ -44,46 +47,47 @@ function wp_register_spacing_support( $block_type ) {
  * @param array         $block_attributes Block attributes.
  * @return array Block spacing CSS classes and inline styles.
  */
-function wp_apply_spacing_support( $block_type, $block_attributes ) {
-	if ( wp_should_skip_block_supports_serialization( $block_type, 'spacing' ) ) {
-		return array();
-	}
+function wp_apply_spacing_support($block_type, $block_attributes)
+{
+    if (wp_should_skip_block_supports_serialization($block_type, 'spacing')) {
+        return [];
+    }
 
-	$attributes          = array();
-	$has_padding_support = block_has_support( $block_type, array( 'spacing', 'padding' ), false );
-	$has_margin_support  = block_has_support( $block_type, array( 'spacing', 'margin' ), false );
-	$block_styles        = $block_attributes['style'] ?? null;
+    $attributes          = [];
+    $has_padding_support = block_has_support($block_type, [ 'spacing', 'padding' ], false);
+    $has_margin_support  = block_has_support($block_type, [ 'spacing', 'margin' ], false);
+    $block_styles        = $block_attributes['style'] ?? null;
 
-	if ( ! $block_styles ) {
-		return $attributes;
-	}
+    if (! $block_styles) {
+        return $attributes;
+    }
 
-	$skip_padding         = wp_should_skip_block_supports_serialization( $block_type, 'spacing', 'padding' );
-	$skip_margin          = wp_should_skip_block_supports_serialization( $block_type, 'spacing', 'margin' );
-	$spacing_block_styles = array(
-		'padding' => null,
-		'margin'  => null,
-	);
-	if ( $has_padding_support && ! $skip_padding ) {
-		$spacing_block_styles['padding'] = $block_styles['spacing']['padding'] ?? null;
-	}
-	if ( $has_margin_support && ! $skip_margin ) {
-		$spacing_block_styles['margin'] = $block_styles['spacing']['margin'] ?? null;
-	}
-	$styles = wp_style_engine_get_styles( array( 'spacing' => $spacing_block_styles ) );
+    $skip_padding         = wp_should_skip_block_supports_serialization($block_type, 'spacing', 'padding');
+    $skip_margin          = wp_should_skip_block_supports_serialization($block_type, 'spacing', 'margin');
+    $spacing_block_styles = [
+        'padding' => null,
+        'margin'  => null,
+    ];
+    if ($has_padding_support && ! $skip_padding) {
+        $spacing_block_styles['padding'] = $block_styles['spacing']['padding'] ?? null;
+    }
+    if ($has_margin_support && ! $skip_margin) {
+        $spacing_block_styles['margin'] = $block_styles['spacing']['margin'] ?? null;
+    }
+    $styles = wp_style_engine_get_styles([ 'spacing' => $spacing_block_styles ]);
 
-	if ( ! empty( $styles['css'] ) ) {
-		$attributes['style'] = $styles['css'];
-	}
+    if (! empty($styles['css'])) {
+        $attributes['style'] = $styles['css'];
+    }
 
-	return $attributes;
+    return $attributes;
 }
 
 // Register the block support.
 WP_Block_Supports::get_instance()->register(
-	'spacing',
-	array(
-		'register_attribute' => 'wp_register_spacing_support',
-		'apply'              => 'wp_apply_spacing_support',
-	)
+    'spacing',
+    [
+        'register_attribute' => 'wp_register_spacing_support',
+        'apply'              => 'wp_apply_spacing_support',
+    ]
 );

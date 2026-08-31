@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Sanitize;
 
-class_exists('SimplePie\Sanitize');
+class_exists(\SimplePie\Sanitize::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Sanitize" class is deprecated since SimplePie 1.7.0, use "SimplePie\Sanitize" instead.'), \E_USER_DEPRECATED);
 

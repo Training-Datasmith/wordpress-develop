@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Source;
 
-class_exists('SimplePie\Source');
+class_exists(\SimplePie\Source::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Source" class is deprecated since SimplePie 1.7.0, use "SimplePie\Source" instead.'), \E_USER_DEPRECATED);
 

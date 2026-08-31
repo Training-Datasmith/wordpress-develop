@@ -40,10 +40,7 @@ class Item implements RegistryAware
      */
     protected $registry;
 
-    /**
-     * @var Sanitize|null
-     */
-    private $sanitize = null;
+    private ?\SimplePie\Sanitize $sanitize = null;
 
     /**
      * Create a new item object
@@ -66,20 +63,16 @@ class Item implements RegistryAware
      * This is usually used by {@see \SimplePie\Registry::create}
      *
      * @since 1.3
-     * @param \SimplePie\Registry $registry
-     * @return void
      */
-    public function set_registry(\SimplePie\Registry $registry)
+    public function set_registry(\SimplePie\Registry $registry): void
     {
         $this->registry = $registry;
     }
 
     /**
      * Get a string representation of the item
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return md5(serialize($this->data));
     }
@@ -110,11 +103,7 @@ class Item implements RegistryAware
      */
     public function get_item_tags(string $namespace, string $tag)
     {
-        if (isset($this->data['child'][$namespace][$tag])) {
-            return $this->data['child'][$namespace][$tag];
-        }
-
-        return null;
+        return $this->data['child'][$namespace][$tag] ?? null;
     }
 
     /**
@@ -203,21 +192,27 @@ class Item implements RegistryAware
         if (!$hash) {
             if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'id')) {
                 return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
-            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'id')) {
+            }
+            if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'id')) {
                 return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
-            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'guid')) {
+            }
+            if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'guid')) {
                 return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
-            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'identifier')) {
+            }
+            if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'identifier')) {
                 return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
-            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'identifier')) {
+            }
+            if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'identifier')) {
                 return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
-            } elseif (isset($this->data['attribs'][\SimplePie\SimplePie::NAMESPACE_RDF]['about'])) {
+            }
+            if (isset($this->data['attribs'][\SimplePie\SimplePie::NAMESPACE_RDF]['about'])) {
                 return $this->sanitize($this->data['attribs'][\SimplePie\SimplePie::NAMESPACE_RDF]['about'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             }
         }
         if ($fn === false) {
             return null;
-        } elseif (!is_callable($fn)) {
+        }
+        if (!is_callable($fn)) {
             trigger_error('User-supplied function $fn must be callable', E_USER_WARNING);
             $fn = 'md5';
         }
@@ -279,31 +274,40 @@ class Item implements RegistryAware
         if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'summary')) &&
             ($return = $this->sanitize($tags[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$tags[0]['attribs']]), $this->get_base($tags[0])))) {
             return $return;
-        } elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'summary')) &&
+        }
+        if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'summary')) &&
                 ($return = $this->sanitize($tags[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$tags[0]['attribs']]), $this->get_base($tags[0])))) {
             return $return;
-        } elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10, 'description')) &&
+        }
+        if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10, 'description')) &&
                 ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_MAYBE_HTML, $this->get_base($tags[0])))) {
             return $return;
-        } elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'description')) &&
+        }
+        if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'description')) &&
                 ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_HTML, $this->get_base($tags[0])))) {
             return $return;
-        } elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'description')) &&
+        }
+        if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'description')) &&
                 ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT))) {
             return $return;
-        } elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'description')) &&
+        }
+        if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'description')) &&
                 ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT))) {
             return $return;
-        } elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'summary')) &&
+        }
+        if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'summary')) &&
                 ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_HTML, $this->get_base($tags[0])))) {
             return $return;
-        } elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'subtitle')) &&
+        }
+        if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'subtitle')) &&
                 ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT))) {
             return $return;
-        } elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_090, 'description')) &&
+        }
+        if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_090, 'description')) &&
                 ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_HTML))) {
             return $return;
-        } elseif (!$description_only) {
+        }
+        if (!$description_only) {
             return $this->get_content(true);
         }
 
@@ -329,13 +333,16 @@ class Item implements RegistryAware
         if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'content')) &&
             ($return = $this->sanitize($tags[0]['data'], $this->registry->call(Misc::class, 'atom_10_content_construct_type', [$tags[0]['attribs']]), $this->get_base($tags[0])))) {
             return $return;
-        } elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'content')) &&
+        }
+        if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'content')) &&
                 ($return = $this->sanitize($tags[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$tags[0]['attribs']]), $this->get_base($tags[0])))) {
             return $return;
-        } elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10_MODULES_CONTENT, 'encoded')) &&
+        }
+        if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10_MODULES_CONTENT, 'encoded')) &&
                 ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_HTML, $this->get_base($tags[0])))) {
             return $return;
-        } elseif (!$content_only) {
+        }
+        if (!$content_only) {
             return $this->get_description(true);
         }
 
@@ -378,11 +385,8 @@ class Item implements RegistryAware
     public function get_category(int $key = 0)
     {
         $categories = $this->get_categories();
-        if (isset($categories[$key])) {
-            return $categories[$key];
-        }
 
-        return null;
+        return $categories[$key] ?? null;
     }
 
     /**
@@ -393,7 +397,7 @@ class Item implements RegistryAware
      * @since Beta 3
      * @return \SimplePie\Category[]|null List of {@see \SimplePie\Category} objects
      */
-    public function get_categories()
+    public function get_categories(): ?array
     {
         $categories = [];
 
@@ -450,11 +454,8 @@ class Item implements RegistryAware
     public function get_author(int $key = 0)
     {
         $authors = $this->get_authors();
-        if (isset($authors[$key])) {
-            return $authors[$key];
-        }
 
-        return null;
+        return $authors[$key] ?? null;
     }
 
     /**
@@ -467,11 +468,8 @@ class Item implements RegistryAware
     public function get_contributor(int $key = 0)
     {
         $contributors = $this->get_contributors();
-        if (isset($contributors[$key])) {
-            return $contributors[$key];
-        }
 
-        return null;
+        return $contributors[$key] ?? null;
     }
 
     /**
@@ -482,7 +480,7 @@ class Item implements RegistryAware
      * @since 1.1
      * @return \SimplePie\Author[]|null List of {@see \SimplePie\Author} objects
      */
-    public function get_contributors()
+    public function get_contributors(): ?array
     {
         $contributors = [];
         foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'contributor') as $contributor) {
@@ -588,12 +586,14 @@ class Item implements RegistryAware
         foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'author') as $author) {
             $authors[] = $this->registry->create(Author::class, [$this->sanitize($author['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null]);
         }
-
         if (!empty($authors)) {
             return array_unique($authors);
-        } elseif (($source = $this->get_source()) && ($authors = $source->get_authors())) {
+        }
+        if (($source = $this->get_source()) && ($authors = $source->get_authors())) {
             return $authors;
-        } elseif ($authors = $this->feed->get_authors()) {
+        }
+
+        if ($authors = $this->feed->get_authors()) {
             return $authors;
         }
 
@@ -612,9 +612,11 @@ class Item implements RegistryAware
     {
         if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'rights')) {
             return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
-        } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'rights')) {
+        }
+        if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'rights')) {
             return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
-        } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'rights')) {
+        }
+        if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'rights')) {
             return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
         }
 
@@ -739,9 +741,9 @@ class Item implements RegistryAware
             if (($raw_date = $this->get_date('')) === null) {
                 return null;
             }
-
             return $this->sanitize($raw_date, \SimplePie\SimplePie::CONSTRUCT_TEXT);
-        } elseif (($date = $this->get_date('U')) !== null && $date !== false) {
+        }
+        if (($date = $this->get_date('U')) !== null && $date !== false) {
             return strftime($date_format, $date);
         }
 
@@ -753,9 +755,8 @@ class Item implements RegistryAware
      *
      * @see get_date
      * @param string $date_format Supports any PHP date format from {@see http://php.net/date}
-     * @return string|null
      */
-    public function get_gmdate(string $date_format = 'j F Y, g:i a')
+    public function get_gmdate(string $date_format = 'j F Y, g:i a'): ?string
     {
         $date = $this->get_date('U');
         if ($date === null) {
@@ -770,9 +771,8 @@ class Item implements RegistryAware
      *
      * @see get_updated_date
      * @param string $date_format Supports any PHP date format from {@see http://php.net/date}
-     * @return string|null
      */
-    public function get_updated_gmdate(string $date_format = 'j F Y, g:i a')
+    public function get_updated_gmdate(string $date_format = 'j F Y, g:i a'): ?string
     {
         $date = $this->get_updated_date('U');
         if ($date === null) {
@@ -798,7 +798,8 @@ class Item implements RegistryAware
         $enclosure = $this->get_enclosure(0);
         if ($link !== null) {
             return $link;
-        } elseif ($enclosure !== null) {
+        }
+        if ($enclosure !== null) {
             return $enclosure->get_link();
         }
 
@@ -838,13 +839,13 @@ class Item implements RegistryAware
             $this->data['links'] = [];
             foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'link') as $link) {
                 if (isset($link['attribs']['']['href'])) {
-                    $link_rel = (isset($link['attribs']['']['rel'])) ? $link['attribs']['']['rel'] : 'alternate';
+                    $link_rel = $link['attribs']['']['rel'] ?? 'alternate';
                     $this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['href'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_own_base($link));
                 }
             }
             foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'link') as $link) {
                 if (isset($link['attribs']['']['href'])) {
-                    $link_rel = (isset($link['attribs']['']['rel'])) ? $link['attribs']['']['rel'] : 'alternate';
+                    $link_rel = $link['attribs']['']['rel'] ?? 'alternate';
                     $this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['href'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_own_base($link));
                 }
             }
@@ -878,11 +879,8 @@ class Item implements RegistryAware
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }
         }
-        if (isset($this->data['links'][$rel])) {
-            return $this->data['links'][$rel];
-        }
 
-        return null;
+        return $this->data['links'][$rel] ?? null;
     }
 
     /**
@@ -898,11 +896,8 @@ class Item implements RegistryAware
     public function get_enclosure(int $key = 0)
     {
         $enclosures = $this->get_enclosures();
-        if (isset($enclosures[$key])) {
-            return $enclosures[$key];
-        }
 
-        return null;
+        return $enclosures[$key] ?? null;
     }
 
     /**
@@ -2295,13 +2290,13 @@ class Item implements RegistryAware
      * @since 1.0
      * @link http://www.w3.org/2003/01/geo/ W3C WGS84 Basic Geo
      * @link http://www.georss.org/ GeoRSS
-     * @return float|null
      */
-    public function get_latitude()
+    public function get_latitude(): ?float
     {
         if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_W3C_BASIC_GEO, 'lat')) {
             return (float) $return[0]['data'];
-        } elseif (($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match)) {
+        }
+        if (($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match)) {
             return (float) $match[1];
         }
 
@@ -2318,15 +2313,16 @@ class Item implements RegistryAware
      * @since 1.0
      * @link http://www.w3.org/2003/01/geo/ W3C WGS84 Basic Geo
      * @link http://www.georss.org/ GeoRSS
-     * @return float|null
      */
-    public function get_longitude()
+    public function get_longitude(): ?float
     {
         if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_W3C_BASIC_GEO, 'long')) {
             return (float) $return[0]['data'];
-        } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_W3C_BASIC_GEO, 'lon')) {
+        }
+        if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_W3C_BASIC_GEO, 'lon')) {
             return (float) $return[0]['data'];
-        } elseif (($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match)) {
+        }
+        if (($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match)) {
             return (float) $match[2];
         }
 
@@ -2363,4 +2359,4 @@ class Item implements RegistryAware
     }
 }
 
-class_alias('SimplePie\Item', 'SimplePie_Item');
+class_alias(\SimplePie\Item::class, 'SimplePie_Item');

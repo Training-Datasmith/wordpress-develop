@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Template Name: Full Width Template
  * Template Post Type: post, page
@@ -8,4 +10,4 @@
  * @since Twenty Twenty 1.0
  */
 
-get_template_part( 'singular' );
+get_template_part('singular');

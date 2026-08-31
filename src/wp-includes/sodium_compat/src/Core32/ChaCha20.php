@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core32_ChaCha20', false)) {
     return;
 }
@@ -49,7 +51,7 @@ class ParagonIE_Sodium_Core32_ChaCha20 extends ParagonIE_Sodium_Core32_Util
         $c = $c->addInt32($d);
         $b = $b->xorInt32($c)->rotateLeft(7);
 
-        return array($a, $b, $c, $d);
+        return [$a, $b, $c, $d];
     }
 
     /**
@@ -238,9 +240,9 @@ class ParagonIE_Sodium_Core32_ChaCha20 extends ParagonIE_Sodium_Core32_Util
             x14 = XOR(x14, LOAD32_LE(m + 56));
             x15 = XOR(x15, LOAD32_LE(m + 60));
             */
-            $x0  =  $x0->xorInt32(ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($message,  0, 4)));
-            $x1  =  $x1->xorInt32(ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($message,  4, 4)));
-            $x2  =  $x2->xorInt32(ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($message,  8, 4)));
+            $x0  =  $x0->xorInt32(ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($message, 0, 4)));
+            $x1  =  $x1->xorInt32(ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($message, 4, 4)));
+            $x2  =  $x2->xorInt32(ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($message, 8, 4)));
             $x3  =  $x3->xorInt32(ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($message, 12, 4)));
             $x4  =  $x4->xorInt32(ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($message, 16, 4)));
             $x5  =  $x5->xorInt32(ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($message, 20, 4)));

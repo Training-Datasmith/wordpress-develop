@@ -17,25 +17,16 @@ namespace SimplePie\HTTP;
  */
 final class RawTextResponse implements Response
 {
-    /**
-     * @var string
-     */
-    private $raw_text;
+    private string $raw_text;
 
-    /**
-     * @var string
-     */
-    private $permanent_url;
+    private string $permanent_url;
 
     /**
      * @var array<non-empty-array<string>>
      */
-    private $headers = [];
+    private array $headers = [];
 
-    /**
-     * @var string
-     */
-    private $requested_url;
+    private string $requested_url;
 
     public function __construct(string $raw_text, string $filepath)
     {
@@ -74,7 +65,7 @@ final class RawTextResponse implements Response
         return isset($this->headers[strtolower($name)]) ? $this->headers[$name] : [];
     }
 
-    public function with_header(string $name, $value)
+    public function with_header(string $name, $value): self
     {
         $new = clone $this;
 
@@ -88,7 +79,7 @@ final class RawTextResponse implements Response
 
     public function get_header_line(string $name): string
     {
-        return isset($this->headers[strtolower($name)]) ? implode(", ", $this->headers[$name]) : '';
+        return isset($this->headers[strtolower($name)]) ? implode(', ', $this->headers[$name]) : '';
     }
 
     public function get_body_content(): string

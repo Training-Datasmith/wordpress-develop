@@ -1,15 +1,17 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Query: Image at left.
  *
  * @package WordPress
  */
 
-return array(
-	'title'      => _x( 'Image at left', 'Block pattern title' ),
-	'blockTypes' => array( 'core/query' ),
-	'categories' => array( 'query' ),
-	'content'    => '<!-- wp:query {"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false}} -->
+return [
+    'title'      => _x('Image at left', 'Block pattern title'),
+    'blockTypes' => [ 'core/query' ],
+    'categories' => [ 'query' ],
+    'content'    => '<!-- wp:query {"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false}} -->
 					<div class="wp-block-query">
 					<!-- wp:post-template -->
 					<!-- wp:columns {"align":"wide"} -->
@@ -24,4 +26,4 @@ return array(
 					<!-- /wp:post-template -->
 					</div>
 					<!-- /wp:query -->',
-);
+];

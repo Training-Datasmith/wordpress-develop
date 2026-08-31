@@ -139,7 +139,6 @@ class Gzdecode
     /**
      * Don't allow anything to be set
      *
-     * @param string $name
      * @param mixed $value
      */
     public function __set(string $name, $value)
@@ -149,8 +148,6 @@ class Gzdecode
 
     /**
      * Set the compressed string and related properties
-     *
-     * @param string $data
      */
     public function __construct(string $data)
     {
@@ -163,7 +160,7 @@ class Gzdecode
      *
      * @return bool Successfulness
      */
-    public function parse()
+    public function parse(): bool
     {
         if ($this->compressed_size >= $this->min_compressed_size) {
             $len = 0;
@@ -307,4 +304,4 @@ class Gzdecode
     }
 }
 
-class_alias('SimplePie\Gzdecode', 'SimplePie_gzdecode');
+class_alias(\SimplePie\Gzdecode::class, 'SimplePie_gzdecode');

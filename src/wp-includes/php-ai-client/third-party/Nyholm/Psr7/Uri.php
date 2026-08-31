@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClientDependencies\Nyholm\Psr7;
 
 use WordPress\AiClientDependencies\Psr\Http\Message\UriInterface;
+
 /**
  * PSR-7 URI implementation.
  *

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Crypto', false)) {
     return;
 }
@@ -14,46 +16,46 @@ if (class_exists('ParagonIE_Sodium_Crypto', false)) {
  */
 abstract class ParagonIE_Sodium_Crypto
 {
-    const aead_chacha20poly1305_KEYBYTES = 32;
-    const aead_chacha20poly1305_NSECBYTES = 0;
-    const aead_chacha20poly1305_NPUBBYTES = 8;
-    const aead_chacha20poly1305_ABYTES = 16;
+    public const aead_chacha20poly1305_KEYBYTES = 32;
+    public const aead_chacha20poly1305_NSECBYTES = 0;
+    public const aead_chacha20poly1305_NPUBBYTES = 8;
+    public const aead_chacha20poly1305_ABYTES = 16;
 
-    const aead_chacha20poly1305_IETF_KEYBYTES = 32;
-    const aead_chacha20poly1305_IETF_NSECBYTES = 0;
-    const aead_chacha20poly1305_IETF_NPUBBYTES = 12;
-    const aead_chacha20poly1305_IETF_ABYTES = 16;
+    public const aead_chacha20poly1305_IETF_KEYBYTES = 32;
+    public const aead_chacha20poly1305_IETF_NSECBYTES = 0;
+    public const aead_chacha20poly1305_IETF_NPUBBYTES = 12;
+    public const aead_chacha20poly1305_IETF_ABYTES = 16;
 
-    const aead_xchacha20poly1305_IETF_KEYBYTES = 32;
-    const aead_xchacha20poly1305_IETF_NSECBYTES = 0;
-    const aead_xchacha20poly1305_IETF_NPUBBYTES = 24;
-    const aead_xchacha20poly1305_IETF_ABYTES = 16;
+    public const aead_xchacha20poly1305_IETF_KEYBYTES = 32;
+    public const aead_xchacha20poly1305_IETF_NSECBYTES = 0;
+    public const aead_xchacha20poly1305_IETF_NPUBBYTES = 24;
+    public const aead_xchacha20poly1305_IETF_ABYTES = 16;
 
-    const box_curve25519xsalsa20poly1305_SEEDBYTES = 32;
-    const box_curve25519xsalsa20poly1305_PUBLICKEYBYTES = 32;
-    const box_curve25519xsalsa20poly1305_SECRETKEYBYTES = 32;
-    const box_curve25519xsalsa20poly1305_BEFORENMBYTES = 32;
-    const box_curve25519xsalsa20poly1305_NONCEBYTES = 24;
-    const box_curve25519xsalsa20poly1305_MACBYTES = 16;
-    const box_curve25519xsalsa20poly1305_BOXZEROBYTES = 16;
-    const box_curve25519xsalsa20poly1305_ZEROBYTES = 32;
+    public const box_curve25519xsalsa20poly1305_SEEDBYTES = 32;
+    public const box_curve25519xsalsa20poly1305_PUBLICKEYBYTES = 32;
+    public const box_curve25519xsalsa20poly1305_SECRETKEYBYTES = 32;
+    public const box_curve25519xsalsa20poly1305_BEFORENMBYTES = 32;
+    public const box_curve25519xsalsa20poly1305_NONCEBYTES = 24;
+    public const box_curve25519xsalsa20poly1305_MACBYTES = 16;
+    public const box_curve25519xsalsa20poly1305_BOXZEROBYTES = 16;
+    public const box_curve25519xsalsa20poly1305_ZEROBYTES = 32;
 
-    const onetimeauth_poly1305_BYTES = 16;
-    const onetimeauth_poly1305_KEYBYTES = 32;
+    public const onetimeauth_poly1305_BYTES = 16;
+    public const onetimeauth_poly1305_KEYBYTES = 32;
 
-    const secretbox_xsalsa20poly1305_KEYBYTES = 32;
-    const secretbox_xsalsa20poly1305_NONCEBYTES = 24;
-    const secretbox_xsalsa20poly1305_MACBYTES = 16;
-    const secretbox_xsalsa20poly1305_BOXZEROBYTES = 16;
-    const secretbox_xsalsa20poly1305_ZEROBYTES = 32;
+    public const secretbox_xsalsa20poly1305_KEYBYTES = 32;
+    public const secretbox_xsalsa20poly1305_NONCEBYTES = 24;
+    public const secretbox_xsalsa20poly1305_MACBYTES = 16;
+    public const secretbox_xsalsa20poly1305_BOXZEROBYTES = 16;
+    public const secretbox_xsalsa20poly1305_ZEROBYTES = 32;
 
-    const secretbox_xchacha20poly1305_KEYBYTES = 32;
-    const secretbox_xchacha20poly1305_NONCEBYTES = 24;
-    const secretbox_xchacha20poly1305_MACBYTES = 16;
-    const secretbox_xchacha20poly1305_BOXZEROBYTES = 16;
-    const secretbox_xchacha20poly1305_ZEROBYTES = 32;
+    public const secretbox_xchacha20poly1305_KEYBYTES = 32;
+    public const secretbox_xchacha20poly1305_NONCEBYTES = 24;
+    public const secretbox_xchacha20poly1305_MACBYTES = 16;
+    public const secretbox_xchacha20poly1305_BOXZEROBYTES = 16;
+    public const secretbox_xchacha20poly1305_ZEROBYTES = 32;
 
-    const stream_salsa20_KEYBYTES = 32;
+    public const stream_salsa20_KEYBYTES = 32;
 
     /**
      * AEAD Decryption with ChaCha20-Poly1305
@@ -1262,10 +1264,10 @@ abstract class ParagonIE_Sodium_Crypto
         # memcpy(STATE_INONCE(state), out + crypto_core_hchacha20_INPUTBYTES,
         #        crypto_secretstream_xchacha20poly1305_INONCEBYTES);
         # memset(state->_pad, 0, sizeof state->_pad);
-        return array(
+        return [
             $state->toString(),
-            $out
-        );
+            $out,
+        ];
     }
 
     /**
@@ -1395,7 +1397,6 @@ abstract class ParagonIE_Sodium_Crypto
         # sodium_memzero(&poly1305_state, sizeof poly1305_state);
         unset($auth);
 
-
         # XOR_BUF(STATE_INONCE(state), mac,
         #     crypto_secretstream_xchacha20poly1305_INONCEBYTES);
         $st->xorNonce($mac);
@@ -1462,7 +1463,6 @@ abstract class ParagonIE_Sodium_Crypto
         #         (0x10 - adlen) & 0xf);
         $auth->update(str_repeat("\0", ((0x10 - $aadlen) & 0xf)));
 
-
         #     memset(block, 0, sizeof block);
         #     block[0] = in[0];
         #     crypto_stream_chacha20_ietf_xor_ic(block, block, sizeof block,
@@ -1479,7 +1479,6 @@ abstract class ParagonIE_Sodium_Crypto
         $tag = ParagonIE_Sodium_Core_Util::chrToInt($block[0]);
         $block[0] = $cipher[0];
         $auth->update($block);
-
 
         #     c = in + (sizeof tag);
         #     crypto_onetimeauth_poly1305_update(&poly1305_state, c, mlen);
@@ -1545,7 +1544,7 @@ abstract class ParagonIE_Sodium_Crypto
             // DO REKEY
             self::secretstream_xchacha20poly1305_rekey($state);
         }
-        return array($out, $tag);
+        return [$out, $tag];
     }
 
     /**

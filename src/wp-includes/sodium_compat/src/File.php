@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_File', false)) {
     return;
 }
@@ -9,7 +11,7 @@ if (class_exists('ParagonIE_Sodium_File', false)) {
 class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
 {
     /* PHP's default buffer size is 8192 for fread()/fwrite(). */
-    const BUFFER_SIZE = 8192;
+    public const BUFFER_SIZE = 8192;
 
     /**
      * Box a file (rather than a string). Uses less memory than
@@ -859,7 +861,6 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             )
         );
     }
-
 
     /**
      * @param resource $ifp

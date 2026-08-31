@@ -29,7 +29,7 @@ class Redis implements Base
      *
      * @var NativeRedis
      */
-    protected $cache;
+    protected \Redis $cache;
 
     /**
      * Options
@@ -40,10 +40,8 @@ class Redis implements Base
 
     /**
      * Cache name
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Create a new cache object
@@ -78,11 +76,7 @@ class Redis implements Base
         $this->name = $this->options['prefix'] . $name;
     }
 
-    /**
-     * @param NativeRedis $cache
-     * @return void
-     */
-    public function setRedisClient(NativeRedis $cache)
+    public function setRedisClient(NativeRedis $cache): void
     {
         $this->cache = $cache;
     }
@@ -168,4 +162,4 @@ class Redis implements Base
     }
 }
 
-class_alias('SimplePie\Cache\Redis', 'SimplePie_Cache_Redis');
+class_alias(\SimplePie\Cache\Redis::class, 'SimplePie_Cache_Redis');

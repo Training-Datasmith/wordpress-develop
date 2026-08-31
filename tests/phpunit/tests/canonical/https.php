@@ -1,68 +1,75 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @group canonical
  * @group rewrite
  * @group query
  */
-class Tests_Canonical_HTTPS extends WP_Canonical_UnitTestCase {
+class Tests_Canonical_HTTPS extends WP_Canonical_UnitTestCase
+{
+    /**
+     * Dummy HTTP URL.
+     *
+     * @var string
+     */
+    private $http = '';
 
-	/**
-	 * Dummy HTTP URL.
-	 *
-	 * @var string
-	 */
-	private $http = '';
+    /**
+     * Dummy HTTPS URL.
+     *
+     * @var string
+     */
+    private $https = '';
 
-	/**
-	 * Dummy HTTPS URL.
-	 *
-	 * @var string
-	 */
-	private $https = '';
+    public function set_up()
+    {
+        parent::set_up();
 
-	public function set_up() {
-		parent::set_up();
+        $this->set_permalink_structure('/%year%/%monthnum%/%day%/%postname%/');
+        create_initial_taxonomies();
 
-		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
-		create_initial_taxonomies();
+        $this->http  = set_url_scheme(home_url('sample-page/'), 'http');
+        $this->https = set_url_scheme(home_url('sample-page/'), 'https');
+    }
 
-		$this->http  = set_url_scheme( home_url( 'sample-page/' ), 'http' );
-		$this->https = set_url_scheme( home_url( 'sample-page/' ), 'https' );
-	}
+    public function set_https($url)
+    {
+        return set_url_scheme($url, 'https');
+    }
 
-	public function set_https( $url ) {
-		return set_url_scheme( $url, 'https' );
-	}
+    /**
+     * @ticket 27954
+     */
+    public function test_http_request_with_http_home()
+    {
+        $redirect = redirect_canonical($this->http, false);
 
-	/**
-	 * @ticket 27954
-	 */
-	public function test_http_request_with_http_home() {
-		$redirect = redirect_canonical( $this->http, false );
+        $this->assertNull($redirect);
+    }
 
-		$this->assertNull( $redirect );
-	}
+    /**
+     * @ticket 27954
+     */
+    public function test_https_request_with_http_home()
+    {
+        $redirect = redirect_canonical($this->https, false);
 
-	/**
-	 * @ticket 27954
-	 */
-	public function test_https_request_with_http_home() {
-		$redirect = redirect_canonical( $this->https, false );
+        $this->assertNull($redirect);
+    }
 
-		$this->assertNull( $redirect );
-	}
+    /**
+     * @ticket 27954
+     */
+    public function test_https_request_with_https_home()
+    {
+        add_filter('home_url', [ $this, 'set_https' ]);
 
-	/**
-	 * @ticket 27954
-	 */
-	public function test_https_request_with_https_home() {
-		add_filter( 'home_url', array( $this, 'set_https' ) );
+        $redirect = redirect_canonical($this->https, false);
 
-		$redirect = redirect_canonical( $this->https, false );
+        remove_filter('home_url', [ $this, 'set_https' ]);
 
-		remove_filter( 'home_url', array( $this, 'set_https' ) );
-
-		$this->assertNull( $redirect );
-	}
+        $this->assertNull($redirect);
+    }
 }

@@ -1,43 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @group sitemaps
  */
-class Tests_Sitemaps_wpSitemapsStylesheet extends WP_UnitTestCase {
+class Tests_Sitemaps_wpSitemapsStylesheet extends WP_UnitTestCase
+{
+    /**
+     * Test that stylesheet content can be filtered.
+     */
+    public function test_filter_sitemaps_stylesheet_content()
+    {
+        $stylesheet = new WP_Sitemaps_Stylesheet();
 
-	/**
-	 * Test that stylesheet content can be filtered.
-	 */
-	public function test_filter_sitemaps_stylesheet_content() {
-		$stylesheet = new WP_Sitemaps_Stylesheet();
+        add_filter('wp_sitemaps_stylesheet_content', '__return_empty_string');
+        $content = $stylesheet->get_sitemap_stylesheet();
 
-		add_filter( 'wp_sitemaps_stylesheet_content', '__return_empty_string' );
-		$content = $stylesheet->get_sitemap_stylesheet();
+        $this->assertSame('', $content, 'Could not filter stylesheet content');
+    }
 
-		$this->assertSame( '', $content, 'Could not filter stylesheet content' );
-	}
+    /**
+     * Test that sitemap index stylesheet content can be filtered.
+     */
+    public function test_filter_sitemaps_stylesheet_index_content()
+    {
+        $stylesheet = new WP_Sitemaps_Stylesheet();
 
-	/**
-	 * Test that sitemap index stylesheet content can be filtered.
-	 */
-	public function test_filter_sitemaps_stylesheet_index_content() {
-		$stylesheet = new WP_Sitemaps_Stylesheet();
+        add_filter('wp_sitemaps_stylesheet_index_content', '__return_empty_string');
+        $content = $stylesheet->get_sitemap_index_stylesheet();
 
-		add_filter( 'wp_sitemaps_stylesheet_index_content', '__return_empty_string' );
-		$content = $stylesheet->get_sitemap_index_stylesheet();
+        $this->assertSame('', $content, 'Could not filter sitemap index stylesheet content');
+    }
 
-		$this->assertSame( '', $content, 'Could not filter sitemap index stylesheet content' );
-	}
+    /**
+     * Test that sitemap stylesheet CSS can be filtered.
+     */
+    public function test_filter_sitemaps_stylesheet_css()
+    {
+        $stylesheet = new WP_Sitemaps_Stylesheet();
 
-	/**
-	 * Test that sitemap stylesheet CSS can be filtered.
-	 */
-	public function test_filter_sitemaps_stylesheet_css() {
-		$stylesheet = new WP_Sitemaps_Stylesheet();
+        add_filter('wp_sitemaps_stylesheet_css', '__return_empty_string');
+        $css = $stylesheet->get_stylesheet_css();
 
-		add_filter( 'wp_sitemaps_stylesheet_css', '__return_empty_string' );
-		$css = $stylesheet->get_stylesheet_css();
-
-		$this->assertSame( '', $css, 'Could not filter sitemap stylesheet CSS' );
-	}
+        $this->assertSame('', $css, 'Could not filter sitemap stylesheet CSS');
+    }
 }

@@ -5,7 +5,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Decode HTML Entities
  *
@@ -106,9 +105,8 @@ class SimplePie_Decode_HTML_Entities
      * Unconsume one byte
      *
      * @access private
-     * @return void
      */
-    public function unconsume()
+    public function unconsume(): void
     {
         $this->consumed = substr($this->consumed, 0, -1);
         $this->position--;
@@ -118,9 +116,8 @@ class SimplePie_Decode_HTML_Entities
      * Decode an entity
      *
      * @access private
-     * @return void
      */
-    public function entity()
+    public function entity(): void
     {
         switch ($this->consume()) {
             case "\x09":
@@ -544,7 +541,7 @@ class SimplePie_Decode_HTML_Entities
                     'Zeta;' => "\xCE\x96",
                     'zeta;' => "\xCE\xB6",
                     'zwj;' => "\xE2\x80\x8D",
-                    'zwnj;' => "\xE2\x80\x8C"
+                    'zwnj;' => "\xE2\x80\x8C",
                 ];
 
                 for ($i = 0, $match = null; $i < 9 && $this->consume() !== false; $i++) {

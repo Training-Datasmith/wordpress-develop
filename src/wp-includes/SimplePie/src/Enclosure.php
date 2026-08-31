@@ -96,7 +96,6 @@ class Enclosure
 
     /**
      * @deprecated
-     * @var null
      */
     public $javascript;
 
@@ -186,7 +185,6 @@ class Enclosure
      *
      * @uses idn_to_ascii If available, this will convert an IDN
      *
-     * @param null $javascript
      * @param Caption[]|null $captions
      * @param Category[]|null $categories
      * @param Credit[]|null $credits
@@ -262,10 +260,8 @@ class Enclosure
 
     /**
      * String-ified version
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         // There is no $this->data here
         return md5(serialize($this));
@@ -288,17 +284,13 @@ class Enclosure
     /**
      * Get a single caption
      *
-     * @param int $key
      * @return \SimplePie\Caption|null
      */
     public function get_caption(int $key = 0)
     {
         $captions = $this->get_captions();
-        if (isset($captions[$key])) {
-            return $captions[$key];
-        }
 
-        return null;
+        return $captions[$key] ?? null;
     }
 
     /**
@@ -318,17 +310,13 @@ class Enclosure
     /**
      * Get a single category
      *
-     * @param int $key
      * @return \SimplePie\Category|null
      */
     public function get_category(int $key = 0)
     {
         $categories = $this->get_categories();
-        if (isset($categories[$key])) {
-            return $categories[$key];
-        }
 
-        return null;
+        return $categories[$key] ?? null;
     }
 
     /**
@@ -376,17 +364,13 @@ class Enclosure
     /**
      * Get a single credit
      *
-     * @param int $key
      * @return \SimplePie\Credit|null
      */
     public function get_credit(int $key = 0)
     {
         $credits = $this->get_credits();
-        if (isset($credits[$key])) {
-            return $credits[$key];
-        }
 
-        return null;
+        return $credits[$key] ?? null;
     }
 
     /**
@@ -427,8 +411,7 @@ class Enclosure
     {
         if ($this->duration !== null) {
             if ($convert) {
-                $time = \SimplePie\Misc::time_hms($this->duration);
-                return $time;
+                return \SimplePie\Misc::time_hms($this->duration);
             }
 
             return $this->duration;
@@ -453,10 +436,8 @@ class Enclosure
 
     /**
      * Get the file extension
-     *
-     * @return string|null
      */
-    public function get_extension()
+    public function get_extension(): ?string
     {
         if ($this->link !== null) {
             $url = \SimplePie\Misc::parse_url($this->link);
@@ -495,17 +476,13 @@ class Enclosure
      * Get a single hash
      *
      * @link http://www.rssboard.org/media-rss#media-hash
-     * @param int $key
      * @return string|null Hash as per `media:hash`, prefixed with "$algo:"
      */
     public function get_hash(int $key = 0)
     {
         $hashes = $this->get_hashes();
-        if (isset($hashes[$key])) {
-            return $hashes[$key];
-        }
 
-        return null;
+        return $hashes[$key] ?? null;
     }
 
     /**
@@ -554,17 +531,13 @@ class Enclosure
     /**
      * Get a single keyword
      *
-     * @param int $key
      * @return string|null
      */
     public function get_keyword(int $key = 0)
     {
         $keywords = $this->get_keywords();
-        if (isset($keywords[$key])) {
-            return $keywords[$key];
-        }
 
-        return null;
+        return $keywords[$key] ?? null;
     }
 
     /**
@@ -642,17 +615,13 @@ class Enclosure
     /**
      * Get a single rating
      *
-     * @param int $key
      * @return \SimplePie\Rating|null
      */
     public function get_rating(int $key = 0)
     {
         $ratings = $this->get_ratings();
-        if (isset($ratings[$key])) {
-            return $ratings[$key];
-        }
 
-        return null;
+        return $ratings[$key] ?? null;
     }
 
     /**
@@ -672,17 +641,13 @@ class Enclosure
     /**
      * Get a single restriction
      *
-     * @param int $key
      * @return \SimplePie\Restriction|null
      */
     public function get_restriction(int $key = 0)
     {
         $restrictions = $this->get_restrictions();
-        if (isset($restrictions[$key])) {
-            return $restrictions[$key];
-        }
 
-        return null;
+        return $restrictions[$key] ?? null;
     }
 
     /**
@@ -718,7 +683,7 @@ class Enclosure
      *
      * @return float|null File size in mebibytes (1048 bytes)
      */
-    public function get_size()
+    public function get_size(): ?float
     {
         $length = $this->get_length();
         if ($length !== null) {
@@ -731,17 +696,13 @@ class Enclosure
     /**
      * Get a single thumbnail
      *
-     * @param int $key
      * @return string|null Thumbnail URL
      */
     public function get_thumbnail(int $key = 0)
     {
         $thumbnails = $this->get_thumbnails();
-        if (isset($thumbnails[$key])) {
-            return $thumbnails[$key];
-        }
 
-        return null;
+        return $thumbnails[$key] ?? null;
     }
 
     /**
@@ -859,7 +820,7 @@ class Enclosure
      * @param bool $native Use `<embed>`
      * @return string HTML string to output
      */
-    public function embed($options = '', bool $native = false)
+    public function embed($options = '', bool $native = false): string
     {
         // Set up defaults
         $audio = '';
@@ -983,7 +944,7 @@ class Enclosure
         // Flash
         if ($handler === 'flash') {
             if ($native) {
-                $embed .= "<embed src=\"" . $this->get_link() . "\" pluginspage=\"http://adobe.com/go/getflashplayer\" type=\"$type\" quality=\"high\" width=\"$width\" height=\"$height\" bgcolor=\"$bgcolor\" loop=\"$loop\"></embed>";
+                $embed .= '<embed src="' . $this->get_link() . "\" pluginspage=\"http://adobe.com/go/getflashplayer\" type=\"$type\" quality=\"high\" width=\"$width\" height=\"$height\" bgcolor=\"$bgcolor\" loop=\"$loop\"></embed>";
             } else {
                 $embed .= "<script type='text/javascript'>embed_flash('$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$loop', '$type');</script>";
             }
@@ -1028,7 +989,7 @@ class Enclosure
             }
 
             if ($native) {
-                $embed .= "<embed type=\"application/x-mplayer2\" src=\"" . $this->get_link() . "\" autosize=\"1\" width=\"$width\" height=\"$height\" showcontrols=\"1\" showstatusbar=\"0\" showdisplay=\"0\" autostart=\"0\"></embed>";
+                $embed .= '<embed type="application/x-mplayer2" src="' . $this->get_link() . "\" autosize=\"1\" width=\"$width\" height=\"$height\" showcontrols=\"1\" showstatusbar=\"0\" showdisplay=\"0\" autostart=\"0\"></embed>";
             } else {
                 $embed .= "<script type='text/javascript'>embed_wmedia('$width', '$height', '" . $this->get_link() . "');</script>";
             }
@@ -1089,6 +1050,7 @@ class Enclosure
                     break;
 
                 case 'bwf':
+                case 'wav':
                     $type = 'audio/wav';
                     break;
 
@@ -1106,10 +1068,6 @@ class Enclosure
                 case 'mp3':
                 case 'swa':
                     $type = 'audio/mp3';
-                    break;
-
-                case 'wav':
-                    $type = 'audio/wav';
                     break;
 
                 case 'wax':
@@ -1197,13 +1155,17 @@ class Enclosure
         if ($find_handler) {
             if (in_array($type, $types_flash)) {
                 return 'flash';
-            } elseif (in_array($type, $types_fmedia)) {
+            }
+            if (in_array($type, $types_fmedia)) {
                 return 'fmedia';
-            } elseif (in_array($type, $types_quicktime)) {
+            }
+            if (in_array($type, $types_quicktime)) {
                 return 'quicktime';
-            } elseif (in_array($type, $types_wmedia)) {
+            }
+            if (in_array($type, $types_wmedia)) {
                 return 'wmedia';
-            } elseif (in_array($type, $types_mp3)) {
+            }
+            if (in_array($type, $types_mp3)) {
                 return 'mp3';
             }
 
@@ -1214,4 +1176,4 @@ class Enclosure
     }
 }
 
-class_alias('SimplePie\Enclosure', 'SimplePie_Enclosure');
+class_alias(\SimplePie\Enclosure::class, 'SimplePie_Enclosure');

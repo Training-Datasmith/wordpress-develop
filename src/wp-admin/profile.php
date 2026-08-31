@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * User Profile Administration Screen.
  *
@@ -12,7 +14,7 @@
  * @since 2.5.0
  * @var bool
  */
-define( 'IS_PROFILE_PAGE', true );
+define('IS_PROFILE_PAGE', true);
 
 /** Load User Editing Page */
 require_once __DIR__ . '/user-edit.php';

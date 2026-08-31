@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Operations\Contracts;
 
 use WordPress\AiClient\Operations\Enums\OperationStateEnum;
+
 /**
  * Interface for AI operations.
  *

@@ -18,16 +18,13 @@ class File implements Base
      * Location string
      *
      * @see SimplePie::$cache_location
-     * @var string
      */
-    protected $location;
+    protected string $location;
 
     /**
      * Filename
-     *
-     * @var string
      */
-    protected $filename;
+    protected string $filename;
 
     /**
      * File extension
@@ -38,10 +35,8 @@ class File implements Base
 
     /**
      * File path
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Create a new cache object
@@ -124,4 +119,4 @@ class File implements Base
     }
 }
 
-class_alias('SimplePie\Cache\File', 'SimplePie_Cache_File');
+class_alias(\SimplePie\Cache\File::class, 'SimplePie_Cache_File');

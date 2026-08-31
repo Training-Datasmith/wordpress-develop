@@ -48,10 +48,8 @@ class Copyright
 
     /**
      * String-ified version
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         // There is no $this->data here
         return md5(serialize($this));
@@ -86,4 +84,4 @@ class Copyright
     }
 }
 
-class_alias('SimplePie\Copyright', 'SimplePie_Copyright');
+class_alias(\SimplePie\Copyright::class, 'SimplePie_Copyright');

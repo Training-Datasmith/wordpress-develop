@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Unit tests covering WP_REST_Controller functionality
  *
@@ -7,177 +9,180 @@
  *
  * @group restapi
  */
-class WP_REST_Test_Controller extends WP_REST_Controller {
-	/**
-	 * Prepares the item for the REST response.
-	 *
-	 * @param mixed           $item    WordPress representation of the item.
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 */
-	public function prepare_item_for_response( $item, $request ) {
-		$context  = ! empty( $request['context'] ) ? $request['context'] : 'view';
-		$item     = $this->add_additional_fields_to_object( $item, $request );
-		$item     = $this->filter_response_by_context( $item, $context );
-		$response = rest_ensure_response( $item );
-		return $response;
-	}
+class WP_REST_Test_Controller extends WP_REST_Controller
+{
+    /**
+     * Prepares the item for the REST response.
+     *
+     * @param mixed           $item    WordPress representation of the item.
+     * @param WP_REST_Request $request Request object.
+     * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+     */
+    public function prepare_item_for_response($item, $request)
+    {
+        $context  = ! empty($request['context']) ? $request['context'] : 'view';
+        $item     = $this->add_additional_fields_to_object($item, $request);
+        $item     = $this->filter_response_by_context($item, $context);
+        $response = rest_ensure_response($item);
+        return $response;
+    }
 
-	/**
-	 * Get the item's schema, conforming to JSON Schema.
-	 *
-	 * @return array
-	 */
-	public function get_item_schema() {
-		$schema = array(
-			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => 'type',
-			'type'       => 'object',
-			'properties' => array(
-				'somestring'        => array(
-					'type'        => 'string',
-					'description' => 'A pretty string.',
-					'minLength'   => 3,
-					'maxLength'   => 3,
-					'pattern'     => '[a-zA-Z]+',
-					'context'     => array( 'view' ),
-				),
-				'someinteger'       => array(
-					'type'             => 'integer',
-					'multipleOf'       => 10,
-					'minimum'          => 100,
-					'maximum'          => 200,
-					'exclusiveMinimum' => true,
-					'exclusiveMaximum' => true,
-					'context'          => array( 'view' ),
-				),
-				'someboolean'       => array(
-					'type'    => 'boolean',
-					'context' => array( 'view' ),
-				),
-				'someurl'           => array(
-					'type'    => 'string',
-					'format'  => 'uri',
-					'context' => array( 'view' ),
-				),
-				'somedate'          => array(
-					'type'    => 'string',
-					'format'  => 'date-time',
-					'context' => array( 'view' ),
-				),
-				'someemail'         => array(
-					'type'    => 'string',
-					'format'  => 'email',
-					'context' => array( 'view' ),
-				),
-				'somehex'           => array(
-					'type'    => 'string',
-					'format'  => 'hex-color',
-					'context' => array( 'view' ),
-				),
-				'someuuid'          => array(
-					'type'    => 'string',
-					'format'  => 'uuid',
-					'context' => array( 'view' ),
-				),
-				'sometextfield'     => array(
-					'type'    => 'string',
-					'format'  => 'text-field',
-					'context' => array( 'view' ),
-				),
-				'sometextareafield' => array(
-					'type'    => 'string',
-					'format'  => 'textarea-field',
-					'context' => array( 'view' ),
-				),
-				'someenum'          => array(
-					'type'    => 'string',
-					'enum'    => array( 'a', 'b', 'c' ),
-					'context' => array( 'view' ),
-				),
-				'someargoptions'    => array(
-					'type'        => 'integer',
-					'required'    => true,
-					'arg_options' => array(
-						'required'          => false,
-						'sanitize_callback' => '__return_true',
-					),
-				),
-				'somedefault'       => array(
-					'type'    => 'string',
-					'enum'    => array( 'a', 'b', 'c' ),
-					'context' => array( 'view' ),
-					'default' => 'a',
-				),
-				'somearray'         => array(
-					'type'        => 'array',
-					'items'       => array(
-						'type' => 'string',
-					),
-					'minItems'    => 1,
-					'maxItems'    => 10,
-					'uniqueItems' => true,
-					'context'     => array( 'view' ),
-				),
-				'someobject'        => array(
-					'type'                 => 'object',
-					'additionalProperties' => array(
-						'type' => 'string',
-					),
-					'properties'           => array(
-						'object_id' => array(
-							'type' => 'integer',
-						),
-					),
-					'patternProperties'    => array(
-						'[0-9]' => array(
-							'type' => 'string',
-						),
-					),
-					'minProperties'        => 1,
-					'maxProperties'        => 10,
-					'anyOf'                => array(
-						array(
-							'properties' => array(
-								'object_id' => array(
-									'type'    => 'integer',
-									'minimum' => 100,
-								),
-							),
-						),
-						array(
-							'properties' => array(
-								'object_id' => array(
-									'type'    => 'integer',
-									'maximum' => 100,
-								),
-							),
-						),
-					),
-					'oneOf'                => array(
-						array(
-							'properties' => array(
-								'object_id' => array(
-									'type'    => 'integer',
-									'minimum' => 100,
-								),
-							),
-						),
-						array(
-							'properties' => array(
-								'object_id' => array(
-									'type'    => 'integer',
-									'maximum' => 100,
-								),
-							),
-						),
-					),
-					'ignored_prop'         => 'ignored_prop',
-					'context'              => array( 'view' ),
-				),
-			),
-		);
+    /**
+     * Get the item's schema, conforming to JSON Schema.
+     *
+     * @return array
+     */
+    public function get_item_schema()
+    {
+        $schema = [
+            '$schema'    => 'http://json-schema.org/draft-04/schema#',
+            'title'      => 'type',
+            'type'       => 'object',
+            'properties' => [
+                'somestring'        => [
+                    'type'        => 'string',
+                    'description' => 'A pretty string.',
+                    'minLength'   => 3,
+                    'maxLength'   => 3,
+                    'pattern'     => '[a-zA-Z]+',
+                    'context'     => [ 'view' ],
+                ],
+                'someinteger'       => [
+                    'type'             => 'integer',
+                    'multipleOf'       => 10,
+                    'minimum'          => 100,
+                    'maximum'          => 200,
+                    'exclusiveMinimum' => true,
+                    'exclusiveMaximum' => true,
+                    'context'          => [ 'view' ],
+                ],
+                'someboolean'       => [
+                    'type'    => 'boolean',
+                    'context' => [ 'view' ],
+                ],
+                'someurl'           => [
+                    'type'    => 'string',
+                    'format'  => 'uri',
+                    'context' => [ 'view' ],
+                ],
+                'somedate'          => [
+                    'type'    => 'string',
+                    'format'  => 'date-time',
+                    'context' => [ 'view' ],
+                ],
+                'someemail'         => [
+                    'type'    => 'string',
+                    'format'  => 'email',
+                    'context' => [ 'view' ],
+                ],
+                'somehex'           => [
+                    'type'    => 'string',
+                    'format'  => 'hex-color',
+                    'context' => [ 'view' ],
+                ],
+                'someuuid'          => [
+                    'type'    => 'string',
+                    'format'  => 'uuid',
+                    'context' => [ 'view' ],
+                ],
+                'sometextfield'     => [
+                    'type'    => 'string',
+                    'format'  => 'text-field',
+                    'context' => [ 'view' ],
+                ],
+                'sometextareafield' => [
+                    'type'    => 'string',
+                    'format'  => 'textarea-field',
+                    'context' => [ 'view' ],
+                ],
+                'someenum'          => [
+                    'type'    => 'string',
+                    'enum'    => [ 'a', 'b', 'c' ],
+                    'context' => [ 'view' ],
+                ],
+                'someargoptions'    => [
+                    'type'        => 'integer',
+                    'required'    => true,
+                    'arg_options' => [
+                        'required'          => false,
+                        'sanitize_callback' => '__return_true',
+                    ],
+                ],
+                'somedefault'       => [
+                    'type'    => 'string',
+                    'enum'    => [ 'a', 'b', 'c' ],
+                    'context' => [ 'view' ],
+                    'default' => 'a',
+                ],
+                'somearray'         => [
+                    'type'        => 'array',
+                    'items'       => [
+                        'type' => 'string',
+                    ],
+                    'minItems'    => 1,
+                    'maxItems'    => 10,
+                    'uniqueItems' => true,
+                    'context'     => [ 'view' ],
+                ],
+                'someobject'        => [
+                    'type'                 => 'object',
+                    'additionalProperties' => [
+                        'type' => 'string',
+                    ],
+                    'properties'           => [
+                        'object_id' => [
+                            'type' => 'integer',
+                        ],
+                    ],
+                    'patternProperties'    => [
+                        '[0-9]' => [
+                            'type' => 'string',
+                        ],
+                    ],
+                    'minProperties'        => 1,
+                    'maxProperties'        => 10,
+                    'anyOf'                => [
+                        [
+                            'properties' => [
+                                'object_id' => [
+                                    'type'    => 'integer',
+                                    'minimum' => 100,
+                                ],
+                            ],
+                        ],
+                        [
+                            'properties' => [
+                                'object_id' => [
+                                    'type'    => 'integer',
+                                    'maximum' => 100,
+                                ],
+                            ],
+                        ],
+                    ],
+                    'oneOf'                => [
+                        [
+                            'properties' => [
+                                'object_id' => [
+                                    'type'    => 'integer',
+                                    'minimum' => 100,
+                                ],
+                            ],
+                        ],
+                        [
+                            'properties' => [
+                                'object_id' => [
+                                    'type'    => 'integer',
+                                    'maximum' => 100,
+                                ],
+                            ],
+                        ],
+                    ],
+                    'ignored_prop'         => 'ignored_prop',
+                    'context'              => [ 'view' ],
+                ],
+            ],
+        ];
 
-		return $this->add_additional_fields_schema( $schema );
-	}
+        return $this->add_additional_fields_schema($schema);
+    }
 }

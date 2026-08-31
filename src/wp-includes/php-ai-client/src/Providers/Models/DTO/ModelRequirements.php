@@ -1,6 +1,7 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Models\DTO;
 
 use WordPress\AiClient\Common\AbstractDataTransferObject;
@@ -9,6 +10,7 @@ use WordPress\AiClient\Messages\DTO\Message;
 use WordPress\AiClient\Messages\Enums\ModalityEnum;
 use WordPress\AiClient\Providers\Models\Enums\CapabilityEnum;
 use WordPress\AiClient\Providers\Models\Enums\OptionEnum;
+
 /**
  * Represents requirements that implementing code has for AI model selection.
  *
@@ -300,7 +302,7 @@ class ModelRequirements extends AbstractDataTransferObject
      */
     public function toArray(): array
     {
-        return [self::KEY_REQUIRED_CAPABILITIES => array_map(static fn(CapabilityEnum $capability): string => $capability->value, $this->requiredCapabilities), self::KEY_REQUIRED_OPTIONS => array_map(static fn(\WordPress\AiClient\Providers\Models\DTO\RequiredOption $option): array => $option->toArray(), $this->requiredOptions)];
+        return [self::KEY_REQUIRED_CAPABILITIES => array_map(static fn (CapabilityEnum $capability): string => $capability->value, $this->requiredCapabilities), self::KEY_REQUIRED_OPTIONS => array_map(static fn (\WordPress\AiClient\Providers\Models\DTO\RequiredOption $option): array => $option->toArray(), $this->requiredOptions)];
     }
     /**
      * {@inheritDoc}
@@ -310,6 +312,6 @@ class ModelRequirements extends AbstractDataTransferObject
     public static function fromArray(array $array): self
     {
         static::validateFromArrayData($array, [self::KEY_REQUIRED_CAPABILITIES, self::KEY_REQUIRED_OPTIONS]);
-        return new self(array_map(static fn(string $capability): CapabilityEnum => CapabilityEnum::from($capability), $array[self::KEY_REQUIRED_CAPABILITIES]), array_map(static fn(array $optionData): \WordPress\AiClient\Providers\Models\DTO\RequiredOption => \WordPress\AiClient\Providers\Models\DTO\RequiredOption::fromArray($optionData), $array[self::KEY_REQUIRED_OPTIONS]));
+        return new self(array_map(static fn (string $capability): CapabilityEnum => CapabilityEnum::from($capability), $array[self::KEY_REQUIRED_CAPABILITIES]), array_map(static fn (array $optionData): \WordPress\AiClient\Providers\Models\DTO\RequiredOption => \WordPress\AiClient\Providers\Models\DTO\RequiredOption::fromArray($optionData), $array[self::KEY_REQUIRED_OPTIONS]));
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * IXR_Base64
  *
@@ -8,24 +10,25 @@
  */
 class IXR_Base64
 {
-    var $data;
+    public $data;
 
-	/**
-	 * PHP5 constructor.
-	 */
-    function __construct( $data )
+    /**
+     * PHP5 constructor.
+     */
+    public function __construct($data)
     {
         $this->data = $data;
     }
 
-	/**
-	 * PHP4 constructor.
-	 */
-	public function IXR_Base64( $data ) {
-		self::__construct( $data );
-	}
+    /**
+     * PHP4 constructor.
+     */
+    public function IXR_Base64($data): void
+    {
+        self::__construct($data);
+    }
 
-    function getXml()
+    public function getXml(): string
     {
         return '<base64>'.base64_encode($this->data).'</base64>';
     }

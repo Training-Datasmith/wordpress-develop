@@ -1,10 +1,12 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Models\DTO;
 
 use WordPress\AiClient\Common\AbstractDataTransferObject;
 use WordPress\AiClient\Providers\Models\Enums\OptionEnum;
+
 /**
  * Represents an option that the implementing code requires the model to support.
  *

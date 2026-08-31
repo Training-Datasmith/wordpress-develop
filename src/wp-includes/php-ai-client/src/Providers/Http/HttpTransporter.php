@@ -1,15 +1,9 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Http;
 
-use WordPress\AiClientDependencies\Http\Discovery\Psr17FactoryDiscovery;
-use WordPress\AiClientDependencies\Http\Discovery\Psr18ClientDiscovery;
-use WordPress\AiClientDependencies\Psr\Http\Client\ClientInterface;
-use WordPress\AiClientDependencies\Psr\Http\Message\RequestFactoryInterface;
-use WordPress\AiClientDependencies\Psr\Http\Message\RequestInterface;
-use WordPress\AiClientDependencies\Psr\Http\Message\ResponseInterface;
-use WordPress\AiClientDependencies\Psr\Http\Message\StreamFactoryInterface;
 use WordPress\AiClient\Common\Exception\RuntimeException;
 use WordPress\AiClient\Providers\Http\Contracts\ClientWithOptionsInterface;
 use WordPress\AiClient\Providers\Http\Contracts\HttpTransporterInterface;
@@ -17,6 +11,14 @@ use WordPress\AiClient\Providers\Http\DTO\Request;
 use WordPress\AiClient\Providers\Http\DTO\RequestOptions;
 use WordPress\AiClient\Providers\Http\DTO\Response;
 use WordPress\AiClient\Providers\Http\Exception\NetworkException;
+use WordPress\AiClientDependencies\Http\Discovery\Psr17FactoryDiscovery;
+use WordPress\AiClientDependencies\Http\Discovery\Psr18ClientDiscovery;
+use WordPress\AiClientDependencies\Psr\Http\Client\ClientInterface;
+use WordPress\AiClientDependencies\Psr\Http\Message\RequestFactoryInterface;
+use WordPress\AiClientDependencies\Psr\Http\Message\RequestInterface;
+use WordPress\AiClientDependencies\Psr\Http\Message\ResponseInterface;
+use WordPress\AiClientDependencies\Psr\Http\Message\StreamFactoryInterface;
+
 /**
  * HTTP transporter implementation using HTTPlug.
  *

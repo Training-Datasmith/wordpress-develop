@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Cache\File;
 
-class_exists('SimplePie\Cache\File');
+class_exists(\SimplePie\Cache\File::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Cache_File" class is deprecated since SimplePie 1.7.0, use "SimplePie\Cache\File" instead.'), \E_USER_DEPRECATED);
 

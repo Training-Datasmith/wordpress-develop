@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\ApiBasedImplementation;
 
 use WordPress\AiClient\Providers\AbstractProvider;
+
 /**
  * Base class for API-based providers.
  *

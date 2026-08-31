@@ -55,10 +55,8 @@ class Author
 
     /**
      * String-ified version
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         // There is no $this->data here
         return md5(serialize($this));
@@ -107,4 +105,4 @@ class Author
     }
 }
 
-class_alias('SimplePie\Author', 'SimplePie_Author');
+class_alias(\SimplePie\Author::class, 'SimplePie_Author');

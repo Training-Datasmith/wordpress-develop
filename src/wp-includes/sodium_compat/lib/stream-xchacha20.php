@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (!is_callable('sodium_crypto_stream_xchacha20')) {
     /**
      * @see ParagonIE_Sodium_Compat::crypto_stream_xchacha20()

@@ -16,10 +16,7 @@ use InvalidArgumentException;
  */
 final class BaseDataCache implements DataCache
 {
-    /**
-     * @var Base
-     */
-    private $cache;
+    private \SimplePie\Cache\Base $cache;
 
     public function __construct(Base $cache)
     {

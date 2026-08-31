@@ -16,4 +16,4 @@ class Exception extends NativeException
 {
 }
 
-class_alias('SimplePie\Exception', 'SimplePie_Exception');
+class_alias(\SimplePie\Exception::class, 'SimplePie_Exception');

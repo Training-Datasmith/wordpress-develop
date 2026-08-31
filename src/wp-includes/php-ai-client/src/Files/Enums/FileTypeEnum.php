@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Files\Enums;
 
 use WordPress\AiClient\Common\AbstractEnum;
+
 /**
  * Represents the type of file storage.
  *

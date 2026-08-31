@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Http\Discovery;
 
 use WordPress\AiClientDependencies\Http\Discovery\Exception\DiscoveryFailedException;
@@ -10,6 +12,7 @@ use WordPress\AiClientDependencies\Psr\Http\Message\ServerRequestFactoryInterfac
 use WordPress\AiClientDependencies\Psr\Http\Message\StreamFactoryInterface;
 use WordPress\AiClientDependencies\Psr\Http\Message\UploadedFileFactoryInterface;
 use WordPress\AiClientDependencies\Psr\Http\Message\UriFactoryInterface;
+
 /**
  * Finds PSR-17 factories.
  *

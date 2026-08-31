@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Yoast\PHPUnitPolyfills\TestCases\TestCase as Polyfill_TestCase;
 
 /**
@@ -16,4 +18,6 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase as Polyfill_TestCase;
  * See {@link https://github.com/Yoast/PHPUnit-Polyfills} for full
  * documentation on the available polyfills and other features.
  */
-abstract class PHPUnit_Adapter_TestCase extends Polyfill_TestCase {}
+abstract class PHPUnit_Adapter_TestCase extends Polyfill_TestCase
+{
+}

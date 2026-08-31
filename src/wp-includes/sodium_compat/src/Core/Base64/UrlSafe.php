@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Class ParagonIE_Sodium_Core_Base64UrlSafe
  *
@@ -56,10 +58,10 @@ class ParagonIE_Sodium_Core_Base64_UrlSafe
             $b2 = $chunk[3];
 
             $dest .=
-                self::encode6Bits(               $b0 >> 2       ) .
+                self::encode6Bits($b0 >> 2) .
                 self::encode6Bits((($b0 << 4) | ($b1 >> 4)) & 63) .
                 self::encode6Bits((($b1 << 2) | ($b2 >> 6)) & 63) .
-                self::encode6Bits(  $b2                     & 63);
+                self::encode6Bits($b2                     & 63);
         }
         // The last chunk, which may have padding:
         if ($i < $srcLen) {
@@ -77,7 +79,7 @@ class ParagonIE_Sodium_Core_Base64_UrlSafe
                 }
             } else {
                 $dest .=
-                    self::encode6Bits( $b0 >> 2) .
+                    self::encode6Bits($b0 >> 2) .
                     self::encode6Bits(($b0 << 4) & 63);
                 if ($pad) {
                     $dest .= '==';

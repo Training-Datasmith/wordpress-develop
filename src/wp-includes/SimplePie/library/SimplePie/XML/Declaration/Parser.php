@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\XML\Declaration\Parser;
 
-class_exists('SimplePie\XML\Declaration\Parser');
+class_exists(\SimplePie\XML\Declaration\Parser::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_XML_Declaration_Parser" class is deprecated since SimplePie 1.7.0, use "SimplePie\XML\Declaration\Parser" instead.'), \E_USER_DEPRECATED);
 

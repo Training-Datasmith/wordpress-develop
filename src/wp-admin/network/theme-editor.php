@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Theme file editor network administration panel.
  *

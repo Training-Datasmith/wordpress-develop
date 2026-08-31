@@ -1,3 +1,3 @@
 Template Part
 
-<?php echo json_encode( $args ); ?>
+<?php echo json_encode($args); ?>

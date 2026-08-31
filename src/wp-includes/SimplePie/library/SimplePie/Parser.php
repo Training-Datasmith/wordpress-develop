@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Parser;
 
-class_exists('SimplePie\Parser');
+class_exists(\SimplePie\Parser::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Parser" class is deprecated since SimplePie 1.7.0, use "SimplePie\Parser" instead.'), \E_USER_DEPRECATED);
 

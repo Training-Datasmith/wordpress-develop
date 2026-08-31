@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Http\Enums;
 
 use WordPress\AiClient\Common\AbstractEnum;
+
 /**
  * Represents HTTP request methods.
  *

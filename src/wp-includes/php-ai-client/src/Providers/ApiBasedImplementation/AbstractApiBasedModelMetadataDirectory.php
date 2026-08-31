@@ -1,6 +1,7 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\ApiBasedImplementation;
 
 use WordPress\AiClient\AiClient;
@@ -13,6 +14,7 @@ use WordPress\AiClient\Providers\Http\Contracts\WithRequestAuthenticationInterfa
 use WordPress\AiClient\Providers\Http\Traits\WithHttpTransporterTrait;
 use WordPress\AiClient\Providers\Http\Traits\WithRequestAuthenticationTrait;
 use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
+
 /**
  * Base class for an API-based model metadata directory for a provider.
  *
@@ -74,7 +76,7 @@ abstract class AbstractApiBasedModelMetadataDirectory implements ModelMetadataDi
     private function getModelMetadataMap(): array
     {
         /** @var array<string, ModelMetadata> */
-        return $this->cached(self::MODELS_CACHE_KEY, fn() => $this->sendListModelsRequest(), 86400);
+        return $this->cached(self::MODELS_CACHE_KEY, fn () => $this->sendListModelsRequest(), 86400);
     }
     /**
      * {@inheritDoc}

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * WordPress database access abstraction class.
  *
@@ -8,9 +10,9 @@
  * @package WordPress
  */
 
-if ( function_exists( '_deprecated_file' ) ) {
-	// Note: WPINC may not be defined yet, so 'wp-includes' is used here.
-	_deprecated_file( basename( __FILE__ ), '6.1.0', 'wp-includes/class-wpdb.php' );
+if (function_exists('_deprecated_file')) {
+    // Note: WPINC may not be defined yet, so 'wp-includes' is used here.
+    _deprecated_file(basename(__FILE__), '6.1.0', 'wp-includes/class-wpdb.php');
 }
 
 /** wpdb class */

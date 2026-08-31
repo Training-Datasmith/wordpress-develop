@@ -78,10 +78,8 @@ class Caption
 
     /**
      * String-ified version
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         // There is no $this->data here
         return md5(serialize($this));
@@ -159,4 +157,4 @@ class Caption
     }
 }
 
-class_alias('SimplePie\Caption', 'SimplePie_Caption');
+class_alias(\SimplePie\Caption::class, 'SimplePie_Caption');

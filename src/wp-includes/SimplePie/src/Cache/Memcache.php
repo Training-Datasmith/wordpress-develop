@@ -28,7 +28,7 @@ class Memcache implements Base
      *
      * @var NativeMemcache
      */
-    protected $cache;
+    protected \Memcache $cache;
 
     /**
      * Options
@@ -39,10 +39,8 @@ class Memcache implements Base
 
     /**
      * Cache name
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Create a new cache object
@@ -75,7 +73,7 @@ class Memcache implements Base
      * @param array<mixed>|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
-    public function save($data)
+    public function save($data): bool
     {
         if ($data instanceof \SimplePie\SimplePie) {
             $data = $data->data;
@@ -136,10 +134,10 @@ class Memcache implements Base
      *
      * @return bool Success status
      */
-    public function unlink()
+    public function unlink(): bool
     {
         return $this->cache->delete($this->name, 0);
     }
 }
 
-class_alias('SimplePie\Cache\Memcache', 'SimplePie_Cache_Memcache');
+class_alias(\SimplePie\Cache\Memcache::class, 'SimplePie_Cache_Memcache');

@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Credit;
 
-class_exists('SimplePie\Credit');
+class_exists(\SimplePie\Credit::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Credit" class is deprecated since SimplePie 1.7.0, use "SimplePie\Credit" instead.'), \E_USER_DEPRECATED);
 

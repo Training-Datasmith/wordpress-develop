@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Aria label block support flag.
  *
@@ -14,22 +16,23 @@
  *
  * @param WP_Block_Type $block_type Block Type.
  */
-function wp_register_aria_label_support( $block_type ) {
-	$has_aria_label_support = block_has_support( $block_type, array( 'ariaLabel' ), false );
+function wp_register_aria_label_support($block_type)
+{
+    $has_aria_label_support = block_has_support($block_type, [ 'ariaLabel' ], false);
 
-	if ( ! $has_aria_label_support ) {
-		return;
-	}
+    if (! $has_aria_label_support) {
+        return;
+    }
 
-	if ( ! $block_type->attributes ) {
-		$block_type->attributes = array();
-	}
+    if (! $block_type->attributes) {
+        $block_type->attributes = [];
+    }
 
-	if ( ! array_key_exists( 'ariaLabel', $block_type->attributes ) ) {
-		$block_type->attributes['ariaLabel'] = array(
-			'type' => 'string',
-		);
-	}
+    if (! array_key_exists('ariaLabel', $block_type->attributes)) {
+        $block_type->attributes['ariaLabel'] = [
+            'type' => 'string',
+        ];
+    }
 }
 
 /**
@@ -43,31 +46,32 @@ function wp_register_aria_label_support( $block_type ) {
  *
  * @return array Block aria-label.
  */
-function wp_apply_aria_label_support( $block_type, $block_attributes ) {
-	if ( ! $block_attributes ) {
-		return array();
-	}
+function wp_apply_aria_label_support($block_type, $block_attributes)
+{
+    if (! $block_attributes) {
+        return [];
+    }
 
-	$has_aria_label_support = block_has_support( $block_type, array( 'ariaLabel' ), false );
-	if (
-		! $has_aria_label_support ||
-		wp_should_skip_block_supports_serialization( $block_type, 'ariaLabel' )
-	) {
-		return array();
-	}
+    $has_aria_label_support = block_has_support($block_type, [ 'ariaLabel' ], false);
+    if (
+        ! $has_aria_label_support ||
+        wp_should_skip_block_supports_serialization($block_type, 'ariaLabel')
+    ) {
+        return [];
+    }
 
-	$has_aria_label = array_key_exists( 'ariaLabel', $block_attributes );
-	if ( ! $has_aria_label ) {
-		return array();
-	}
-	return array( 'aria-label' => $block_attributes['ariaLabel'] );
+    $has_aria_label = array_key_exists('ariaLabel', $block_attributes);
+    if (! $has_aria_label) {
+        return [];
+    }
+    return [ 'aria-label' => $block_attributes['ariaLabel'] ];
 }
 
 // Register the block support.
 WP_Block_Supports::get_instance()->register(
-	'aria-label',
-	array(
-		'register_attribute' => 'wp_register_aria_label_support',
-		'apply'              => 'wp_apply_aria_label_support',
-	)
+    'aria-label',
+    [
+        'register_attribute' => 'wp_register_aria_label_support',
+        'apply'              => 'wp_apply_aria_label_support',
+    ]
 );

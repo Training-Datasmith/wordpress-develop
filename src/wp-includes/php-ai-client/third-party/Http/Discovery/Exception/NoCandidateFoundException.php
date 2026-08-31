@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Http\Discovery\Exception;
 
 use WordPress\AiClientDependencies\Http\Discovery\Exception;
+
 /**
  * When we have used a strategy but no candidates provided by that strategy could be used.
  *

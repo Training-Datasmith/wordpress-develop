@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core32_Poly1305', false)) {
     return;
 }
@@ -9,7 +11,7 @@ if (class_exists('ParagonIE_Sodium_Core32_Poly1305', false)) {
  */
 abstract class ParagonIE_Sodium_Core32_Poly1305 extends ParagonIE_Sodium_Core32_Util
 {
-    const BLOCK_SIZE = 16;
+    public const BLOCK_SIZE = 16;
 
     /**
      * @internal You should not use this directly from another application

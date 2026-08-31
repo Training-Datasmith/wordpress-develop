@@ -1,6 +1,7 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\OpenAiCompatibleImplementation;
 
 use WordPress\AiClient\Common\Exception\InvalidArgumentException;
@@ -23,6 +24,7 @@ use WordPress\AiClient\Results\DTO\TokenUsage;
 use WordPress\AiClient\Results\Enums\FinishReasonEnum;
 use WordPress\AiClient\Tools\DTO\FunctionCall;
 use WordPress\AiClient\Tools\DTO\FunctionDeclaration;
+
 /**
  * Base class for a text generation model for providers that implement OpenAI's API format.
  *

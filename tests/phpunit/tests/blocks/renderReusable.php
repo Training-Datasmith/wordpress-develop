@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Tests for synced pattern rendering.
  *
@@ -8,117 +10,124 @@
  *
  * @group blocks
  */
-class Tests_Blocks_RenderReusable extends WP_UnitTestCase {
-	/**
-	 * Fake user ID.
-	 *
-	 * @var int
-	 */
-	protected static $user_id;
+class Tests_Blocks_RenderReusable extends WP_UnitTestCase
+{
+    /**
+     * Fake user ID.
+     *
+     * @var int
+     */
+    protected static $user_id;
 
-	/**
-	 * Fake block ID.
-	 *
-	 * @var int
-	 */
-	protected static $block_id;
+    /**
+     * Fake block ID.
+     *
+     * @var int
+     */
+    protected static $block_id;
 
-	/**
-	 * Fake post ID.
-	 *
-	 * @var int
-	 */
-	protected static $post_id;
+    /**
+     * Fake post ID.
+     *
+     * @var int
+     */
+    protected static $post_id;
 
-	/**
-	 * Create fake data before tests run.
-	 *
-	 * @since 5.0.0
-	 *
-	 * @param WP_UnitTest_Factory $factory Helper that creates fake data.
-	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		self::$user_id = $factory->user->create(
-			array(
-				'role' => 'editor',
-			)
-		);
+    /**
+     * Create fake data before tests run.
+     *
+     * @since 5.0.0
+     *
+     * @param WP_UnitTest_Factory $factory Helper that creates fake data.
+     */
+    public static function wpSetUpBeforeClass(WP_UnitTest_Factory $factory)
+    {
+        self::$user_id = $factory->user->create(
+            [
+                'role' => 'editor',
+            ]
+        );
 
-		self::$post_id = $factory->post->create(
-			array(
-				'post_author'  => self::$user_id,
-				'post_type'    => 'post',
-				'post_status'  => 'publish',
-				'post_title'   => 'Test Post',
-				'post_content' => '<p>Hello world!</p>',
-			)
-		);
+        self::$post_id = $factory->post->create(
+            [
+                'post_author'  => self::$user_id,
+                'post_type'    => 'post',
+                'post_status'  => 'publish',
+                'post_title'   => 'Test Post',
+                'post_content' => '<p>Hello world!</p>',
+            ]
+        );
 
-		self::$block_id = $factory->post->create(
-			array(
-				'post_author'  => self::$user_id,
-				'post_type'    => 'wp_block',
-				'post_status'  => 'publish',
-				'post_title'   => 'Test Block',
-				'post_content' => '<!-- wp:core/paragraph --><p>Hello world!</p><!-- /wp:core/paragraph -->',
-			)
-		);
-	}
+        self::$block_id = $factory->post->create(
+            [
+                'post_author'  => self::$user_id,
+                'post_type'    => 'wp_block',
+                'post_status'  => 'publish',
+                'post_title'   => 'Test Block',
+                'post_content' => '<!-- wp:core/paragraph --><p>Hello world!</p><!-- /wp:core/paragraph -->',
+            ]
+        );
+    }
 
-	/**
-	 * Delete fake data after tests run.
-	 *
-	 * @since 5.0.0
-	 */
-	public static function wpTearDownAfterClass() {
-		wp_delete_post( self::$block_id, true );
-		wp_delete_post( self::$post_id, true );
-		self::delete_user( self::$user_id );
-	}
+    /**
+     * Delete fake data after tests run.
+     *
+     * @since 5.0.0
+     */
+    public static function wpTearDownAfterClass()
+    {
+        wp_delete_post(self::$block_id, true);
+        wp_delete_post(self::$post_id, true);
+        self::delete_user(self::$user_id);
+    }
 
-	public function test_render() {
-		$parsed_block = array(
-			'blockName' => 'core/block',
-			'attrs'     => array( 'ref' => self::$block_id ),
-		);
-		$block        = new WP_Block( $parsed_block );
-		$output       = $block->render();
-		$this->assertSame( '<p class="wp-block-paragraph">Hello world!</p>', $output );
-	}
+    public function test_render()
+    {
+        $parsed_block = [
+            'blockName' => 'core/block',
+            'attrs'     => [ 'ref' => self::$block_id ],
+        ];
+        $block        = new WP_Block($parsed_block);
+        $output       = $block->render();
+        $this->assertSame('<p class="wp-block-paragraph">Hello world!</p>', $output);
+    }
 
-	/**
-	 * Make sure that a synced pattern can be rendered twice in a row.
-	 *
-	 * @ticket 52364
-	 */
-	public function test_render_subsequent() {
-		$parsed_block = array(
-			'blockName' => 'core/block',
-			'attrs'     => array( 'ref' => self::$block_id ),
-		);
-		$block        = new WP_Block( $parsed_block );
-		$output       = $block->render();
-		$output      .= $block->render();
-		$this->assertSame( '<p class="wp-block-paragraph">Hello world!</p><p class="wp-block-paragraph">Hello world!</p>', $output );
-	}
+    /**
+     * Make sure that a synced pattern can be rendered twice in a row.
+     *
+     * @ticket 52364
+     */
+    public function test_render_subsequent()
+    {
+        $parsed_block = [
+            'blockName' => 'core/block',
+            'attrs'     => [ 'ref' => self::$block_id ],
+        ];
+        $block        = new WP_Block($parsed_block);
+        $output       = $block->render();
+        $output      .= $block->render();
+        $this->assertSame('<p class="wp-block-paragraph">Hello world!</p><p class="wp-block-paragraph">Hello world!</p>', $output);
+    }
 
-	public function test_ref_empty() {
-		$parsed_block = array(
-			'blockName' => 'core/block',
-			'attrs'     => array(),
-		);
-		$block        = new WP_Block( $parsed_block );
-		$output       = $block->render();
-		$this->assertSame( '', $output );
-	}
+    public function test_ref_empty()
+    {
+        $parsed_block = [
+            'blockName' => 'core/block',
+            'attrs'     => [],
+        ];
+        $block        = new WP_Block($parsed_block);
+        $output       = $block->render();
+        $this->assertSame('', $output);
+    }
 
-	public function test_ref_wrong_post_type() {
-		$parsed_block = array(
-			'blockName' => 'core/block',
-			'attrs'     => array( 'ref' => self::$post_id ),
-		);
-		$block        = new WP_Block( $parsed_block );
-		$output       = $block->render();
-		$this->assertSame( '', $output );
-	}
+    public function test_ref_wrong_post_type()
+    {
+        $parsed_block = [
+            'blockName' => 'core/block',
+            'attrs'     => [ 'ref' => self::$post_id ],
+        ];
+        $block        = new WP_Block($parsed_block);
+        $output       = $block->render();
+        $this->assertSame('', $output);
+    }
 }

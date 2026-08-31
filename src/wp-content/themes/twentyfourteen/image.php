@@ -17,22 +17,22 @@ get_header();
 		<div id="content" class="site-content" role="main">
 
 	<?php
-	// Start the Loop.
-	while ( have_posts() ) :
-		the_post();
-		?>
+    // Start the Loop.
+    while (have_posts()) :
+        the_post();
+        ?>
 		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 			<header class="entry-header">
-				<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
+				<?php the_title('<h1 class="entry-title">', '</h1>'); ?>
 
 				<div class="entry-meta">
 
-					<span class="entry-date"><time class="entry-date" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time></span>
+					<span class="entry-date"><time class="entry-date" datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date()); ?></time></span>
 
-					<span class="full-size-link"><a href="<?php echo esc_url( wp_get_attachment_url() ); ?>"><?php echo esc_html( $metadata['width'] ); ?> &times; <?php echo esc_html( $metadata['height'] ); ?></a></span>
+					<span class="full-size-link"><a href="<?php echo esc_url(wp_get_attachment_url()); ?>"><?php echo esc_html($metadata['width']); ?> &times; <?php echo esc_html($metadata['height']); ?></a></span>
 
-					<span class="parent-post-link"><a href="<?php echo esc_url( get_permalink( $post->post_parent ) ); ?>" rel="gallery"><?php echo get_the_title( $post->post_parent ); ?></a></span>
-					<?php edit_post_link( __( 'Edit', 'twentyfourteen' ), '<span class="edit-link">', '</span>' ); ?>
+					<span class="parent-post-link"><a href="<?php echo esc_url(get_permalink($post->post_parent)); ?>" rel="gallery"><?php echo get_the_title($post->post_parent); ?></a></span>
+					<?php edit_post_link(__('Edit', 'twentyfourteen'), '<span class="edit-link">', '</span>'); ?>
 				</div><!-- .entry-meta -->
 			</header><!-- .entry-header -->
 
@@ -42,7 +42,7 @@ get_header();
 						<?php twentyfourteen_the_attached_image(); ?>
 					</div><!-- .attachment -->
 
-					<?php if ( has_excerpt() ) : ?>
+					<?php if (has_excerpt()) : ?>
 						<div class="entry-caption">
 							<?php the_excerpt(); ?>
 						</div><!-- .entry-caption -->
@@ -50,29 +50,29 @@ get_header();
 				</div><!-- .entry-attachment -->
 
 				<?php
-					the_content();
-					wp_link_pages(
-						array(
-							'before'      => '<div class="page-links"><span class="page-links-title">' . __( 'Pages:', 'twentyfourteen' ) . '</span>',
-							'after'       => '</div>',
-							'link_before' => '<span>',
-							'link_after'  => '</span>',
-						)
-					);
-				?>
+                    the_content();
+        wp_link_pages(
+            [
+                'before'      => '<div class="page-links"><span class="page-links-title">' . __('Pages:', 'twentyfourteen') . '</span>',
+                'after'       => '</div>',
+                'link_before' => '<span>',
+                'link_after'  => '</span>',
+            ]
+        );
+        ?>
 				</div><!-- .entry-content -->
 			</article><!-- #post-<?php the_ID(); ?> -->
 
 			<nav id="image-navigation" class="navigation image-navigation">
 				<div class="nav-links">
-				<?php previous_image_link( false, '<div class="previous-image">' . __( 'Previous Image', 'twentyfourteen' ) . '</div>' ); ?>
-				<?php next_image_link( false, '<div class="next-image">' . __( 'Next Image', 'twentyfourteen' ) . '</div>' ); ?>
+				<?php previous_image_link(false, '<div class="previous-image">' . __('Previous Image', 'twentyfourteen') . '</div>'); ?>
+				<?php next_image_link(false, '<div class="next-image">' . __('Next Image', 'twentyfourteen') . '</div>'); ?>
 				</div><!-- .nav-links -->
 			</nav><!-- #image-navigation -->
 
 			<?php comments_template(); ?>
 
-		<?php endwhile; // End of the loop. ?>
+		<?php endwhile; // End of the loop.?>
 
 		</div><!-- #content -->
 	</section><!-- #primary -->

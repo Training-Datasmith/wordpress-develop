@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Transport Exception
  *
@@ -14,4 +16,6 @@ use WpOrg\Requests\Exception;
  *
  * @package Requests\Exceptions
  */
-class Transport extends Exception {}
+class Transport extends Exception
+{
+}

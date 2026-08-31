@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Http\Discovery\Exception;
 
 use WordPress\AiClientDependencies\Http\Discovery\Exception;
+
 /**
  * Thrown when a discovery does not find any matches.
  *

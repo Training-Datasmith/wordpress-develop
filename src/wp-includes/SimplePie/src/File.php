@@ -36,7 +36,7 @@ class File implements Response
     public $success = true;
 
     /** @var array<string, non-empty-array<string>> Canonical representation of headers */
-    private $parsed_headers = [];
+    private array $parsed_headers = [];
     /** @var array<string, string> Last known value of $headers property (used to detect external modification) */
     private $last_headers = [];
     /**
@@ -75,15 +75,10 @@ class File implements Response
      */
     public $permanent_url;
     /** @var bool Whether the permanent URL is still writeable (prefix of permanent redirects has not ended) */
-    private $permanentUrlMutable = true;
+    private bool $permanentUrlMutable = true;
 
     /**
-     * @param string $url
-     * @param int $timeout
-     * @param int $redirects
      * @param ?array<string, string> $headers
-     * @param ?string $useragent
-     * @param bool $force_fsockopen
      * @param array<int, mixed> $curl_options
      */
     public function __construct(string $url, int $timeout = 10, int $redirects = 5, ?array $headers = null, ?string $useragent = null, bool $force_fsockopen = false, array $curl_options = [])
@@ -215,7 +210,7 @@ class File implements Response
                     }
 
                     if (isset($url_parts['user']) && isset($url_parts['pass'])) {
-                        $out .= "Authorization: Basic " . base64_encode("$url_parts[user]:$url_parts[pass]") . "\r\n";
+                        $out .= 'Authorization: Basic ' . base64_encode("$url_parts[user]:$url_parts[pass]") . "\r\n";
                     }
                     foreach ($headers as $key => $value) {
                         $out .= "$key: $value\r\n";
@@ -340,7 +335,7 @@ class File implements Response
         return $this->parsed_headers[strtolower($name)] ?? [];
     }
 
-    public function with_header(string $name, $value)
+    public function with_header(string $name, $value): self
     {
         $this->maybe_update_headers();
         $new = clone $this;
@@ -374,9 +369,8 @@ class File implements Response
                 function (string $header_line): array {
                     if (strpos($header_line, ',') === false) {
                         return [$header_line];
-                    } else {
-                        return array_map('trim', explode(',', $header_line));
                     }
+                    return array_map('trim', explode(',', $header_line));
                 },
                 $this->headers
             );
@@ -405,9 +399,7 @@ class File implements Response
      */
     private function flatten_headers(array $headers): array
     {
-        return array_map(function (array $values): string {
-            return implode(',', $values);
-        }, $headers);
+        return array_map(fn (array $values): string => implode(',', $values), $headers);
     }
 
     /**
@@ -441,4 +433,4 @@ class File implements Response
     }
 }
 
-class_alias('SimplePie\File', 'SimplePie_File');
+class_alias(\SimplePie\File::class, 'SimplePie_File');

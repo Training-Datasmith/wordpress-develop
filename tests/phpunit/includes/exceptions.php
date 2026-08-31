@@ -1,13 +1,17 @@
 <?php
 
-class WP_Tests_Exception extends PHPUnit_Framework_Exception {
+declare(strict_types=1);
 
+class WP_Tests_Exception extends PHPUnit_Framework_Exception
+{
 }
 
 /**
  * General exception for wp_die().
  */
-class WPDieException extends Exception {}
+class WPDieException extends Exception
+{
+}
 
 /**
  * Exception for cases of wp_die(), for Ajax tests.
@@ -18,7 +22,9 @@ class WPDieException extends Exception {}
  * @subpackage Unit Tests
  * @since      3.4.0
  */
-class WPAjaxDieStopException extends WPDieException {}
+class WPAjaxDieStopException extends WPDieException
+{
+}
 
 /**
  * Exception for cases of wp_die(), for Ajax tests.
@@ -31,4 +37,6 @@ class WPAjaxDieStopException extends WPDieException {}
  * @subpackage Unit Tests
  * @since      3.4.0
  */
-class WPAjaxDieContinueException extends WPDieException {}
+class WPAjaxDieContinueException extends WPDieException
+{
+}

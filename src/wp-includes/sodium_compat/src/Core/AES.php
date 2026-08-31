@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core_AES', false)) {
     return;
 }
@@ -16,9 +18,9 @@ class ParagonIE_Sodium_Core_AES extends ParagonIE_Sodium_Core_Util
     /**
      * @var int[] AES round constants
      */
-    private static $Rcon = array(
-        0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36
-    );
+    private static $Rcon = [
+        0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36,
+    ];
 
     /**
      * Mutates the values of $q!
@@ -232,7 +234,7 @@ class ParagonIE_Sodium_Core_AES extends ParagonIE_Sodium_Core_Util
     public static function subWord($x)
     {
         $q = ParagonIE_Sodium_Core_AES_Block::fromArray(
-            array($x, $x, $x, $x, $x, $x, $x, $x)
+            [$x, $x, $x, $x, $x, $x, $x, $x]
         );
         $q->orthogonalize();
         self::sbox($q);
@@ -263,8 +265,8 @@ class ParagonIE_Sodium_Core_AES extends ParagonIE_Sodium_Core_Util
             default:
                 throw new SodiumException('Invalid key length: ' . $key_len);
         }
-        $skey = array();
-        $comp_skey = array();
+        $skey = [];
+        $comp_skey = [];
         $nk = $key_len >> 2;
         $nkf = ($num_rounds + 1) << 2;
         $tmp = 0;
@@ -466,7 +468,8 @@ class ParagonIE_Sodium_Core_AES extends ParagonIE_Sodium_Core_Util
         $q[1] = self::load_4(self::substr($b1, 0, 4));
         $q[3] = self::load_4(self::substr($b1, 4, 4));
         $q[5] = self::load_4(self::substr($b1, 8, 4));
-        $q[7] = self::load_4(self::substr($b1, 12, 4));;
+        $q[7] = self::load_4(self::substr($b1, 12, 4));
+        ;
 
         $rk = ParagonIE_Sodium_Core_AES_Block::init();
         // First round key
@@ -489,10 +492,10 @@ class ParagonIE_Sodium_Core_AES extends ParagonIE_Sodium_Core_Util
         for ($i = 0; $i < 8; ++$i) {
             $q[$i] ^= $rk[$i];
         }
-        return array(
+        return [
             self::store32_le($q[0]) . self::store32_le($q[2]) . self::store32_le($q[4]) . self::store32_le($q[6]),
             self::store32_le($q[1]) . self::store32_le($q[3]) . self::store32_le($q[5]) . self::store32_le($q[7]),
-        );
+        ];
     }
 
     /**

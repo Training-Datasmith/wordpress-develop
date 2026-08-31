@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Trait for creating mock models for testing.
  *
@@ -28,418 +30,434 @@ use WordPress\AiClient\Results\Enums\FinishReasonEnum;
  *
  * @since 7.0.0
  */
-trait WP_AI_Client_Mock_Model_Creation_Trait {
+trait WP_AI_Client_Mock_Model_Creation_Trait
+{
+    /**
+     * Creates a test GenerativeAiResult for testing purposes.
+     *
+     * @param string $content Optional content for the response.
+     * @return GenerativeAiResult
+     */
+    protected function create_test_result(string $content = 'Test response'): GenerativeAiResult
+    {
+        $candidate   = new Candidate(
+            new ModelMessage([ new MessagePart($content) ]),
+            FinishReasonEnum::stop()
+        );
+        $token_usage = new TokenUsage(10, 20, 30);
 
-	/**
-	 * Creates a test GenerativeAiResult for testing purposes.
-	 *
-	 * @param string $content Optional content for the response.
-	 * @return GenerativeAiResult
-	 */
-	protected function create_test_result( string $content = 'Test response' ): GenerativeAiResult {
-		$candidate   = new Candidate(
-			new ModelMessage( array( new MessagePart( $content ) ) ),
-			FinishReasonEnum::stop()
-		);
-		$token_usage = new TokenUsage( 10, 20, 30 );
+        $provider_metadata = new ProviderMetadata(
+            'mock',
+            'Mock Provider',
+            ProviderTypeEnum::cloud()
+        );
+        $model_metadata    = new ModelMetadata(
+            'mock-model',
+            'Mock Model',
+            [],
+            []
+        );
 
-		$provider_metadata = new ProviderMetadata(
-			'mock',
-			'Mock Provider',
-			ProviderTypeEnum::cloud()
-		);
-		$model_metadata    = new ModelMetadata(
-			'mock-model',
-			'Mock Model',
-			array(),
-			array()
-		);
+        return new GenerativeAiResult(
+            'test-result-id',
+            [ $candidate ],
+            $token_usage,
+            $provider_metadata,
+            $model_metadata
+        );
+    }
 
-		return new GenerativeAiResult(
-			'test-result-id',
-			array( $candidate ),
-			$token_usage,
-			$provider_metadata,
-			$model_metadata
-		);
-	}
+    /**
+     * Creates a test model metadata instance for text generation.
+     *
+     * @param string $id   Optional model ID.
+     * @param string $name Optional model name.
+     * @return ModelMetadata
+     */
+    protected function create_test_text_model_metadata(
+        string $id = 'test-text-model',
+        string $name = 'Test Text Model'
+    ): ModelMetadata {
+        return new ModelMetadata(
+            $id,
+            $name,
+            [ CapabilityEnum::textGeneration() ],
+            []
+        );
+    }
 
-	/**
-	 * Creates a test model metadata instance for text generation.
-	 *
-	 * @param string $id   Optional model ID.
-	 * @param string $name Optional model name.
-	 * @return ModelMetadata
-	 */
-	protected function create_test_text_model_metadata(
-		string $id = 'test-text-model',
-		string $name = 'Test Text Model'
-	): ModelMetadata {
-		return new ModelMetadata(
-			$id,
-			$name,
-			array( CapabilityEnum::textGeneration() ),
-			array()
-		);
-	}
+    /**
+     * Creates a test model metadata instance for image generation.
+     *
+     * @param string $id   Optional model ID.
+     * @param string $name Optional model name.
+     * @return ModelMetadata
+     */
+    protected function create_test_image_model_metadata(
+        string $id = 'test-image-model',
+        string $name = 'Test Image Model'
+    ): ModelMetadata {
+        return new ModelMetadata(
+            $id,
+            $name,
+            [ CapabilityEnum::imageGeneration() ],
+            []
+        );
+    }
 
-	/**
-	 * Creates a test model metadata instance for image generation.
-	 *
-	 * @param string $id   Optional model ID.
-	 * @param string $name Optional model name.
-	 * @return ModelMetadata
-	 */
-	protected function create_test_image_model_metadata(
-		string $id = 'test-image-model',
-		string $name = 'Test Image Model'
-	): ModelMetadata {
-		return new ModelMetadata(
-			$id,
-			$name,
-			array( CapabilityEnum::imageGeneration() ),
-			array()
-		);
-	}
+    /**
+     * Creates a test model metadata instance for speech generation.
+     *
+     * @param string $id   Optional model ID.
+     * @param string $name Optional model name.
+     * @return ModelMetadata
+     */
+    protected function create_test_speech_model_metadata(
+        string $id = 'test-speech-model',
+        string $name = 'Test Speech Model'
+    ): ModelMetadata {
+        return new ModelMetadata(
+            $id,
+            $name,
+            [ CapabilityEnum::speechGeneration() ],
+            []
+        );
+    }
 
-	/**
-	 * Creates a test model metadata instance for speech generation.
-	 *
-	 * @param string $id   Optional model ID.
-	 * @param string $name Optional model name.
-	 * @return ModelMetadata
-	 */
-	protected function create_test_speech_model_metadata(
-		string $id = 'test-speech-model',
-		string $name = 'Test Speech Model'
-	): ModelMetadata {
-		return new ModelMetadata(
-			$id,
-			$name,
-			array( CapabilityEnum::speechGeneration() ),
-			array()
-		);
-	}
+    /**
+     * Creates a test model metadata instance for text-to-speech conversion.
+     *
+     * @param string $id   Optional model ID.
+     * @param string $name Optional model name.
+     * @return ModelMetadata
+     */
+    protected function create_test_text_to_speech_model_metadata(
+        string $id = 'test-text-to-speech-model',
+        string $name = 'Test Text-to-Speech Model'
+    ): ModelMetadata {
+        return new ModelMetadata(
+            $id,
+            $name,
+            [ CapabilityEnum::textToSpeechConversion() ],
+            []
+        );
+    }
 
-	/**
-	 * Creates a test model metadata instance for text-to-speech conversion.
-	 *
-	 * @param string $id   Optional model ID.
-	 * @param string $name Optional model name.
-	 * @return ModelMetadata
-	 */
-	protected function create_test_text_to_speech_model_metadata(
-		string $id = 'test-text-to-speech-model',
-		string $name = 'Test Text-to-Speech Model'
-	): ModelMetadata {
-		return new ModelMetadata(
-			$id,
-			$name,
-			array( CapabilityEnum::textToSpeechConversion() ),
-			array()
-		);
-	}
+    /**
+     * Creates a mock text generation model using anonymous class.
+     *
+     * @param GenerativeAiResult $result   The result to return from generation.
+     * @param ModelMetadata|null $metadata Optional metadata.
+     * @return ModelInterface&TextGenerationModelInterface The mock model.
+     */
+    protected function create_mock_text_generation_model(
+        GenerativeAiResult $result,
+        ?ModelMetadata $metadata = null
+    ): ModelInterface {
+        $metadata = $metadata ?? $this->create_test_text_model_metadata();
 
-	/**
-	 * Creates a mock text generation model using anonymous class.
-	 *
-	 * @param GenerativeAiResult $result   The result to return from generation.
-	 * @param ModelMetadata|null $metadata Optional metadata.
-	 * @return ModelInterface&TextGenerationModelInterface The mock model.
-	 */
-	protected function create_mock_text_generation_model(
-		GenerativeAiResult $result,
-		?ModelMetadata $metadata = null
-	): ModelInterface {
-		$metadata = $metadata ?? $this->create_test_text_model_metadata();
+        $provider_metadata = new ProviderMetadata(
+            'mock',
+            'Mock Provider',
+            ProviderTypeEnum::cloud()
+        );
 
-		$provider_metadata = new ProviderMetadata(
-			'mock',
-			'Mock Provider',
-			ProviderTypeEnum::cloud()
-		);
+        return new class ($metadata, $provider_metadata, $result) implements ModelInterface, TextGenerationModelInterface {
+            private ModelMetadata $metadata;
+            private ProviderMetadata $provider_metadata;
+            private GenerativeAiResult $result;
+            private ModelConfig $config;
 
-		return new class( $metadata, $provider_metadata, $result ) implements ModelInterface, TextGenerationModelInterface {
+            public function __construct(
+                ModelMetadata $metadata,
+                ProviderMetadata $provider_metadata,
+                GenerativeAiResult $result
+            ) {
+                $this->metadata          = $metadata;
+                $this->provider_metadata = $provider_metadata;
+                $this->result            = $result;
+                $this->config            = new ModelConfig();
+            }
 
-			private ModelMetadata $metadata;
-			private ProviderMetadata $provider_metadata;
-			private GenerativeAiResult $result;
-			private ModelConfig $config;
+            public function metadata(): ModelMetadata
+            {
+                return $this->metadata;
+            }
 
-			public function __construct(
-				ModelMetadata $metadata,
-				ProviderMetadata $provider_metadata,
-				GenerativeAiResult $result
-			) {
-				$this->metadata          = $metadata;
-				$this->provider_metadata = $provider_metadata;
-				$this->result            = $result;
-				$this->config            = new ModelConfig();
-			}
+            public function providerMetadata(): ProviderMetadata
+            {
+                return $this->provider_metadata;
+            }
 
-			public function metadata(): ModelMetadata {
-				return $this->metadata;
-			}
+            public function setConfig(ModelConfig $config): void
+            {
+                $this->config = $config;
+            }
 
-			public function providerMetadata(): ProviderMetadata {
-				return $this->provider_metadata;
-			}
+            public function getConfig(): ModelConfig
+            {
+                return $this->config;
+            }
 
-			public function setConfig( ModelConfig $config ): void {
-				$this->config = $config;
-			}
+            public function generateTextResult(array $prompt): GenerativeAiResult // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+            {return $this->result;
+            }
 
-			public function getConfig(): ModelConfig {
-				return $this->config;
-			}
+            public function streamGenerateTextResult(array $prompt): Generator // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+            {yield $this->result;
+            }
+        };
+    }
 
-			public function generateTextResult( array $prompt ): GenerativeAiResult { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-				return $this->result;
-			}
+    /**
+     * Creates a mock image generation model using anonymous class.
+     *
+     * @param GenerativeAiResult $result   The result to return from generation.
+     * @param ModelMetadata|null $metadata Optional metadata.
+     * @return ModelInterface&ImageGenerationModelInterface The mock model.
+     */
+    protected function create_mock_image_generation_model(
+        GenerativeAiResult $result,
+        ?ModelMetadata $metadata = null
+    ): ModelInterface {
+        $metadata = $metadata ?? $this->create_test_image_model_metadata();
 
-			public function streamGenerateTextResult( array $prompt ): Generator { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-				yield $this->result;
-			}
-		};
-	}
+        $provider_metadata = new ProviderMetadata(
+            'mock',
+            'Mock Provider',
+            ProviderTypeEnum::cloud()
+        );
 
-	/**
-	 * Creates a mock image generation model using anonymous class.
-	 *
-	 * @param GenerativeAiResult $result   The result to return from generation.
-	 * @param ModelMetadata|null $metadata Optional metadata.
-	 * @return ModelInterface&ImageGenerationModelInterface The mock model.
-	 */
-	protected function create_mock_image_generation_model(
-		GenerativeAiResult $result,
-		?ModelMetadata $metadata = null
-	): ModelInterface {
-		$metadata = $metadata ?? $this->create_test_image_model_metadata();
+        return new class ($metadata, $provider_metadata, $result) implements ModelInterface, ImageGenerationModelInterface {
+            private ModelMetadata $metadata;
+            private ProviderMetadata $provider_metadata;
+            private GenerativeAiResult $result;
+            private ModelConfig $config;
 
-		$provider_metadata = new ProviderMetadata(
-			'mock',
-			'Mock Provider',
-			ProviderTypeEnum::cloud()
-		);
+            public function __construct(
+                ModelMetadata $metadata,
+                ProviderMetadata $provider_metadata,
+                GenerativeAiResult $result
+            ) {
+                $this->metadata          = $metadata;
+                $this->provider_metadata = $provider_metadata;
+                $this->result            = $result;
+                $this->config            = new ModelConfig();
+            }
 
-		return new class( $metadata, $provider_metadata, $result ) implements ModelInterface, ImageGenerationModelInterface {
+            public function metadata(): ModelMetadata
+            {
+                return $this->metadata;
+            }
 
-			private ModelMetadata $metadata;
-			private ProviderMetadata $provider_metadata;
-			private GenerativeAiResult $result;
-			private ModelConfig $config;
+            public function providerMetadata(): ProviderMetadata
+            {
+                return $this->provider_metadata;
+            }
 
-			public function __construct(
-				ModelMetadata $metadata,
-				ProviderMetadata $provider_metadata,
-				GenerativeAiResult $result
-			) {
-				$this->metadata          = $metadata;
-				$this->provider_metadata = $provider_metadata;
-				$this->result            = $result;
-				$this->config            = new ModelConfig();
-			}
+            public function setConfig(ModelConfig $config): void
+            {
+                $this->config = $config;
+            }
 
-			public function metadata(): ModelMetadata {
-				return $this->metadata;
-			}
+            public function getConfig(): ModelConfig
+            {
+                return $this->config;
+            }
 
-			public function providerMetadata(): ProviderMetadata {
-				return $this->provider_metadata;
-			}
+            public function generateImageResult(array $prompt): GenerativeAiResult // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+            {return $this->result;
+            }
+        };
+    }
 
-			public function setConfig( ModelConfig $config ): void {
-				$this->config = $config;
-			}
+    /**
+     * Creates a mock speech generation model using anonymous class.
+     *
+     * @param GenerativeAiResult $result   The result to return from generation.
+     * @param ModelMetadata|null $metadata Optional metadata.
+     * @return ModelInterface&SpeechGenerationModelInterface The mock model.
+     */
+    protected function create_mock_speech_generation_model(
+        GenerativeAiResult $result,
+        ?ModelMetadata $metadata = null
+    ): ModelInterface {
+        $metadata = $metadata ?? $this->create_test_speech_model_metadata();
 
-			public function getConfig(): ModelConfig {
-				return $this->config;
-			}
+        $provider_metadata = new ProviderMetadata(
+            'mock-provider',
+            'Mock Provider',
+            ProviderTypeEnum::cloud()
+        );
 
-			public function generateImageResult( array $prompt ): GenerativeAiResult { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-				return $this->result;
-			}
-		};
-	}
+        return new class ($metadata, $provider_metadata, $result) implements ModelInterface, SpeechGenerationModelInterface {
+            private ModelMetadata $metadata;
+            private ProviderMetadata $provider_metadata;
+            private GenerativeAiResult $result;
+            private ModelConfig $config;
 
-	/**
-	 * Creates a mock speech generation model using anonymous class.
-	 *
-	 * @param GenerativeAiResult $result   The result to return from generation.
-	 * @param ModelMetadata|null $metadata Optional metadata.
-	 * @return ModelInterface&SpeechGenerationModelInterface The mock model.
-	 */
-	protected function create_mock_speech_generation_model(
-		GenerativeAiResult $result,
-		?ModelMetadata $metadata = null
-	): ModelInterface {
-		$metadata = $metadata ?? $this->create_test_speech_model_metadata();
+            public function __construct(
+                ModelMetadata $metadata,
+                ProviderMetadata $provider_metadata,
+                GenerativeAiResult $result
+            ) {
+                $this->metadata          = $metadata;
+                $this->provider_metadata = $provider_metadata;
+                $this->result            = $result;
+                $this->config            = new ModelConfig();
+            }
 
-		$provider_metadata = new ProviderMetadata(
-			'mock-provider',
-			'Mock Provider',
-			ProviderTypeEnum::cloud()
-		);
+            public function metadata(): ModelMetadata
+            {
+                return $this->metadata;
+            }
 
-		return new class( $metadata, $provider_metadata, $result ) implements ModelInterface, SpeechGenerationModelInterface {
+            public function providerMetadata(): ProviderMetadata
+            {
+                return $this->provider_metadata;
+            }
 
-			private ModelMetadata $metadata;
-			private ProviderMetadata $provider_metadata;
-			private GenerativeAiResult $result;
-			private ModelConfig $config;
+            public function setConfig(ModelConfig $config): void
+            {
+                $this->config = $config;
+            }
 
-			public function __construct(
-				ModelMetadata $metadata,
-				ProviderMetadata $provider_metadata,
-				GenerativeAiResult $result
-			) {
-				$this->metadata          = $metadata;
-				$this->provider_metadata = $provider_metadata;
-				$this->result            = $result;
-				$this->config            = new ModelConfig();
-			}
+            public function getConfig(): ModelConfig
+            {
+                return $this->config;
+            }
 
-			public function metadata(): ModelMetadata {
-				return $this->metadata;
-			}
+            public function generateSpeechResult(array $prompt): GenerativeAiResult // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+            {return $this->result;
+            }
+        };
+    }
 
-			public function providerMetadata(): ProviderMetadata {
-				return $this->provider_metadata;
-			}
+    /**
+     * Creates a mock text-to-speech conversion model using anonymous class.
+     *
+     * @param GenerativeAiResult $result   The result to return from conversion.
+     * @param ModelMetadata|null $metadata Optional metadata.
+     * @return ModelInterface&TextToSpeechConversionModelInterface The mock model.
+     */
+    protected function create_mock_text_to_speech_model(
+        GenerativeAiResult $result,
+        ?ModelMetadata $metadata = null
+    ): ModelInterface {
+        $metadata = $metadata ?? $this->create_test_text_to_speech_model_metadata();
 
-			public function setConfig( ModelConfig $config ): void {
-				$this->config = $config;
-			}
+        $provider_metadata = new ProviderMetadata(
+            'mock-provider',
+            'Mock Provider',
+            ProviderTypeEnum::cloud()
+        );
 
-			public function getConfig(): ModelConfig {
-				return $this->config;
-			}
+        return new class ($metadata, $provider_metadata, $result) implements ModelInterface, TextToSpeechConversionModelInterface {
+            private ModelMetadata $metadata;
+            private ProviderMetadata $provider_metadata;
+            private GenerativeAiResult $result;
+            private ModelConfig $config;
 
-			public function generateSpeechResult( array $prompt ): GenerativeAiResult { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-				return $this->result;
-			}
-		};
-	}
+            public function __construct(
+                ModelMetadata $metadata,
+                ProviderMetadata $provider_metadata,
+                GenerativeAiResult $result
+            ) {
+                $this->metadata          = $metadata;
+                $this->provider_metadata = $provider_metadata;
+                $this->result            = $result;
+                $this->config            = new ModelConfig();
+            }
 
-	/**
-	 * Creates a mock text-to-speech conversion model using anonymous class.
-	 *
-	 * @param GenerativeAiResult $result   The result to return from conversion.
-	 * @param ModelMetadata|null $metadata Optional metadata.
-	 * @return ModelInterface&TextToSpeechConversionModelInterface The mock model.
-	 */
-	protected function create_mock_text_to_speech_model(
-		GenerativeAiResult $result,
-		?ModelMetadata $metadata = null
-	): ModelInterface {
-		$metadata = $metadata ?? $this->create_test_text_to_speech_model_metadata();
+            public function metadata(): ModelMetadata
+            {
+                return $this->metadata;
+            }
 
-		$provider_metadata = new ProviderMetadata(
-			'mock-provider',
-			'Mock Provider',
-			ProviderTypeEnum::cloud()
-		);
+            public function providerMetadata(): ProviderMetadata
+            {
+                return $this->provider_metadata;
+            }
 
-		return new class( $metadata, $provider_metadata, $result ) implements ModelInterface, TextToSpeechConversionModelInterface {
+            public function setConfig(ModelConfig $config): void
+            {
+                $this->config = $config;
+            }
 
-			private ModelMetadata $metadata;
-			private ProviderMetadata $provider_metadata;
-			private GenerativeAiResult $result;
-			private ModelConfig $config;
+            public function getConfig(): ModelConfig
+            {
+                return $this->config;
+            }
 
-			public function __construct(
-				ModelMetadata $metadata,
-				ProviderMetadata $provider_metadata,
-				GenerativeAiResult $result
-			) {
-				$this->metadata          = $metadata;
-				$this->provider_metadata = $provider_metadata;
-				$this->result            = $result;
-				$this->config            = new ModelConfig();
-			}
+            public function convertTextToSpeechResult(array $prompt): GenerativeAiResult // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+            {return $this->result;
+            }
+        };
+    }
 
-			public function metadata(): ModelMetadata {
-				return $this->metadata;
-			}
+    /**
+     * Creates a mock text generation model that throws an exception.
+     *
+     * @param Exception          $exception The exception to throw from generation.
+     * @param ModelMetadata|null $metadata  Optional metadata.
+     * @return ModelInterface&TextGenerationModelInterface The mock model.
+     */
+    protected function create_mock_text_generation_model_with_exception(
+        Exception $exception,
+        ?ModelMetadata $metadata = null
+    ): ModelInterface {
+        $metadata = $metadata ?? $this->create_test_text_model_metadata();
 
-			public function providerMetadata(): ProviderMetadata {
-				return $this->provider_metadata;
-			}
+        $provider_metadata = new ProviderMetadata(
+            'mock',
+            'Mock Provider',
+            ProviderTypeEnum::cloud()
+        );
 
-			public function setConfig( ModelConfig $config ): void {
-				$this->config = $config;
-			}
+        return new class ($metadata, $provider_metadata, $exception) implements ModelInterface, TextGenerationModelInterface {
+            private ModelMetadata $metadata;
+            private ProviderMetadata $provider_metadata;
+            private Exception $exception;
+            private ModelConfig $config;
 
-			public function getConfig(): ModelConfig {
-				return $this->config;
-			}
+            public function __construct(
+                ModelMetadata $metadata,
+                ProviderMetadata $provider_metadata,
+                Exception $exception
+            ) {
+                $this->metadata          = $metadata;
+                $this->provider_metadata = $provider_metadata;
+                $this->exception         = $exception;
+                $this->config            = new ModelConfig();
+            }
 
-			public function convertTextToSpeechResult( array $prompt ): GenerativeAiResult { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-				return $this->result;
-			}
-		};
-	}
+            public function metadata(): ModelMetadata
+            {
+                return $this->metadata;
+            }
 
-	/**
-	 * Creates a mock text generation model that throws an exception.
-	 *
-	 * @param Exception          $exception The exception to throw from generation.
-	 * @param ModelMetadata|null $metadata  Optional metadata.
-	 * @return ModelInterface&TextGenerationModelInterface The mock model.
-	 */
-	protected function create_mock_text_generation_model_with_exception(
-		Exception $exception,
-		?ModelMetadata $metadata = null
-	): ModelInterface {
-		$metadata = $metadata ?? $this->create_test_text_model_metadata();
+            public function providerMetadata(): ProviderMetadata
+            {
+                return $this->provider_metadata;
+            }
 
-		$provider_metadata = new ProviderMetadata(
-			'mock',
-			'Mock Provider',
-			ProviderTypeEnum::cloud()
-		);
+            public function setConfig(ModelConfig $config): void
+            {
+                $this->config = $config;
+            }
 
-		return new class( $metadata, $provider_metadata, $exception ) implements ModelInterface, TextGenerationModelInterface {
+            public function getConfig(): ModelConfig
+            {
+                return $this->config;
+            }
 
-			private ModelMetadata $metadata;
-			private ProviderMetadata $provider_metadata;
-			private Exception $exception;
-			private ModelConfig $config;
+            public function generateTextResult(array $prompt): GenerativeAiResult // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+            {throw $this->exception;
+            }
 
-			public function __construct(
-				ModelMetadata $metadata,
-				ProviderMetadata $provider_metadata,
-				Exception $exception
-			) {
-				$this->metadata          = $metadata;
-				$this->provider_metadata = $provider_metadata;
-				$this->exception         = $exception;
-				$this->config            = new ModelConfig();
-			}
-
-			public function metadata(): ModelMetadata {
-				return $this->metadata;
-			}
-
-			public function providerMetadata(): ProviderMetadata {
-				return $this->provider_metadata;
-			}
-
-			public function setConfig( ModelConfig $config ): void {
-				$this->config = $config;
-			}
-
-			public function getConfig(): ModelConfig {
-				return $this->config;
-			}
-
-			public function generateTextResult( array $prompt ): GenerativeAiResult { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-				throw $this->exception;
-			}
-
-			public function streamGenerateTextResult( array $prompt ): Generator { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-				throw $this->exception;
-			}
-		};
-	}
+            public function streamGenerateTextResult(array $prompt): Generator // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+            {throw $this->exception;
+            }
+        };
+    }
 }

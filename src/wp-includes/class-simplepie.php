@@ -1,7 +1,9 @@
 <?php
 
-if ( class_exists( 'SimplePie', false ) ) {
-	return;
+declare(strict_types=1);
+
+if (class_exists('SimplePie', false)) {
+    return;
 }
 
 // Load and register the SimplePie native autoloaders.
@@ -15,6 +17,7 @@ require ABSPATH . WPINC . '/SimplePie/autoloader.php';
  *
  * @param string $class Class name.
  */
-function wp_simplepie_autoload( $class ) {
-	_deprecated_function( __FUNCTION__, '6.7.0', 'SimplePie_Autoloader' );
+function wp_simplepie_autoload($class)
+{
+    _deprecated_function(__FUNCTION__, '6.7.0', 'SimplePie_Autoloader');
 }

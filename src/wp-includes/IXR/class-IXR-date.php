@@ -1,24 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * IXR_Date
  *
  * @package IXR
  * @since 1.5.0
  */
-class IXR_Date {
-    var $year;
-    var $month;
-    var $day;
-    var $hour;
-    var $minute;
-    var $second;
-    var $timezone;
+class IXR_Date
+{
+    public $year;
+    public $month;
+    public $day;
+    public $hour;
+    public $minute;
+    public $second;
+    public $timezone;
 
-	/**
-	 * PHP5 constructor.
-	 */
-    function __construct( $time )
+    /**
+     * PHP5 constructor.
+     */
+    public function __construct($time)
     {
         // $time can be a PHP timestamp or an ISO one
         if (is_numeric($time)) {
@@ -28,14 +31,15 @@ class IXR_Date {
         }
     }
 
-	/**
-	 * PHP4 constructor.
-	 */
-	public function IXR_Date( $time ) {
-		self::__construct( $time );
-	}
+    /**
+     * PHP4 constructor.
+     */
+    public function IXR_Date($time): void
+    {
+        self::__construct($time);
+    }
 
-    function parseTimestamp($timestamp)
+    public function parseTimestamp($timestamp): void
     {
         $this->year = gmdate('Y', $timestamp);
         $this->month = gmdate('m', $timestamp);
@@ -46,8 +50,12 @@ class IXR_Date {
         $this->timezone = '';
     }
 
-    function parseIso($iso)
+    public function parseIso($iso): void
     {
+        if (! is_string($iso)) {
+            return;
+        }
+
         $this->year = substr($iso, 0, 4);
         $this->month = substr($iso, 4, 2);
         $this->day = substr($iso, 6, 2);
@@ -57,18 +65,18 @@ class IXR_Date {
         $this->timezone = substr($iso, 17);
     }
 
-    function getIso()
+    public function getIso(): string
     {
         return $this->year.$this->month.$this->day.'T'.$this->hour.':'.$this->minute.':'.$this->second.$this->timezone;
     }
 
-    function getXml()
+    public function getXml(): string
     {
         return '<dateTime.iso8601>'.$this->getIso().'</dateTime.iso8601>';
     }
 
-    function getTimestamp()
+    public function getTimestamp()
     {
-        return mktime($this->hour, $this->minute, $this->second, $this->month, $this->day, $this->year);
+        return mktime((int) $this->hour, (int) $this->minute, (int) $this->second, (int) $this->month, (int) $this->day, (int) $this->year);
     }
 }

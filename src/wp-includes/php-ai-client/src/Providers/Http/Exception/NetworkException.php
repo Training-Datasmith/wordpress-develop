@@ -1,11 +1,13 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Http\Exception;
 
-use WordPress\AiClientDependencies\Psr\Http\Message\RequestInterface;
 use WordPress\AiClient\Common\Exception\RuntimeException;
 use WordPress\AiClient\Providers\Http\DTO\Request;
+use WordPress\AiClientDependencies\Psr\Http\Message\RequestInterface;
+
 /**
  * Exception thrown for network-related errors.
  *

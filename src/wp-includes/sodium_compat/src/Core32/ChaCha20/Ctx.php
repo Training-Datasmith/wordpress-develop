@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core_ChaCha20_Ctx', false)) {
     return;
 }
@@ -38,10 +40,10 @@ class ParagonIE_Sodium_Core32_ChaCha20_Ctx extends ParagonIE_Sodium_Core32_Util 
         $this->container = new SplFixedArray(16);
 
         /* "expand 32-byte k" as per ChaCha20 spec */
-        $this->container[0]  = new ParagonIE_Sodium_Core32_Int32(array(0x6170, 0x7865));
-        $this->container[1]  = new ParagonIE_Sodium_Core32_Int32(array(0x3320, 0x646e));
-        $this->container[2]  = new ParagonIE_Sodium_Core32_Int32(array(0x7962, 0x2d32));
-        $this->container[3]  = new ParagonIE_Sodium_Core32_Int32(array(0x6b20, 0x6574));
+        $this->container[0]  = new ParagonIE_Sodium_Core32_Int32([0x6170, 0x7865]);
+        $this->container[1]  = new ParagonIE_Sodium_Core32_Int32([0x3320, 0x646e]);
+        $this->container[2]  = new ParagonIE_Sodium_Core32_Int32([0x7962, 0x2d32]);
+        $this->container[3]  = new ParagonIE_Sodium_Core32_Int32([0x6b20, 0x6574]);
 
         $this->container[4]  = ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($key, 0, 4));
         $this->container[5]  = ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($key, 4, 4));

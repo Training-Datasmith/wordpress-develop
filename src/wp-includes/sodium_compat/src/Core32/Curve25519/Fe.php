@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core32_Curve25519_Fe', false)) {
     return;
 }
@@ -14,7 +16,7 @@ class ParagonIE_Sodium_Core32_Curve25519_Fe implements ArrayAccess
     /**
      * @var array<int, ParagonIE_Sodium_Core32_Int32>
      */
-    protected $container = array();
+    protected $container = [];
 
     /**
      * @var int
@@ -76,7 +78,7 @@ class ParagonIE_Sodium_Core32_Curve25519_Fe implements ArrayAccess
             $keys = range(0, $count - 1);
         }
         $array = array_values($array);
-        $set = array();
+        $set = [];
         /** @var int $i */
         /** @var int $v */
         foreach ($array as $i => $v) {
@@ -173,9 +175,9 @@ class ParagonIE_Sodium_Core32_Curve25519_Fe implements ArrayAccess
     public function __debugInfo()
     {
         if (empty($this->container)) {
-            return array();
+            return [];
         }
-        $c = array(
+        $c = [
             (int) ($this->container[0]->toInt()),
             (int) ($this->container[1]->toInt()),
             (int) ($this->container[2]->toInt()),
@@ -185,8 +187,8 @@ class ParagonIE_Sodium_Core32_Curve25519_Fe implements ArrayAccess
             (int) ($this->container[6]->toInt()),
             (int) ($this->container[7]->toInt()),
             (int) ($this->container[8]->toInt()),
-            (int) ($this->container[9]->toInt())
-        );
-        return array(implode(', ', $c));
+            (int) ($this->container[9]->toInt()),
+        ];
+        return [implode(', ', $c)];
     }
 }

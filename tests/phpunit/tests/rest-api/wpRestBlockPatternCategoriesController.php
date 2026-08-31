@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Unit tests covering WP_Block_Pattern_Categories_Registry functionality.
  *
@@ -12,225 +14,241 @@
  *
  * @group restapi
  */
-class Tests_REST_WpRestBlockPatternCategoriesController extends WP_Test_REST_Controller_Testcase {
+class Tests_REST_WpRestBlockPatternCategoriesController extends WP_Test_REST_Controller_Testcase
+{
+    /**
+     * Admin user ID.
+     *
+     * @since 6.0.0
+     *
+     * @var int
+     */
+    protected static $admin_id;
 
-	/**
-	 * Admin user ID.
-	 *
-	 * @since 6.0.0
-	 *
-	 * @var int
-	 */
-	protected static $admin_id;
+    /**
+     * Original instance of WP_Block_Patterns_Registry.
+     *
+     * @since 6.0.0
+     *
+     * @var WP_Block_Patterns_Registry
+     */
+    protected static $orig_registry;
 
-	/**
-	 * Original instance of WP_Block_Patterns_Registry.
-	 *
-	 * @since 6.0.0
-	 *
-	 * @var WP_Block_Patterns_Registry
-	 */
-	protected static $orig_registry;
+    /**
+     * Instance of the reflected `instance` property.
+     *
+     * @since 6.0.0
+     *
+     * @var ReflectionProperty
+     */
+    private static $registry_instance_property;
 
-	/**
-	 * Instance of the reflected `instance` property.
-	 *
-	 * @since 6.0.0
-	 *
-	 * @var ReflectionProperty
-	 */
-	private static $registry_instance_property;
+    /**
+     * The REST API route.
+     *
+     * @since 6.0.0
+     *
+     * @var string
+     */
+    public const REQUEST_ROUTE = '/wp/v2/block-patterns/categories';
 
-	/**
-	 * The REST API route.
-	 *
-	 * @since 6.0.0
-	 *
-	 * @var string
-	 */
-	const REQUEST_ROUTE = '/wp/v2/block-patterns/categories';
+    /**
+     * Set up class test fixtures.
+     *
+     * @since 6.0.0
+     *
+     * @param WP_UnitTest_Factory $factory WordPress unit test factory.
+     */
+    public static function wpSetupBeforeClass($factory)
+    {
+        self::$admin_id = $factory->user->create([ 'role' => 'administrator' ]);
 
-	/**
-	 * Set up class test fixtures.
-	 *
-	 * @since 6.0.0
-	 *
-	 * @param WP_UnitTest_Factory $factory WordPress unit test factory.
-	 */
-	public static function wpSetupBeforeClass( $factory ) {
-		self::$admin_id = $factory->user->create( array( 'role' => 'administrator' ) );
+        // Setup an empty testing instance of `WP_Block_Pattern_Categories_Registry` and save the original.
+        self::$orig_registry              = WP_Block_Pattern_Categories_Registry::get_instance();
+        self::$registry_instance_property = new ReflectionProperty('WP_Block_Pattern_Categories_Registry', 'instance');
+        if (PHP_VERSION_ID < 80100) {
+            self::$registry_instance_property->setAccessible(true);
+        }
+        $test_registry = new WP_Block_Pattern_Categories_Registry();
+        self::$registry_instance_property->setValue(null, $test_registry);
 
-		// Setup an empty testing instance of `WP_Block_Pattern_Categories_Registry` and save the original.
-		self::$orig_registry              = WP_Block_Pattern_Categories_Registry::get_instance();
-		self::$registry_instance_property = new ReflectionProperty( 'WP_Block_Pattern_Categories_Registry', 'instance' );
-		if ( PHP_VERSION_ID < 80100 ) {
-			self::$registry_instance_property->setAccessible( true );
-		}
-		$test_registry = new WP_Block_Pattern_Categories_Registry();
-		self::$registry_instance_property->setValue( null, $test_registry );
+        // Register some categories in the test registry.
+        $test_registry->register(
+            'test',
+            [
+                'label'       => 'Test',
+                'description' => 'Test description',
+            ]
+        );
+        $test_registry->register(
+            'query',
+            [
+                'label'       => 'Query',
+                'description' => 'Query',
+            ]
+        );
+    }
 
-		// Register some categories in the test registry.
-		$test_registry->register(
-			'test',
-			array(
-				'label'       => 'Test',
-				'description' => 'Test description',
-			)
-		);
-		$test_registry->register(
-			'query',
-			array(
-				'label'       => 'Query',
-				'description' => 'Query',
-			)
-		);
-	}
+    public static function wpTearDownAfterClass()
+    {
+        self::delete_user(self::$admin_id);
 
-	public static function wpTearDownAfterClass() {
-		self::delete_user( self::$admin_id );
+        // Restore the original registry instance.
+        self::$registry_instance_property->setValue(null, self::$orig_registry);
 
-		// Restore the original registry instance.
-		self::$registry_instance_property->setValue( null, self::$orig_registry );
+        if (PHP_VERSION_ID < 80100) {
+            self::$registry_instance_property->setAccessible(false);
+        }
+        self::$registry_instance_property = null;
+        self::$orig_registry              = null;
+    }
 
-		if ( PHP_VERSION_ID < 80100 ) {
-			self::$registry_instance_property->setAccessible( false );
-		}
-		self::$registry_instance_property = null;
-		self::$orig_registry              = null;
-	}
+    public function set_up()
+    {
+        parent::set_up();
 
-	public function set_up() {
-		parent::set_up();
+        switch_theme('emptytheme');
+    }
 
-		switch_theme( 'emptytheme' );
-	}
+    public function test_register_routes()
+    {
+        $routes = rest_get_server()->get_routes();
+        $this->assertArrayHasKey(static::REQUEST_ROUTE, $routes);
+    }
 
-	public function test_register_routes() {
-		$routes = rest_get_server()->get_routes();
-		$this->assertArrayHasKey( static::REQUEST_ROUTE, $routes );
-	}
+    public function test_get_items()
+    {
+        wp_set_current_user(self::$admin_id);
 
-	public function test_get_items() {
-		wp_set_current_user( self::$admin_id );
+        $expected_names  = [ 'test', 'query' ];
+        $expected_fields = [ 'name', 'label', 'description' ];
 
-		$expected_names  = array( 'test', 'query' );
-		$expected_fields = array( 'name', 'label', 'description' );
+        $request            = new WP_REST_Request('GET', static::REQUEST_ROUTE);
+        $request['_fields'] = 'name,label,description';
+        $response           = rest_get_server()->dispatch($request);
+        $data               = $response->get_data();
 
-		$request            = new WP_REST_Request( 'GET', static::REQUEST_ROUTE );
-		$request['_fields'] = 'name,label,description';
-		$response           = rest_get_server()->dispatch( $request );
-		$data               = $response->get_data();
+        $this->assertCount(count($expected_names), $data);
+        foreach ($data as $idx => $item) {
+            $this->assertSame($expected_names[ $idx ], $item['name']);
+            $this->assertSame($expected_fields, array_keys($item));
+        }
+    }
 
-		$this->assertCount( count( $expected_names ), $data );
-		foreach ( $data as $idx => $item ) {
-			$this->assertSame( $expected_names[ $idx ], $item['name'] );
-			$this->assertSame( $expected_fields, array_keys( $item ) );
-		}
-	}
+    /**
+     * @ticket 56481
+     */
+    public function test_get_items_with_head_request_should_not_prepare_block_pattern_categories_data()
+    {
+        wp_set_current_user(self::$admin_id);
+        $request  = new WP_REST_Request('HEAD', static::REQUEST_ROUTE);
+        $response = rest_get_server()->dispatch($request);
+        $this->assertSame(200, $response->get_status(), 'The response status should be 200.');
+        $this->assertSame([], $response->get_data(), 'The server should not generate a body in response to a HEAD request.');
+    }
 
-	/**
-	 * @ticket 56481
-	 */
-	public function test_get_items_with_head_request_should_not_prepare_block_pattern_categories_data() {
-		wp_set_current_user( self::$admin_id );
-		$request  = new WP_REST_Request( 'HEAD', static::REQUEST_ROUTE );
-		$response = rest_get_server()->dispatch( $request );
-		$this->assertSame( 200, $response->get_status(), 'The response status should be 200.' );
-		$this->assertSame( array(), $response->get_data(), 'The server should not generate a body in response to a HEAD request.' );
-	}
+    /**
+     * @ticket 56481
+     *
+     * @param string $path The path to test.
+     */
+    public function test_head_request_with_specified_fields_returns_success_response()
+    {
+        wp_set_current_user(self::$admin_id);
+        $request = new WP_REST_Request('HEAD', static::REQUEST_ROUTE);
+        $request->set_param('_fields', 'name');
+        $server   = rest_get_server();
+        $response = $server->dispatch($request);
+        add_filter('rest_post_dispatch', 'rest_filter_response_fields', 10, 3);
+        $response = apply_filters('rest_post_dispatch', $response, $server, $request);
+        remove_filter('rest_post_dispatch', 'rest_filter_response_fields', 10);
 
-	/**
-	 * @ticket 56481
-	 *
-	 * @param string $path The path to test.
-	 */
-	public function test_head_request_with_specified_fields_returns_success_response() {
-		wp_set_current_user( self::$admin_id );
-		$request = new WP_REST_Request( 'HEAD', static::REQUEST_ROUTE );
-		$request->set_param( '_fields', 'name' );
-		$server   = rest_get_server();
-		$response = $server->dispatch( $request );
-		add_filter( 'rest_post_dispatch', 'rest_filter_response_fields', 10, 3 );
-		$response = apply_filters( 'rest_post_dispatch', $response, $server, $request );
-		remove_filter( 'rest_post_dispatch', 'rest_filter_response_fields', 10 );
+        $this->assertSame(200, $response->get_status(), 'The response status should be 200.');
+    }
 
-		$this->assertSame( 200, $response->get_status(), 'The response status should be 200.' );
-	}
+    /**
+     * Verify capability check for unauthorized request (not logged in).
+     */
+    public function test_get_items_unauthorized()
+    {
+        // Ensure current user is logged out.
+        wp_logout();
 
-	/**
-	 * Verify capability check for unauthorized request (not logged in).
-	 */
-	public function test_get_items_unauthorized() {
-		// Ensure current user is logged out.
-		wp_logout();
+        $request  = new WP_REST_Request('GET', static::REQUEST_ROUTE);
+        $response = rest_do_request($request);
 
-		$request  = new WP_REST_Request( 'GET', static::REQUEST_ROUTE );
-		$response = rest_do_request( $request );
+        $this->assertWPError($response->as_error());
+        $this->assertSame(401, $response->get_status());
+    }
 
-		$this->assertWPError( $response->as_error() );
-		$this->assertSame( 401, $response->get_status() );
-	}
+    /**
+     * Verify capability check for forbidden request (insufficient capability).
+     */
+    public function test_get_items_forbidden()
+    {
+        // Set current user without `edit_posts` capability.
+        wp_set_current_user(self::factory()->user->create([ 'role' => 'subscriber' ]));
 
-	/**
-	 * Verify capability check for forbidden request (insufficient capability).
-	 */
-	public function test_get_items_forbidden() {
-		// Set current user without `edit_posts` capability.
-		wp_set_current_user( self::factory()->user->create( array( 'role' => 'subscriber' ) ) );
+        $request  = new WP_REST_Request('GET', static::REQUEST_ROUTE);
+        $response = rest_do_request($request);
 
-		$request  = new WP_REST_Request( 'GET', static::REQUEST_ROUTE );
-		$response = rest_do_request( $request );
+        $this->assertWPError($response->as_error());
+        $this->assertSame(403, $response->get_status());
+    }
 
-		$this->assertWPError( $response->as_error() );
-		$this->assertSame( 403, $response->get_status() );
-	}
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function test_context_param()
+    {
+        // Controller does not use get_context_param().
+    }
 
-	/**
-	 * @doesNotPerformAssertions
-	 */
-	public function test_context_param() {
-		// Controller does not use get_context_param().
-	}
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function test_get_item()
+    {
+        // Controller does not implement get_item().
+    }
 
-	/**
-	 * @doesNotPerformAssertions
-	 */
-	public function test_get_item() {
-		// Controller does not implement get_item().
-	}
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function test_create_item()
+    {
+        // Controller does not implement create_item().
+    }
 
-	/**
-	 * @doesNotPerformAssertions
-	 */
-	public function test_create_item() {
-		// Controller does not implement create_item().
-	}
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function test_update_item()
+    {
+        // Controller does not implement update_item().
+    }
 
-	/**
-	 * @doesNotPerformAssertions
-	 */
-	public function test_update_item() {
-		// Controller does not implement update_item().
-	}
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function test_delete_item()
+    {
+        // Controller does not implement delete_item().
+    }
 
-	/**
-	 * @doesNotPerformAssertions
-	 */
-	public function test_delete_item() {
-		// Controller does not implement delete_item().
-	}
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function test_prepare_item()
+    {
+        // Controller does not implement prepare_item().
+    }
 
-	/**
-	 * @doesNotPerformAssertions
-	 */
-	public function test_prepare_item() {
-		// Controller does not implement prepare_item().
-	}
-
-	/**
-	 * @doesNotPerformAssertions
-	 */
-	public function test_get_item_schema() {
-		// Controller does not implement get_item_schema().
-	}
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function test_get_item_schema()
+    {
+        // Controller does not implement get_item_schema().
+    }
 }

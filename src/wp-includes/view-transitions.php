@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * View Transitions API.
  *
@@ -12,8 +14,9 @@
  *
  * @since 7.0.0
  */
-function wp_enqueue_view_transitions_admin_css(): void {
-	wp_enqueue_style( 'wp-view-transitions-admin' );
+function wp_enqueue_view_transitions_admin_css(): void
+{
+    wp_enqueue_style('wp-view-transitions-admin');
 }
 
 /**
@@ -23,8 +26,9 @@ function wp_enqueue_view_transitions_admin_css(): void {
  *
  * @return string The CSS.
  */
-function wp_get_view_transitions_admin_css(): string {
-	$affix = SCRIPT_DEBUG ? '' : '.min';
-	$path  = ABSPATH . "wp-admin/css/view-transitions{$affix}.css";
-	return file_get_contents( $path );
+function wp_get_view_transitions_admin_css(): string
+{
+    $affix = SCRIPT_DEBUG ? '' : '.min';
+    $path  = ABSPATH . "wp-admin/css/view-transitions{$affix}.css";
+    return file_get_contents($path);
 }

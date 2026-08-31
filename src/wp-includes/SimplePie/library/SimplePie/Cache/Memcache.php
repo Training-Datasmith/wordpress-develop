@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Cache\Memcache;
 
-class_exists('SimplePie\Cache\Memcache');
+class_exists(\SimplePie\Cache\Memcache::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Cache_Memcache" class is deprecated since SimplePie 1.7.0, use "SimplePie\Cache\Memcache" instead.'), \E_USER_DEPRECATED);
 

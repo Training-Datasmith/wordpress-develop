@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core32_Salsa20', false)) {
     return;
 }
@@ -9,7 +11,7 @@ if (class_exists('ParagonIE_Sodium_Core32_Salsa20', false)) {
  */
 abstract class ParagonIE_Sodium_Core32_Salsa20 extends ParagonIE_Sodium_Core32_Util
 {
-    const ROUNDS = 20;
+    public const ROUNDS = 20;
 
     /**
      * Calculate an salsa20 hash of a single block
@@ -63,10 +65,10 @@ abstract class ParagonIE_Sodium_Core32_Salsa20 extends ParagonIE_Sodium_Core32_U
             throw new RangeException('Key must be 32 bytes long');
         }
         if ($c === null) {
-            $x0  = new ParagonIE_Sodium_Core32_Int32(array(0x6170, 0x7865));
-            $x5  = new ParagonIE_Sodium_Core32_Int32(array(0x3320, 0x646e));
-            $x10 = new ParagonIE_Sodium_Core32_Int32(array(0x7962, 0x2d32));
-            $x15 = new ParagonIE_Sodium_Core32_Int32(array(0x6b20, 0x6574));
+            $x0  = new ParagonIE_Sodium_Core32_Int32([0x6170, 0x7865]);
+            $x5  = new ParagonIE_Sodium_Core32_Int32([0x3320, 0x646e]);
+            $x10 = new ParagonIE_Sodium_Core32_Int32([0x7962, 0x2d32]);
+            $x15 = new ParagonIE_Sodium_Core32_Int32([0x6b20, 0x6574]);
         } else {
             $x0  = ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($c, 0, 4));
             $x5  = ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($c, 4, 4));

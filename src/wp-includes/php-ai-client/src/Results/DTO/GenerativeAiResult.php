@@ -1,6 +1,7 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Results\DTO;
 
 use WordPress\AiClient\Common\AbstractDataTransferObject;
@@ -11,6 +12,7 @@ use WordPress\AiClient\Messages\DTO\Message;
 use WordPress\AiClient\Providers\DTO\ProviderMetadata;
 use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
 use WordPress\AiClient\Results\Contracts\ResultInterface;
+
 /**
  * Represents the result of a generative AI operation.
  *
@@ -332,7 +334,7 @@ class GenerativeAiResult extends AbstractDataTransferObject implements ResultInt
      */
     public function toImageFiles(): array
     {
-        return array_values(array_filter($this->toFiles(), fn(File $file) => $file->isImage()));
+        return array_values(array_filter($this->toFiles(), fn (File $file) => $file->isImage()));
     }
     /**
      * Converts all candidates to audio files.
@@ -343,7 +345,7 @@ class GenerativeAiResult extends AbstractDataTransferObject implements ResultInt
      */
     public function toAudioFiles(): array
     {
-        return array_values(array_filter($this->toFiles(), fn(File $file) => $file->isAudio()));
+        return array_values(array_filter($this->toFiles(), fn (File $file) => $file->isAudio()));
     }
     /**
      * Converts all candidates to video files.
@@ -354,7 +356,7 @@ class GenerativeAiResult extends AbstractDataTransferObject implements ResultInt
      */
     public function toVideoFiles(): array
     {
-        return array_values(array_filter($this->toFiles(), fn(File $file) => $file->isVideo()));
+        return array_values(array_filter($this->toFiles(), fn (File $file) => $file->isVideo()));
     }
     /**
      * Converts all candidates to messages.
@@ -365,7 +367,7 @@ class GenerativeAiResult extends AbstractDataTransferObject implements ResultInt
      */
     public function toMessages(): array
     {
-        return array_values(array_map(fn(\WordPress\AiClient\Results\DTO\Candidate $candidate) => $candidate->getMessage(), $this->candidates));
+        return array_values(array_map(fn (\WordPress\AiClient\Results\DTO\Candidate $candidate) => $candidate->getMessage(), $this->candidates));
     }
     /**
      * {@inheritDoc}
@@ -385,7 +387,7 @@ class GenerativeAiResult extends AbstractDataTransferObject implements ResultInt
      */
     public function toArray(): array
     {
-        return [self::KEY_ID => $this->id, self::KEY_CANDIDATES => array_map(fn(\WordPress\AiClient\Results\DTO\Candidate $candidate) => $candidate->toArray(), $this->candidates), self::KEY_TOKEN_USAGE => $this->tokenUsage->toArray(), self::KEY_PROVIDER_METADATA => $this->providerMetadata->toArray(), self::KEY_MODEL_METADATA => $this->modelMetadata->toArray(), self::KEY_ADDITIONAL_DATA => $this->additionalData];
+        return [self::KEY_ID => $this->id, self::KEY_CANDIDATES => array_map(fn (\WordPress\AiClient\Results\DTO\Candidate $candidate) => $candidate->toArray(), $this->candidates), self::KEY_TOKEN_USAGE => $this->tokenUsage->toArray(), self::KEY_PROVIDER_METADATA => $this->providerMetadata->toArray(), self::KEY_MODEL_METADATA => $this->modelMetadata->toArray(), self::KEY_ADDITIONAL_DATA => $this->additionalData];
     }
     /**
      * {@inheritDoc}
@@ -395,7 +397,7 @@ class GenerativeAiResult extends AbstractDataTransferObject implements ResultInt
     public static function fromArray(array $array): self
     {
         static::validateFromArrayData($array, [self::KEY_ID, self::KEY_CANDIDATES, self::KEY_TOKEN_USAGE, self::KEY_PROVIDER_METADATA, self::KEY_MODEL_METADATA]);
-        $candidates = array_map(fn(array $candidateData) => \WordPress\AiClient\Results\DTO\Candidate::fromArray($candidateData), $array[self::KEY_CANDIDATES]);
+        $candidates = array_map(fn (array $candidateData) => \WordPress\AiClient\Results\DTO\Candidate::fromArray($candidateData), $array[self::KEY_CANDIDATES]);
         return new self($array[self::KEY_ID], $candidates, \WordPress\AiClient\Results\DTO\TokenUsage::fromArray($array[self::KEY_TOKEN_USAGE]), ProviderMetadata::fromArray($array[self::KEY_PROVIDER_METADATA]), ModelMetadata::fromArray($array[self::KEY_MODEL_METADATA]), $array[self::KEY_ADDITIONAL_DATA] ?? []);
     }
     /**

@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Item;
 
-class_exists('SimplePie\Item');
+class_exists(\SimplePie\Item::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Item" class is deprecated since SimplePie 1.7.0, use "SimplePie\Item" instead.'), \E_USER_DEPRECATED);
 

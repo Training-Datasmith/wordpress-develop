@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * PHPMailer - PHP email creation and transport class.
  * PHP Version 5.5.
@@ -54,10 +56,8 @@ class DSNConfigurator
      *
      * @param PHPMailer $mailer PHPMailer instance
      * @param string    $dsn    DSN
-     *
-     * @return PHPMailer
      */
-    public function configure(PHPMailer $mailer, $dsn)
+    public function configure(PHPMailer $mailer, $dsn): PHPMailer
     {
         $config = $this->parseDSN($dsn);
 
@@ -98,7 +98,7 @@ class DSNConfigurator
      *
      * @throws Exception If scheme is invalid
      */
-    private function applyConfig(PHPMailer $mailer, $config)
+    private function applyConfig(PHPMailer $mailer, array $config): void
     {
         switch ($config['scheme']) {
             case 'mail':
@@ -135,7 +135,7 @@ class DSNConfigurator
      * @param PHPMailer $mailer PHPMailer instance
      * @param array     $config Configuration
      */
-    private function configureSMTP($mailer, $config)
+    private function configureSMTP(\PHPMailer\PHPMailer\PHPMailer $mailer, array $config): void
     {
         $isSMTPS = 'smtps' === $config['scheme'];
 
@@ -170,7 +170,7 @@ class DSNConfigurator
      *
      * @throws Exception If option is unknown
      */
-    private function configureOptions(PHPMailer $mailer, $options)
+    private function configureOptions(PHPMailer $mailer, $options): void
     {
         $allowedOptions = get_object_vars($mailer);
 

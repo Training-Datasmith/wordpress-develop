@@ -17,42 +17,42 @@ get_header();
 
 			<?php
 
-			// Start the Loop.
-			while ( have_posts() ) :
-				the_post();
+            // Start the Loop.
+            while (have_posts()) :
+                the_post();
 
-				get_template_part( 'template-parts/content/content', 'single' );
+                get_template_part('template-parts/content/content', 'single');
 
-				if ( is_singular( 'attachment' ) ) {
-					// Parent post navigation.
-					the_post_navigation(
-						array(
-							'prev_text' => _x( '<span class="meta-nav">Published in</span><br><span class="post-title">%title</span>', 'Parent post link', 'twentynineteen' ),
-						)
-					);
-				} elseif ( is_singular( 'post' ) ) {
-					// Previous/next post navigation.
-					the_post_navigation(
-						array(
-							'next_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Next Post', 'twentynineteen' ) . '</span> ' .
-								/* translators: Hidden accessibility text. */
-								'<span class="screen-reader-text">' . __( 'Next post:', 'twentynineteen' ) . '</span> <br/>' .
-								'<span class="post-title">%title</span>',
-							'prev_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Previous Post', 'twentynineteen' ) . '</span> ' .
-								/* translators: Hidden accessibility text. */
-								'<span class="screen-reader-text">' . __( 'Previous post:', 'twentynineteen' ) . '</span> <br/>' .
-								'<span class="post-title">%title</span>',
-						)
-					);
-				}
+                if (is_singular('attachment')) {
+                    // Parent post navigation.
+                    the_post_navigation(
+                        [
+                            'prev_text' => _x('<span class="meta-nav">Published in</span><br><span class="post-title">%title</span>', 'Parent post link', 'twentynineteen'),
+                        ]
+                    );
+                } elseif (is_singular('post')) {
+                    // Previous/next post navigation.
+                    the_post_navigation(
+                        [
+                            'next_text' => '<span class="meta-nav" aria-hidden="true">' . __('Next Post', 'twentynineteen') . '</span> ' .
+                                /* translators: Hidden accessibility text. */
+                                '<span class="screen-reader-text">' . __('Next post:', 'twentynineteen') . '</span> <br/>' .
+                                '<span class="post-title">%title</span>',
+                            'prev_text' => '<span class="meta-nav" aria-hidden="true">' . __('Previous Post', 'twentynineteen') . '</span> ' .
+                                /* translators: Hidden accessibility text. */
+                                '<span class="screen-reader-text">' . __('Previous post:', 'twentynineteen') . '</span> <br/>' .
+                                '<span class="post-title">%title</span>',
+                        ]
+                    );
+                }
 
-				// If comments are open or we have at least one comment, load up the comment template.
-				if ( comments_open() || get_comments_number() ) {
-					comments_template();
-				}
+                // If comments are open or we have at least one comment, load up the comment template.
+                if (comments_open() || get_comments_number()) {
+                    comments_template();
+                }
 
-			endwhile; // End the loop.
-			?>
+            endwhile; // End the loop.
+?>
 
 		</main><!-- #main -->
 	</div><!-- #primary -->

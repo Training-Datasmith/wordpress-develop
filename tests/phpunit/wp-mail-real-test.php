@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * wp-mail-real-test.php
  *
@@ -7,61 +9,61 @@
 
 // Parse options.
 $options = 'v:r:d';
-if ( is_callable( 'getopt' ) ) {
-	$opts = getopt( $options );
+if (is_callable('getopt')) {
+    $opts = getopt($options);
 } else {
-	require __DIR__ . '/wp-testlib/getopt.php';
-	$opts = getoptParser::getopt( $options );
+    require __DIR__ . '/wp-testlib/getopt.php';
+    $opts = getoptParser::getopt($options);
 }
 
-define( 'DIR_TESTROOT', realpath( __DIR__ ) );
+define('DIR_TESTROOT', realpath(__DIR__));
 
-define( 'TEST_WP', true );
-define( 'WP_DEBUG', array_key_exists( 'd', $opts ) );
+define('TEST_WP', true);
+define('WP_DEBUG', array_key_exists('d', $opts));
 
-if ( ! empty( $opts['r'] ) ) {
-	define( 'DIR_WP', realpath( $opts['r'] ) );
-} elseif ( ! empty( $opts['v'] ) ) {
-		define( 'DIR_WP', DIR_TESTROOT . '/wordpress-' . $opts['v'] );
+if (! empty($opts['r'])) {
+    define('DIR_WP', realpath($opts['r']));
+} elseif (! empty($opts['v'])) {
+    define('DIR_WP', DIR_TESTROOT . '/wordpress-' . $opts['v']);
 } else {
-	define( 'DIR_WP', DIR_TESTROOT . '/wordpress' );
+    define('DIR_WP', DIR_TESTROOT . '/wordpress');
 }
 
 // Make sure all useful errors are displayed during setup.
-error_reporting( E_ALL & ~E_DEPRECATED );
-ini_set( 'display_errors', true );
+error_reporting(E_ALL & ~E_DEPRECATED);
+ini_set('display_errors', true);
 
 require_once DIR_TESTROOT . '/wp-testlib/utils.php';
 
 // Configure WP.
 require_once DIR_TESTROOT . '/wp-config.php';
-define( 'ABSPATH', realpath( DIR_WP ) . '/' );
+define('ABSPATH', realpath(DIR_WP) . '/');
 
 // Install WP.
-define( 'WP_BLOG_TITLE', rand_str() );
-define( 'WP_USER_NAME', rand_str() );
-define( 'WP_USER_EMAIL', rand_str() . '@example.com' );
+define('WP_BLOG_TITLE', rand_str());
+define('WP_USER_NAME', rand_str());
+define('WP_USER_EMAIL', rand_str() . '@example.com');
 
 // Initialize WP.
-define( 'WP_INSTALLING', 1 );
+define('WP_INSTALLING', 1);
 $_SERVER['PATH_INFO'] = $_SERVER['SCRIPT_NAME']; // Prevent a warning from some sloppy code in wp-settings.php.
 require_once ABSPATH . 'wp-settings.php';
 
 drop_tables();
 
 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-wp_install( WP_BLOG_TITLE, WP_USER_NAME, WP_USER_EMAIL, true );
+wp_install(WP_BLOG_TITLE, WP_USER_NAME, WP_USER_EMAIL, true);
 
 // Make sure we're installed.
-assert( true === is_blog_installed() );
+assert(true === is_blog_installed());
 
 // phpcs:ignore Generic.NamingConventions.UpperCaseConstantName.ConstantNotUpperCase
-define( 'PHPUnit_MAIN_METHOD', false );
+define('PHPUnit_MAIN_METHOD', false);
 $original_wpdb = $GLOBALS['wpdb'];
 
 // Hide warnings during testing, since that's the normal WP behavior.
-if ( ! WP_DEBUG ) {
-	error_reporting( E_ALL ^ E_NOTICE );
+if (! WP_DEBUG) {
+    error_reporting(E_ALL ^ E_NOTICE);
 }
 
 $to        = 'To <wp.mail.testing@gmail.com>';
@@ -73,12 +75,12 @@ $message   = 'My RFC822 Test Message';
 $headers[] = "From: {$from}";
 $headers[] = "CC: {$cc}";
 
-wp_mail( $to, $subject, $message, $headers );
+wp_mail($to, $subject, $message, $headers);
 
-$headers   = array();
+$headers   = [];
 $subject   = 'RFC2822 Testing 2';
 $message   = 'My RFC822 Test Message 2';
 $to        = 'To <wp.mail.testing+to@gmail.com>';
 $headers[] = "BCC: {$bcc}";
-wp_mail( '', $subject, $message, $headers );
+wp_mail('', $subject, $message, $headers);
 echo "Test emails sent!\n";

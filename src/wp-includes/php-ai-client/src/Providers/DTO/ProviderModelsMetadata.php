@@ -1,11 +1,13 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\DTO;
 
 use WordPress\AiClient\Common\AbstractDataTransferObject;
 use WordPress\AiClient\Common\Exception\InvalidArgumentException;
 use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
+
 /**
  * Represents metadata about a provider and its available models.
  *
@@ -113,7 +115,7 @@ class ProviderModelsMetadata extends AbstractDataTransferObject
      */
     public function toArray(): array
     {
-        return [self::KEY_PROVIDER => $this->provider->toArray(), self::KEY_MODELS => array_map(static fn(ModelMetadata $model): array => $model->toArray(), $this->models)];
+        return [self::KEY_PROVIDER => $this->provider->toArray(), self::KEY_MODELS => array_map(static fn (ModelMetadata $model): array => $model->toArray(), $this->models)];
     }
     /**
      * {@inheritDoc}
@@ -123,6 +125,6 @@ class ProviderModelsMetadata extends AbstractDataTransferObject
     public static function fromArray(array $array): self
     {
         static::validateFromArrayData($array, [self::KEY_PROVIDER, self::KEY_MODELS]);
-        return new self(\WordPress\AiClient\Providers\DTO\ProviderMetadata::fromArray($array[self::KEY_PROVIDER]), array_map(static fn(array $modelData): ModelMetadata => ModelMetadata::fromArray($modelData), $array[self::KEY_MODELS]));
+        return new self(\WordPress\AiClient\Providers\DTO\ProviderMetadata::fromArray($array[self::KEY_PROVIDER]), array_map(static fn (array $modelData): ModelMetadata => ModelMetadata::fromArray($modelData), $array[self::KEY_MODELS]));
     }
 }

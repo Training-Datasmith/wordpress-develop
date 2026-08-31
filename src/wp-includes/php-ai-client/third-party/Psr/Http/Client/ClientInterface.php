@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Psr\Http\Client;
 
 use WordPress\AiClientDependencies\Psr\Http\Message\RequestInterface;
 use WordPress\AiClientDependencies\Psr\Http\Message\ResponseInterface;
+
 interface ClientInterface
 {
     /**

@@ -94,7 +94,7 @@ class IPv6
      * @param string $ip An IPv6 address
      * @return string The compressed IPv6 address
      */
-    public static function compress(string $ip)
+    public static function compress(string $ip): string
     {
         // Prepare the IP to be compressed
         $ip = self::uncompress($ip);
@@ -158,7 +158,7 @@ class IPv6
      * @param string $ip An IPv6 address
      * @return bool true if $ip is a valid IPv6 address
      */
-    public static function check_ipv6(string $ip)
+    public static function check_ipv6(string $ip): bool
     {
         $ip = self::uncompress($ip);
         [$ipv6, $ipv4] = self::split_v6_v4($ip);
@@ -221,4 +221,4 @@ class IPv6
     }
 }
 
-class_alias('SimplePie\Net\IPv6', 'SimplePie_Net_IPv6');
+class_alias(\SimplePie\Net\IPv6::class, 'SimplePie_Net_IPv6');

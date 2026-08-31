@@ -24,15 +24,9 @@ final class Psr7Response implements Response
      */
     private $response;
 
-    /**
-     * @var string
-     */
-    private $permanent_url;
+    private string $permanent_url;
 
-    /**
-     * @var string
-     */
-    private $requested_url;
+    private string $requested_url;
 
     public function __construct(ResponseInterface $response, string $permanent_url, string $requested_url)
     {
@@ -59,9 +53,7 @@ final class Psr7Response implements Response
     public function get_headers(): array
     {
         // The filtering is probably redundant but let’s make PHPStan happy.
-        return array_filter($this->response->getHeaders(), function (array $header): bool {
-            return count($header) >= 1;
-        });
+        return array_filter($this->response->getHeaders(), fn (array $header): bool => count($header) >= 1);
     }
 
     public function has_header(string $name): bool
@@ -69,7 +61,7 @@ final class Psr7Response implements Response
         return $this->response->hasHeader($name);
     }
 
-    public function with_header(string $name, $value)
+    public function with_header(string $name, $value): self
     {
         return new self($this->response->withHeader($name, $value), $this->permanent_url, $this->requested_url);
     }

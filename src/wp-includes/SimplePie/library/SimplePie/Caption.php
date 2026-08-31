@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\Caption;
 
-class_exists('SimplePie\Caption');
+class_exists(\SimplePie\Caption::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_Caption" class is deprecated since SimplePie 1.7.0, use "SimplePie\Caption" instead.'), \E_USER_DEPRECATED);
 

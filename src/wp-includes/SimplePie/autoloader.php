@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // SPDX-FileCopyrightText: 2004-2023 Ryan Parman, Sam Sneddon, Ryan McCue
 // SPDX-License-Identifier: BSD-3-Clause
 
@@ -15,7 +17,7 @@
  * @param string $class The fully-qualified class name.
  * @return void
  */
-spl_autoload_register(function ($class) {
+spl_autoload_register(function ($class): void {
 
     // project-specific namespace prefix
     $prefix = 'SimplePie\\';
@@ -45,11 +47,10 @@ spl_autoload_register(function ($class) {
 });
 
 // autoloader
-spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
+spl_autoload_register([new SimplePie_Autoloader(), 'autoload']);
 
-if (!class_exists('SimplePie'))
-{
-	exit('Autoloader not registered properly');
+if (!class_exists('SimplePie')) {
+    exit('Autoloader not registered properly');
 }
 
 /**
@@ -57,30 +58,29 @@ if (!class_exists('SimplePie'))
  */
 class SimplePie_Autoloader
 {
-	protected $path;
+    protected string $path;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		$this->path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'library';
-	}
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->path = __DIR__ . DIRECTORY_SEPARATOR . 'library';
+    }
 
-	/**
-	 * Autoloader
-	 *
-	 * @param string $class The name of the class to attempt to load.
-	 */
-	public function autoload($class)
-	{
-		// Only load the class if it starts with "SimplePie"
-		if (strpos($class, 'SimplePie') !== 0)
-		{
-			return;
-		}
+    /**
+     * Autoloader
+     *
+     * @param string $class The name of the class to attempt to load.
+     */
+    public function autoload($class): void
+    {
+        // Only load the class if it starts with "SimplePie"
+        if (strpos($class, 'SimplePie') !== 0) {
+            return;
+        }
 
-		$filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
-		include $filename;
-	}
+        $filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
+        include $filename;
+    }
 }

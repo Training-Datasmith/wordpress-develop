@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core32_SipHash', false)) {
     return;
 }
@@ -82,35 +84,35 @@ class ParagonIE_Sodium_Core32_SipHash extends ParagonIE_Sodium_Core32_Util
         # u64 v1 = 0x646f72616e646f6dULL;
         # u64 v2 = 0x6c7967656e657261ULL;
         # u64 v3 = 0x7465646279746573ULL;
-        $v = array(
+        $v = [
             new ParagonIE_Sodium_Core32_Int64(
-                array(0x736f, 0x6d65, 0x7073, 0x6575)
+                [0x736f, 0x6d65, 0x7073, 0x6575]
             ),
             new ParagonIE_Sodium_Core32_Int64(
-                array(0x646f, 0x7261, 0x6e64, 0x6f6d)
+                [0x646f, 0x7261, 0x6e64, 0x6f6d]
             ),
             new ParagonIE_Sodium_Core32_Int64(
-                array(0x6c79, 0x6765, 0x6e65, 0x7261)
+                [0x6c79, 0x6765, 0x6e65, 0x7261]
             ),
             new ParagonIE_Sodium_Core32_Int64(
-                array(0x7465, 0x6462, 0x7974, 0x6573)
-            )
-        );
+                [0x7465, 0x6462, 0x7974, 0x6573]
+            ),
+        ];
 
         # u64 k0 = LOAD64_LE( k );
         # u64 k1 = LOAD64_LE( k + 8 );
-        $k = array(
+        $k = [
             ParagonIE_Sodium_Core32_Int64::fromReverseString(
                 self::substr($key, 0, 8)
             ),
             ParagonIE_Sodium_Core32_Int64::fromReverseString(
                 self::substr($key, 8, 8)
-            )
-        );
+            ),
+        ];
 
         # b = ( ( u64 )inlen ) << 56;
         $b = new ParagonIE_Sodium_Core32_Int64(
-            array(($inlen << 8) & 0xffff, 0, 0, 0)
+            [($inlen << 8) & 0xffff, 0, 0, 0]
         );
 
         # v3 ^= k1;
@@ -160,45 +162,59 @@ class ParagonIE_Sodium_Core32_SipHash extends ParagonIE_Sodium_Core32_Util
             case 7:
                 $b = $b->orInt64(
                     ParagonIE_Sodium_Core32_Int64::fromInts(
-                        0, self::chrToInt($in[6]) << 16
+                        0,
+                        self::chrToInt($in[6]) << 16
                     )
                 );
+                // no break
             case 6:
                 $b = $b->orInt64(
                     ParagonIE_Sodium_Core32_Int64::fromInts(
-                        0, self::chrToInt($in[5]) << 8
+                        0,
+                        self::chrToInt($in[5]) << 8
                     )
                 );
+                // no break
             case 5:
                 $b = $b->orInt64(
                     ParagonIE_Sodium_Core32_Int64::fromInts(
-                        0, self::chrToInt($in[4])
+                        0,
+                        self::chrToInt($in[4])
                     )
                 );
+                // no break
             case 4:
                 $b = $b->orInt64(
                     ParagonIE_Sodium_Core32_Int64::fromInts(
-                        self::chrToInt($in[3]) << 24, 0
+                        self::chrToInt($in[3]) << 24,
+                        0
                     )
                 );
+                // no break
             case 3:
                 $b = $b->orInt64(
                     ParagonIE_Sodium_Core32_Int64::fromInts(
-                        self::chrToInt($in[2]) << 16, 0
+                        self::chrToInt($in[2]) << 16,
+                        0
                     )
                 );
+                // no break
             case 2:
                 $b = $b->orInt64(
                     ParagonIE_Sodium_Core32_Int64::fromInts(
-                        self::chrToInt($in[1]) << 8, 0
+                        self::chrToInt($in[1]) << 8,
+                        0
                     )
                 );
+                // no break
             case 1:
                 $b = $b->orInt64(
                     ParagonIE_Sodium_Core32_Int64::fromInts(
-                        self::chrToInt($in[0]), 0
+                        self::chrToInt($in[0]),
+                        0
                     )
                 );
+                // no break
             case 0:
                 break;
         }

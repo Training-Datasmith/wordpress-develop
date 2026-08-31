@@ -1,10 +1,12 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Providers\Http\DTO;
 
 use WordPress\AiClient\Common\AbstractDataTransferObject;
 use WordPress\AiClient\Providers\Http\Contracts\RequestAuthenticationInterface;
+
 /**
  * Class for HTTP request authentication using an API key.
  *

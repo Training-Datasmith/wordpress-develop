@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Test _cleanup_header_comment().
  *
@@ -9,43 +11,45 @@
  *
  * @covers ::_cleanup_header_comment
  */
-class Tests_Functions_CleanupHeaderComment extends WP_UnitTestCase {
+class Tests_Functions_CleanupHeaderComment extends WP_UnitTestCase
+{
+    /**
+     * Tests _cleanup_header_comment().
+     *
+     * @dataProvider data_cleanup_header_comment
+     *
+     * @param string $test_string Test string.
+     * @param string $expected    Expected return value.
+     */
+    public function test_cleanup_header_comment($test_string, $expected)
+    {
+        $this->assertSameIgnoreEOL($expected, _cleanup_header_comment($test_string));
+    }
 
-	/**
-	 * Tests _cleanup_header_comment().
-	 *
-	 * @dataProvider data_cleanup_header_comment
-	 *
-	 * @param string $test_string Test string.
-	 * @param string $expected    Expected return value.
-	 */
-	public function test_cleanup_header_comment( $test_string, $expected ) {
-		$this->assertSameIgnoreEOL( $expected, _cleanup_header_comment( $test_string ) );
-	}
-
-	/**
-	 * Data provider for test_cleanup_header_comment().
-	 *
-	 * @return array[] Test parameters {
-	 *     @type string $test_string Test string.
-	 *     @type string $expected    Expected return value.
-	 * }
-	 */
-	public function data_cleanup_header_comment() {
-		return array(
-			// Set 0: A string.
-			array(
-				'ffffffffffffff',
-				'ffffffffffffff',
-			),
-			// Set 1: Trim a string.
-			array(
-				'	ffffffffffffff ',
-				'ffffffffffffff',
-			),
-			// Set 2: Trim a full comment string.
-			array(
-				'<?php
+    /**
+     * Data provider for test_cleanup_header_comment().
+     *
+     * @return array[] Test parameters {
+     *     @type string $test_string Test string.
+     *     @type string $expected    Expected return value.
+     * }
+     */
+    public function data_cleanup_header_comment()
+    {
+        return [
+            // Set 0: A string.
+            [
+                'ffffffffffffff',
+                'ffffffffffffff',
+            ],
+            // Set 1: Trim a string.
+            [
+                '	ffffffffffffff ',
+                'ffffffffffffff',
+            ],
+            // Set 2: Trim a full comment string.
+            [
+                '<?php
 /*
 Plugin Name: Health Check
 Plugin URI: https://wordpress.org/plugins/health-check/
@@ -57,7 +61,7 @@ Text Domain: health-check
 Domain Path: /languages
 */
 ',
-				'<?php
+                '<?php
 /*
 Plugin Name: Health Check
 Plugin URI: https://wordpress.org/plugins/health-check/
@@ -67,10 +71,10 @@ Author: The Health Check Team
 Author URI: http://health-check-team.example.com
 Text Domain: health-check
 Domain Path: /languages',
-			),
-			// Set 3: Trim HTML following comment.
-			array(
-				'<?php
+            ],
+            // Set 3: Trim HTML following comment.
+            [
+                '<?php
 /*
 Plugin Name: Health Check
 Plugin URI: https://wordpress.org/plugins/health-check/
@@ -83,7 +87,7 @@ Domain Path: /languages
 */ ?>
 dddlddfs
 ',
-				'<?php
+                '<?php
 /*
 Plugin Name: Health Check
 Plugin URI: https://wordpress.org/plugins/health-check/
@@ -94,10 +98,10 @@ Author URI: http://health-check-team.example.com
 Text Domain: health-check
 Domain Path: /languages
 dddlddfs',
-			),
-			// Set 4: Trim a docblock style comment.
-			array(
-				'<?php
+            ],
+            // Set 4: Trim a docblock style comment.
+            [
+                '<?php
 /**
  * Plugin Name: Health Check
  * Plugin URI: https://wordpress.org/plugins/health-check/
@@ -108,7 +112,7 @@ dddlddfs',
  * Text Domain: health-check
  * Domain Path: /languages
  */',
-				'<?php
+                '<?php
 /**
  * Plugin Name: Health Check
  * Plugin URI: https://wordpress.org/plugins/health-check/
@@ -118,7 +122,7 @@ dddlddfs',
  * Author URI: http://health-check-team.example.com
  * Text Domain: health-check
  * Domain Path: /languages',
-			),
-		);
-	}
+            ],
+        ];
+    }
 }

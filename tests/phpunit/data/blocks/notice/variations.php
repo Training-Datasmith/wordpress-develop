@@ -1,10 +1,12 @@
 <?php
 
-return array(
-	array(
-		'name'        => 'warning',
-		'title'       => 'warning',
-		'description' => 'Shows warning.',
-		'keywords'    => array( 'warning' ),
-	),
-);
+declare(strict_types=1);
+
+return [
+    [
+        'name'        => 'warning',
+        'title'       => 'warning',
+        'description' => 'Shows warning.',
+        'keywords'    => [ 'warning' ],
+    ],
+];

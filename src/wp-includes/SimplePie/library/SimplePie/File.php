@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 use SimplePie\File;
 
-class_exists('SimplePie\File');
+class_exists(\SimplePie\File::class);
 
 // @trigger_error(sprintf('Using the "SimplePie_File" class is deprecated since SimplePie 1.7.0, use "SimplePie\File" instead.'), \E_USER_DEPRECATED);
 

@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Http\Discovery\Strategy;
 
 use WordPress\AiClientDependencies\Http\Discovery\ClassDiscovery;
 use WordPress\AiClientDependencies\Http\Discovery\Exception\PuliUnavailableException;
 use WordPress\AiClientDependencies\Puli\Discovery\Api\Discovery;
 use WordPress\AiClientDependencies\Puli\GeneratedPuliFactory;
+
 /**
  * Find candidates using Puli.
  *

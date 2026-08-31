@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClientDependencies\Nyholm\Psr7;
 
 use WordPress\AiClientDependencies\Psr\Http\Message\StreamInterface;
+
 /**
  * @author Michael Dowling and contributors to guzzlehttp/psr7
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
@@ -229,8 +231,7 @@ class Stream implements StreamInterface
     private static function openZvalStream(string $body)
     {
         static $wrapper;
-        $wrapper ?? \stream_wrapper_register('Nyholm-Psr7-Zval', $wrapper = \get_class(new class
-        {
+        $wrapper ?? \stream_wrapper_register('Nyholm-Psr7-Zval', $wrapper = \get_class(new class () {
             public $context;
             private $data;
             private $position = 0;

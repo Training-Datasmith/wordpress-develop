@@ -1,36 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @group admin
  */
-class Tests_Admin_IncludesSchema extends WP_UnitTestCase {
+class Tests_Admin_IncludesSchema extends WP_UnitTestCase
+{
+    private static $options;
+    private static $blogmeta;
+    private static $sitemeta;
 
-	private static $options;
-	private static $blogmeta;
-	private static $sitemeta;
+    /**
+     * Make sure the schema code is loaded before the tests are run.
+     */
+    public static function wpSetUpBeforeClass(WP_UnitTest_Factory $factory)
+    {
+        global $wpdb;
 
-	/**
-	 * Make sure the schema code is loaded before the tests are run.
-	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		global $wpdb;
+        self::$options  = 'testprefix_options';
+        self::$blogmeta = 'testprefix_blogmeta';
+        self::$sitemeta = 'testprefix_sitemeta';
 
-		self::$options  = 'testprefix_options';
-		self::$blogmeta = 'testprefix_blogmeta';
-		self::$sitemeta = 'testprefix_sitemeta';
+        $options  = self::$options;
+        $blogmeta = self::$blogmeta;
+        $sitemeta = self::$sitemeta;
 
-		$options  = self::$options;
-		$blogmeta = self::$blogmeta;
-		$sitemeta = self::$sitemeta;
+        require_once ABSPATH . 'wp-admin/includes/schema.php';
 
-		require_once ABSPATH . 'wp-admin/includes/schema.php';
+        $charset_collate  = $wpdb->get_charset_collate();
+        $max_index_length = 191;
 
-		$charset_collate  = $wpdb->get_charset_collate();
-		$max_index_length = 191;
-
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$wpdb->query(
-			"
+        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $wpdb->query(
+            "
 			CREATE TABLE {$options} (
 				option_id bigint(20) unsigned NOT NULL auto_increment,
 				option_name varchar(191) NOT NULL default '',
@@ -40,9 +43,9 @@ class Tests_Admin_IncludesSchema extends WP_UnitTestCase {
 				UNIQUE KEY option_name (option_name)
 			) {$charset_collate}
 			"
-		);
-		$wpdb->query(
-			"
+        );
+        $wpdb->query(
+            "
 			CREATE TABLE {$blogmeta} (
 				meta_id bigint(20) unsigned NOT NULL auto_increment,
 				blog_id bigint(20) unsigned NOT NULL default '0',
@@ -53,9 +56,9 @@ class Tests_Admin_IncludesSchema extends WP_UnitTestCase {
 				KEY blog_id (blog_id)
 			) {$charset_collate}
 			"
-		);
-		$wpdb->query(
-			"
+        );
+        $wpdb->query(
+            "
 			CREATE TABLE {$sitemeta} (
 				meta_id bigint(20) unsigned NOT NULL auto_increment,
 				site_id bigint(20) unsigned NOT NULL default '0',
@@ -66,269 +69,298 @@ class Tests_Admin_IncludesSchema extends WP_UnitTestCase {
 				KEY site_id (site_id)
 			) {$charset_collate}
 			"
-		);
-		// phpcs:enable
-	}
+        );
+        // phpcs:enable
+    }
 
-	/**
-	 * Drop tables that were created before running the tests.
-	 */
-	public static function wpTearDownAfterClass() {
-		global $wpdb;
+    /**
+     * Drop tables that were created before running the tests.
+     */
+    public static function wpTearDownAfterClass()
+    {
+        global $wpdb;
 
-		$options  = self::$options;
-		$blogmeta = self::$blogmeta;
-		$sitemeta = self::$sitemeta;
+        $options  = self::$options;
+        $blogmeta = self::$blogmeta;
+        $sitemeta = self::$sitemeta;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$wpdb->query( "DROP TABLE IF EXISTS {$options}" );
-		$wpdb->query( "DROP TABLE IF EXISTS {$blogmeta}" );
-		$wpdb->query( "DROP TABLE IF EXISTS {$sitemeta}" );
-		// phpcs:enable
-	}
+        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $wpdb->query("DROP TABLE IF EXISTS {$options}");
+        $wpdb->query("DROP TABLE IF EXISTS {$blogmeta}");
+        $wpdb->query("DROP TABLE IF EXISTS {$sitemeta}");
+        // phpcs:enable
 
-	/**
-	 * @ticket 44893
-	 * @dataProvider data_populate_options
-	 */
-	public function test_populate_options( $options, $expected ) {
-		global $wpdb;
+        self::reset_wpdb_table_names();
+    }
 
-		$orig_options  = $wpdb->options;
-		$wpdb->options = self::$options;
+    /**
+     * Restore $wpdb table pointers after schema tests swap them to scratch tables.
+     */
+    private static function reset_wpdb_table_names(): void
+    {
+        global $wpdb;
 
-		populate_options( $options );
+        $wpdb->set_prefix($wpdb->base_prefix);
+    }
 
-		wp_cache_delete( 'alloptions', 'options' );
+    /**
+     * @ticket 44893
+     * @dataProvider data_populate_options
+     */
+    public function test_populate_options($options, $expected)
+    {
+        global $wpdb;
 
-		$results = array();
-		foreach ( $expected as $option => $value ) {
-			$results[ $option ] = get_option( $option );
-		}
+        $scratch_options = self::$options;
+        $orig_options    = $wpdb->options;
+        $wpdb->options   = $scratch_options;
 
-		$wpdb->query( "TRUNCATE TABLE {$wpdb->options}" );
+        try {
+            populate_options($options);
 
-		$wpdb->options = $orig_options;
+            wp_cache_delete('alloptions', 'options');
 
-		$this->assertSame( $expected, $results );
-	}
+            $results = [];
+            foreach ($expected as $option => $value) {
+                $results[ $option ] = get_option($option);
+            }
 
-	public function data_populate_options() {
-		return array(
-			array(
-				array(),
-				array(
-					// Random options to check.
-					'posts_per_rss'    => '10',
-					'rss_use_excerpt'  => '0',
-					'mailserver_url'   => 'mail.example.com',
-					'mailserver_login' => 'login@example.com',
-					'mailserver_pass'  => '',
-				),
-			),
-			array(
-				array(
-					'posts_per_rss'   => '7',
-					'rss_use_excerpt' => '1',
-				),
-				array(
-					// Random options to check.
-					'posts_per_rss'    => '7',
-					'rss_use_excerpt'  => '1',
-					'mailserver_url'   => 'mail.example.com',
-					'mailserver_login' => 'login@example.com',
-					'mailserver_pass'  => '',
-				),
-			),
-			array(
-				array(
-					'custom_option' => '1',
-				),
-				array(
-					// Random options to check.
-					'custom_option'    => '1',
-					'posts_per_rss'    => '10',
-					'rss_use_excerpt'  => '0',
-					'mailserver_url'   => 'mail.example.com',
-					'mailserver_login' => 'login@example.com',
-					'mailserver_pass'  => '',
-				),
-			),
-			array(
-				array(
-					'use_quicktags' => '1',
-				),
-				array(
-					// This option is disallowed and should never exist.
-					'use_quicktags' => false,
-				),
-			),
-			array(
-				array(
-					'rss_0123456789abcdef0123456789abcdef' => '1',
-					'rss_0123456789abcdef0123456789abcdef_ts' => '1',
-				),
-				array(
-					// These options would be obsolete magpie cache data and should never exist.
-					'rss_0123456789abcdef0123456789abcdef' => false,
-					'rss_0123456789abcdef0123456789abcdef_ts' => false,
-				),
-			),
-		);
-	}
+            $wpdb->query("TRUNCATE TABLE {$scratch_options}");
+        } finally {
+            $wpdb->options = $orig_options;
+        }
 
-	/**
-	 * Ensures that deprecated timezone strings set as a default in a translation are handled correctly.
-	 *
-	 * @ticket 56468
-	 */
-	public function test_populate_options_when_locale_uses_deprecated_timezone_string() {
-		global $wpdb;
+        $this->assertSame($expected, $results);
+    }
 
-		// Back up.
-		$orig_options  = $wpdb->options;
-		$wpdb->options = self::$options;
+    public function data_populate_options()
+    {
+        return [
+            [
+                [],
+                [
+                    // Random options to check.
+                    'posts_per_rss'    => '10',
+                    'rss_use_excerpt'  => '0',
+                    'mailserver_url'   => 'mail.example.com',
+                    'mailserver_login' => 'login@example.com',
+                    'mailserver_pass'  => '',
+                ],
+            ],
+            [
+                [
+                    'posts_per_rss'   => '7',
+                    'rss_use_excerpt' => '1',
+                ],
+                [
+                    // Random options to check.
+                    'posts_per_rss'    => '7',
+                    'rss_use_excerpt'  => '1',
+                    'mailserver_url'   => 'mail.example.com',
+                    'mailserver_login' => 'login@example.com',
+                    'mailserver_pass'  => '',
+                ],
+            ],
+            [
+                [
+                    'custom_option' => '1',
+                ],
+                [
+                    // Random options to check.
+                    'custom_option'    => '1',
+                    'posts_per_rss'    => '10',
+                    'rss_use_excerpt'  => '0',
+                    'mailserver_url'   => 'mail.example.com',
+                    'mailserver_login' => 'login@example.com',
+                    'mailserver_pass'  => '',
+                ],
+            ],
+            [
+                [
+                    'use_quicktags' => '1',
+                ],
+                [
+                    // This option is disallowed and should never exist.
+                    'use_quicktags' => false,
+                ],
+            ],
+            [
+                [
+                    'rss_0123456789abcdef0123456789abcdef' => '1',
+                    'rss_0123456789abcdef0123456789abcdef_ts' => '1',
+                ],
+                [
+                    // These options would be obsolete magpie cache data and should never exist.
+                    'rss_0123456789abcdef0123456789abcdef' => false,
+                    'rss_0123456789abcdef0123456789abcdef_ts' => false,
+                ],
+            ],
+        ];
+    }
 
-		// Set the "default" value for the timezone to a deprecated timezone.
-		add_filter(
-			'gettext_with_context',
-			static function ( $translation, $text, $context ) {
-				if ( '0' === $text && 'default GMT offset or timezone string' === $context ) {
-					return 'America/Buenos_Aires';
-				}
+    /**
+     * Ensures that deprecated timezone strings set as a default in a translation are handled correctly.
+     *
+     * @ticket 56468
+     */
+    public function test_populate_options_when_locale_uses_deprecated_timezone_string()
+    {
+        global $wpdb;
 
-				return $translation;
-			},
-			10,
-			3
-		);
+        $scratch_options = self::$options;
+        $orig_options    = $wpdb->options;
+        $wpdb->options   = $scratch_options;
 
-		// Test.
-		populate_options();
+        // Set the "default" value for the timezone to a deprecated timezone.
+        add_filter(
+            'gettext_with_context',
+            static function ($translation, $text, $context) {
+                if ('0' === $text && 'default GMT offset or timezone string' === $context) {
+                    return 'America/Buenos_Aires';
+                }
 
-		wp_cache_delete( 'alloptions', 'options' );
+                return $translation;
+            },
+            10,
+            3
+        );
 
-		$result = get_option( 'timezone_string' );
+        try {
+            populate_options();
 
-		// Reset.
-		$wpdb->query( "TRUNCATE TABLE {$wpdb->options}" );
-		$wpdb->options = $orig_options;
+            wp_cache_delete('alloptions', 'options');
 
-		// Assert.
-		$this->assertSame( 'America/Buenos_Aires', $result );
-	}
+            $result = get_option('timezone_string');
 
-	/**
-	 * @ticket 44896
-	 * @group multisite
-	 * @group ms-required
-	 * @dataProvider data_populate_site_meta
-	 */
-	public function test_populate_site_meta( $meta, $expected ) {
-		global $wpdb;
+            $wpdb->query("TRUNCATE TABLE {$scratch_options}");
+        } finally {
+            $wpdb->options = $orig_options;
+        }
 
-		$orig_blogmeta  = $wpdb->blogmeta;
-		$wpdb->blogmeta = self::$blogmeta;
+        $this->assertSame('America/Buenos_Aires', $result);
+    }
 
-		populate_site_meta( 42, $meta );
+    /**
+     * @ticket 44896
+     * @group multisite
+     * @group ms-required
+     * @dataProvider data_populate_site_meta
+     */
+    public function test_populate_site_meta($meta, $expected)
+    {
+        global $wpdb;
 
-		$results = array();
-		foreach ( $expected as $meta_key => $value ) {
-			$results[ $meta_key ] = get_site_meta( 42, $meta_key, true );
-		}
+        $scratch_blogmeta = self::$blogmeta;
+        $orig_blogmeta    = $wpdb->blogmeta;
+        $wpdb->blogmeta   = $scratch_blogmeta;
 
-		$wpdb->query( "TRUNCATE TABLE {$wpdb->blogmeta}" );
+        try {
+            populate_site_meta(42, $meta);
 
-		$wpdb->blogmeta = $orig_blogmeta;
+            $results = [];
+            foreach ($expected as $meta_key => $value) {
+                $results[ $meta_key ] = get_site_meta(42, $meta_key, true);
+            }
 
-		$this->assertSame( $expected, $results );
-	}
+            $wpdb->query("TRUNCATE TABLE {$scratch_blogmeta}");
+        } finally {
+            $wpdb->blogmeta = $orig_blogmeta;
+        }
 
-	public function data_populate_site_meta() {
-		return array(
-			array(
-				array(),
-				array(
-					'unknown_value' => '',
-				),
-			),
-			array(
-				array(
-					'custom_meta' => '1',
-				),
-				array(
-					'custom_meta' => '1',
-				),
-			),
-		);
-	}
+        $this->assertSame($expected, $results);
+    }
 
-	/**
-	 * @ticket 44895
-	 * @group multisite
-	 * @dataProvider data_populate_network_meta
-	 */
-	public function test_populate_network_meta( $meta, $expected ) {
-		global $wpdb;
+    public function data_populate_site_meta()
+    {
+        return [
+            [
+                [],
+                [
+                    'unknown_value' => '',
+                ],
+            ],
+            [
+                [
+                    'custom_meta' => '1',
+                ],
+                [
+                    'custom_meta' => '1',
+                ],
+            ],
+        ];
+    }
 
-		$orig_sitemeta  = $wpdb->sitemeta;
-		$wpdb->sitemeta = self::$sitemeta;
+    /**
+     * @ticket 44895
+     * @group multisite
+     * @dataProvider data_populate_network_meta
+     */
+    public function test_populate_network_meta($meta, $expected)
+    {
+        global $wpdb;
 
-		populate_network_meta( 42, $meta );
+        $scratch_sitemeta = self::$sitemeta;
+        $orig_sitemeta    = $wpdb->sitemeta;
+        $wpdb->sitemeta   = $scratch_sitemeta;
 
-		$results = array();
-		foreach ( $expected as $meta_key => $value ) {
-			if ( is_multisite() ) {
-				$results[ $meta_key ] = get_network_option( 42, $meta_key );
-			} else {
-				$results[ $meta_key ] = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->sitemeta} WHERE meta_key = %s AND site_id = %d", $meta_key, 42 ) );
-			}
-		}
+        try {
+            populate_network_meta(42, $meta);
 
-		$wpdb->query( "TRUNCATE TABLE {$wpdb->sitemeta}" );
+            $results = [];
+            foreach ($expected as $meta_key => $value) {
+                if (is_multisite()) {
+                    $results[ $meta_key ] = get_network_option(42, $meta_key);
+                } else {
+                    $results[ $meta_key ] = $wpdb->get_var($wpdb->prepare("SELECT meta_value FROM {$scratch_sitemeta} WHERE meta_key = %s AND site_id = %d", $meta_key, 42));
+                }
+            }
 
-		$wpdb->sitemeta = $orig_sitemeta;
+            $wpdb->query("TRUNCATE TABLE {$scratch_sitemeta}");
+        } finally {
+            $wpdb->sitemeta = $orig_sitemeta;
+        }
 
-		$this->assertSame( $expected, $results );
-	}
+        $this->assertSame($expected, $results);
+    }
 
-	public function data_populate_network_meta() {
-		return array(
-			array(
-				array(),
-				array(
-					// Random meta to check.
-					'registration'      => 'none',
-					'blog_upload_space' => '100',
-					'fileupload_maxk'   => '1500',
-				),
-			),
-			array(
-				array(
-					'site_name' => 'My Great Network',
-					'WPLANG'    => 'fr_FR',
-				),
-				array(
-					// Random meta to check.
-					'site_name'         => 'My Great Network',
-					'registration'      => 'none',
-					'blog_upload_space' => '100',
-					'fileupload_maxk'   => '1500',
-					'WPLANG'            => 'fr_FR',
-				),
-			),
-			array(
-				array(
-					'custom_meta' => '1',
-				),
-				array(
-					// Random meta to check.
-					'custom_meta'       => '1',
-					'registration'      => 'none',
-					'blog_upload_space' => '100',
-					'fileupload_maxk'   => '1500',
-				),
-			),
-		);
-	}
+    public function data_populate_network_meta()
+    {
+        return [
+            [
+                [],
+                [
+                    // Random meta to check.
+                    'registration'      => 'none',
+                    'blog_upload_space' => '100',
+                    'fileupload_maxk'   => '1500',
+                ],
+            ],
+            [
+                [
+                    'site_name' => 'My Great Network',
+                    'WPLANG'    => 'fr_FR',
+                ],
+                [
+                    // Random meta to check.
+                    'site_name'         => 'My Great Network',
+                    'registration'      => 'none',
+                    'blog_upload_space' => '100',
+                    'fileupload_maxk'   => '1500',
+                    'WPLANG'            => 'fr_FR',
+                ],
+            ],
+            [
+                [
+                    'custom_meta' => '1',
+                ],
+                [
+                    // Random meta to check.
+                    'custom_meta'       => '1',
+                    'registration'      => 'none',
+                    'blog_upload_space' => '100',
+                    'fileupload_maxk'   => '1500',
+                ],
+            ],
+        ];
+    }
 }

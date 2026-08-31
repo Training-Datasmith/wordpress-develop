@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WordPress\AiClientDependencies\Http\Discovery;
 
 use WordPress\AiClientDependencies\Http\Discovery\Exception\ClassInstantiationFailedException;
@@ -7,6 +9,7 @@ use WordPress\AiClientDependencies\Http\Discovery\Exception\DiscoveryFailedExcep
 use WordPress\AiClientDependencies\Http\Discovery\Exception\NoCandidateFoundException;
 use WordPress\AiClientDependencies\Http\Discovery\Exception\StrategyUnavailableException;
 use WordPress\AiClientDependencies\Http\Discovery\Strategy\DiscoveryStrategy;
+
 /**
  * Registry that based find results on class existence.
  *

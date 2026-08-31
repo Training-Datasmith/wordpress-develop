@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (class_exists('ParagonIE_Sodium_Core32_Util', false)) {
     return;
 }
@@ -9,5 +11,4 @@ if (class_exists('ParagonIE_Sodium_Core32_Util', false)) {
  */
 abstract class ParagonIE_Sodium_Core32_Util extends ParagonIE_Sodium_Core_Util
 {
-
 }

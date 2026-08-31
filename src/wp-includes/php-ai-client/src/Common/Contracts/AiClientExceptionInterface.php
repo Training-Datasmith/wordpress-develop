@@ -1,9 +1,11 @@
 <?php
 
 declare (strict_types=1);
+
 namespace WordPress\AiClient\Common\Contracts;
 
 use Throwable;
+
 /**
  * Base interface for all AI Client exceptions.
  *

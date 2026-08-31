@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require_once dirname(dirname(__FILE__)) . '/autoload.php';
 
 /**
@@ -9,7 +11,7 @@ require_once dirname(dirname(__FILE__)) . '/autoload.php';
  * Thus, the functions or constants just proxy to the appropriate
  * ParagonIE_Sodium_Compat method or class constant, respectively.
  */
-foreach (array(
+foreach ([
     'BASE64_VARIANT_ORIGINAL',
     'BASE64_VARIANT_ORIGINAL_NO_PADDING',
     'BASE64_VARIANT_URLSAFE',
@@ -100,8 +102,8 @@ foreach (array(
     'LIBRARY_MINOR_VERSION',
     'LIBRARY_VERSION_MAJOR',
     'LIBRARY_VERSION_MINOR',
-    'VERSION_STRING'
-    ) as $constant
+    'VERSION_STRING',
+    ] as $constant
 ) {
     if (!defined("SODIUM_$constant") && defined("ParagonIE_Sodium_Compat::$constant")) {
         define("SODIUM_$constant", constant("ParagonIE_Sodium_Compat::$constant"));
@@ -138,7 +140,7 @@ if (!is_callable('sodium_base642bin')) {
         #[\SensitiveParameter]
         $string,
         $variant,
-        $ignore =''
+        $ignore = ''
     ) {
         return ParagonIE_Sodium_Compat::base642bin($string, $variant, $ignore);
     }
