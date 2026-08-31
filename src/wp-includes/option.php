@@ -82,7 +82,7 @@ function get_option($option, $default_value = false)
     global $wpdb;
 
     if (is_scalar($option)) {
-        $option = trim($option);
+        $option = trim((string) $option);
     }
 
     if (empty($option)) {
@@ -861,7 +861,7 @@ function update_option($option, $value, $autoload = null)
     global $wpdb;
 
     if (is_scalar($option)) {
-        $option = trim($option);
+        $option = trim((string) $option);
     }
 
     if (empty($option)) {
@@ -1089,7 +1089,7 @@ function add_option($option, $value = '', $deprecated = '', $autoload = null)
     }
 
     if (is_scalar($option)) {
-        $option = trim($option);
+        $option = trim((string) $option);
     }
 
     if (empty($option)) {
@@ -1218,7 +1218,7 @@ function delete_option($option)
     global $wpdb;
 
     if (is_scalar($option)) {
-        $option = trim($option);
+        $option = trim((string) $option);
     }
 
     if (empty($option)) {
@@ -1378,7 +1378,7 @@ function wp_filter_default_autoload_value_via_option_size($autoload, $option, $v
      * @param string $option          The name of the option.
      */
     $max_option_size = (int) apply_filters('wp_max_autoloaded_option_size', 150000, $option);
-    $size            = ! empty($serialized_value) ? strlen($serialized_value) : 0;
+    $size            = is_string($serialized_value) ? strlen($serialized_value) : 0;
 
     if ($size > $max_option_size) {
         return false;

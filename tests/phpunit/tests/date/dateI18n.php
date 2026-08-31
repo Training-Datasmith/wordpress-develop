@@ -74,7 +74,7 @@ class Tests_Date_DateI18n extends WP_UnitTestCase
     {
         update_option('timezone_string', 'America/Regina');
 
-        $this->assertEqualsWithDelta(strtotime(gmdate('Y-m-d H:i:s', time() + get_option('gmt_offset') * HOUR_IN_SECONDS)), strtotime(date_i18n('Y-m-d H:i:s')), 2, 'The dates should be equal');
+        $this->assertEqualsWithDelta(strtotime(gmdate('Y-m-d H:i:s', (int) (time() + get_option('gmt_offset') * HOUR_IN_SECONDS))), strtotime(date_i18n('Y-m-d H:i:s')), 2, 'The dates should be equal');
     }
 
     public function test_date_should_be_in_gmt_with_custom_timezone_setting()

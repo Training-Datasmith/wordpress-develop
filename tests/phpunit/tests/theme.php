@@ -171,7 +171,7 @@ class Tests_Theme extends WP_UnitTestCase
             // Important attributes should all not be empty as well.
             $this->assertNotEmpty($theme['Description']);
             $this->assertNotEmpty($theme['Author']);
-            $this->assertGreaterThan(0, version_compare($theme['Version'], 0));
+            $this->assertGreaterThan(0, version_compare($theme['Version'], '0'));
             $this->assertNotEmpty($theme['Template']);
             $this->assertNotEmpty($theme['Stylesheet']);
 
@@ -277,7 +277,8 @@ class Tests_Theme extends WP_UnitTestCase
          * Therefore this reads the file in via file_get_contents to extract the value.
          */
         $default_constants = file_get_contents(ABSPATH . WPINC . '/default-constants.php');
-        preg_match('/define\( \'WP_DEFAULT_THEME\', \'(.*)\' \);/', $default_constants, $matches);
+        preg_match("/define\s*\(\s*'WP_DEFAULT_THEME'\s*,\s*'([^']+)'\s*\)/", $default_constants, $matches);
+        $this->assertNotEmpty($matches, 'WP_DEFAULT_THEME constant definition was not found in default-constants.php.');
         $wp_default_theme_constant = $matches[1];
 
         $this->assertSame($wp_default_theme_constant, $latest_default_theme->get_stylesheet(), 'WP_DEFAULT_THEME should match the latest default theme.');

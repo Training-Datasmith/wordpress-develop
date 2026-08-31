@@ -3458,6 +3458,7 @@ class PclZip
                     }
 
                     // ----- Get the only interesting attributes
+                    $p_file_list[$v_nb_extracted] = [];
                     if (($v_result = $this->privConvertHeader2FileInfo($v_header, $p_file_list[$v_nb_extracted])) != 1) {
                         // ----- Close the zip file
                         $this->privCloseFd();

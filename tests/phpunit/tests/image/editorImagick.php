@@ -716,7 +716,7 @@ class Tests_Image_Editor_Imagick extends WP_Image_UnitTestCase
             static function ($value) {
                 return (int) round($value);
             },
-            array_intersect_key($imagick->getImagePixelColor(100, 100)->getColor(true /* normalized */), $rgb)
+            array_intersect_key($imagick->getImagePixelColor(100, 100)->getColor(1), $rgb)
         );
         $imagick->destroy();
         $this->assertSame($expected, $output, 'The image color of the generated thumb does not match expected opaque background.'); // Allow for floating point equivalence.

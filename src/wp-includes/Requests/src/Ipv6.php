@@ -143,7 +143,10 @@ final class Ipv6
     private static function split_v6_v4($ip): array
     {
         if (strpos($ip, '.') !== false) {
-            $pos       = strrpos($ip, ':');
+            $pos = strrpos($ip, ':');
+            if (false === $pos) {
+                return [ $ip, '' ];
+            }
             $ipv6_part = substr($ip, 0, $pos);
             $ipv4_part = substr($ip, $pos + 1);
             return [$ipv6_part, $ipv4_part];

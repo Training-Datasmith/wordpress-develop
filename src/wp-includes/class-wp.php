@@ -501,7 +501,7 @@ class WP
                 $wp_last_modified_post    = mysql2date($date_format, get_lastpostmodified('GMT'), false);
                 $wp_last_modified_comment = mysql2date($date_format, get_lastcommentmodified('GMT'), false);
 
-                if (strtotime($wp_last_modified_post) > strtotime($wp_last_modified_comment)) {
+                if (strtotime((string) $wp_last_modified_post) > strtotime((string) $wp_last_modified_comment)) {
                     $wp_last_modified = $wp_last_modified_post;
                 } else {
                     $wp_last_modified = $wp_last_modified_comment;
@@ -628,7 +628,7 @@ class WP
                     continue;
                 }
 
-                $this->query_string .= $wpvar . '=' . rawurlencode($this->query_vars[ $wpvar ]);
+                $this->query_string .= $wpvar . '=' . rawurlencode((string) $this->query_vars[ $wpvar ]);
             }
         }
 
@@ -777,7 +777,7 @@ class WP
                 if ($post && ! empty($this->query_vars['page'])) {
                     // Check if content is actually intended to be paged.
                     if (str_contains($post->post_content, $next)) {
-                        $page          = trim($this->query_vars['page'], '/');
+                        $page          = trim((string) $this->query_vars['page'], '/');
                         $content_found = (int) $page <= (substr_count($post->post_content, $next) + 1);
                     } else {
                         $content_found = false;

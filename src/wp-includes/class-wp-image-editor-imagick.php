@@ -102,11 +102,13 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor
      */
     public static function supports_mime_type($mime_type)
     {
-        $imagick_extension = strtoupper(self::get_extension($mime_type));
+        $imagick_extension = self::get_extension($mime_type);
 
         if (! $imagick_extension) {
             return false;
         }
+
+        $imagick_extension = strtoupper((string) $imagick_extension);
 
         /*
          * setIteratorIndex is optional unless mime is an animated format.
@@ -235,7 +237,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor
                     break;
                 case 'image/avif':
                     // Set the AVIF encoder to work faster, with minimal impact on image size.
-                    $this->image->setOption('heic:speed', 7);
+                    $this->image->setOption('heic:speed', '7');
                     $this->image->setImageCompressionQuality($quality);
                     $this->image->setCompressionQuality($quality);
                     break;
@@ -1188,7 +1190,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor
              * When generating thumbnails from cropped PDF pages, Imagemagick uses the uncropped
              * area (resulting in unnecessary whitespace) unless the following option is set.
              */
-            $this->image->setOption('pdf:use-cropbox', true);
+            $this->image->setOption('pdf:use-cropbox', 'true');
 
             /*
              * Reading image after Imagick instantiation because `setResolution`
@@ -1197,7 +1199,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor
             $this->image->readImage($filename);
         } catch (Exception $e) {
             // Attempt to run `gs` without the `use-cropbox` option. See #48853.
-            $this->image->setOption('pdf:use-cropbox', false);
+            $this->image->setOption('pdf:use-cropbox', 'false');
 
             $this->image->readImage($filename);
         }

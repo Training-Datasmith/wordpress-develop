@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 function rand_str($length = 32)
 {
-    return substr(md5(uniqid(rand())), 0, $length);
+    return substr(md5(uniqid((string) rand())), 0, $length);
 }
 
 /**

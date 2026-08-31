@@ -1007,7 +1007,7 @@ function wp_link_pages($args = '')
         if ('number' === $parsed_args['next_or_number']) {
             $output .= $parsed_args['before'];
             for ($i = 1; $i <= $numpages; $i++) {
-                $link = $parsed_args['link_before'] . str_replace('%', $i, $parsed_args['pagelink']) . $parsed_args['link_after'];
+                $link = $parsed_args['link_before'] . str_replace('%', (string) $i, (string) $parsed_args['pagelink']) . $parsed_args['link_after'];
 
                 if ($i !== $page || ! $more && 1 === $page) {
                     $link = _wp_link_page($i) . $link . '</a>';
@@ -1351,7 +1351,7 @@ function wp_list_pages($args = '')
     $current_page = 0;
 
     // Sanitize, mostly to keep spaces out.
-    $parsed_args['exclude'] = preg_replace('/[^0-9,]/', '', $parsed_args['exclude']);
+    $parsed_args['exclude'] = preg_replace('/[^0-9,]/', '', (string) $parsed_args['exclude']);
 
     // Allow plugins to filter an array of excluded pages (but don't put a nullstring into the array).
     $exclude_array = ($parsed_args['exclude']) ? explode(',', $parsed_args['exclude']) : [];

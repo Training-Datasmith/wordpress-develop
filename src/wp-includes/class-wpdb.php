@@ -1290,6 +1290,10 @@ class wpdb
             return '';
         }
 
+        if (! is_string($data)) {
+            $data = (string) $data;
+        }
+
         if ($this->dbh) {
             $escaped = mysqli_real_escape_string($this->dbh, $data);
         } else {
@@ -1807,7 +1811,7 @@ class wpdb
      */
     public function esc_like($text)
     {
-        return addcslashes($text, '_%\\');
+        return addcslashes((string) $text, '_%\\');
     }
 
     /**
@@ -2451,7 +2455,7 @@ class wpdb
             // Old WP installs may not have AUTH_SALT defined.
             $salt = defined('AUTH_SALT') && AUTH_SALT ? AUTH_SALT : (string) rand();
 
-            $placeholder = '{' . hash_hmac('sha256', uniqid($salt, true), $salt) . '}';
+            $placeholder = '{' . hash_hmac('sha256', uniqid((string) $salt, true), $salt) . '}';
         }
 
         /*
@@ -3255,7 +3259,7 @@ class wpdb
      */
     protected function get_table_charset($table)
     {
-        $tablekey = strtolower($table);
+        $tablekey = strtolower((string) $table);
 
         /**
          * Filters the table charset value before the DB is checked.
@@ -3289,7 +3293,7 @@ class wpdb
         }
 
         foreach ($results as $column) {
-            $columns[ strtolower($column->Field) ] = $column;
+            $columns[ strtolower((string) $column->Field) ] = $column;
         }
 
         $this->col_meta[ $tablekey ] = $columns;
@@ -3355,8 +3359,8 @@ class wpdb
      */
     public function get_col_charset($table, $column)
     {
-        $tablekey  = strtolower($table);
-        $columnkey = strtolower($column);
+        $tablekey  = strtolower((string) $table);
+        $columnkey = strtolower((string) $column);
 
         /**
          * Filters the column charset value before the DB is checked.
@@ -3426,8 +3430,8 @@ class wpdb
      */
     public function get_col_length($table, $column)
     {
-        $tablekey  = strtolower($table);
-        $columnkey = strtolower($column);
+        $tablekey  = strtolower((string) $table);
+        $columnkey = strtolower((string) $column);
 
         // Skip this entirely if this isn't a MySQL database.
         if (empty($this->is_mysql)) {
@@ -3566,7 +3570,7 @@ class wpdb
             return true;
         }
 
-        $table = strtolower($table);
+        $table = strtolower((string) $table);
         if (empty($this->col_meta[ $table ])) {
             return false;
         }

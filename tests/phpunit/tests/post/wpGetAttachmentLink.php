@@ -41,7 +41,7 @@ class Tests_Post_WpGetAttachmentLink extends WP_UnitTestCase
      */
     public function test_should_apply_attributes_filter($attributes, $expected)
     {
-        $expected = str_replace('ATTACHMENT_ID', self::$attachment, $expected);
+        $expected = str_replace('ATTACHMENT_ID', (string) self::$attachment, $expected);
 
         add_filter(
             'wp_get_attachment_link_attributes',

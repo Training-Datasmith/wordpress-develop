@@ -13,7 +13,7 @@ abstract class WP_Test_REST_Post_Type_Controller_Testcase extends WP_Test_REST_C
         $this->assertSame($post->post_name, $data['slug']);
         $this->assertSame(get_permalink($post->ID), $data['link']);
         if ('0000-00-00 00:00:00' === $post->post_date_gmt) {
-            $post_date_gmt = gmdate('Y-m-d H:i:s', strtotime($post->post_date) - (get_option('gmt_offset') * 3600));
+            $post_date_gmt = gmdate('Y-m-d H:i:s', (int) (strtotime($post->post_date) - (get_option('gmt_offset') * 3600)));
             $this->assertSame(mysql_to_rfc3339($post_date_gmt), $data['date_gmt']);
         } else {
             $this->assertSame(mysql_to_rfc3339($post->post_date_gmt), $data['date_gmt']);
@@ -21,7 +21,7 @@ abstract class WP_Test_REST_Post_Type_Controller_Testcase extends WP_Test_REST_C
         $this->assertSame(mysql_to_rfc3339($post->post_date), $data['date']);
 
         if ('0000-00-00 00:00:00' === $post->post_modified_gmt) {
-            $post_modified_gmt = gmdate('Y-m-d H:i:s', strtotime($post->post_modified) - (get_option('gmt_offset') * 3600));
+            $post_modified_gmt = gmdate('Y-m-d H:i:s', (int) (strtotime($post->post_modified) - (get_option('gmt_offset') * 3600)));
             $this->assertSame(mysql_to_rfc3339($post_modified_gmt), $data['modified_gmt']);
         } else {
             $this->assertSame(mysql_to_rfc3339($post->post_modified_gmt), $data['modified_gmt']);

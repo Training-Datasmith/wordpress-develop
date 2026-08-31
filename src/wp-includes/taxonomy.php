@@ -3636,7 +3636,7 @@ function wp_update_term_count_now($terms, $taxonomy)
     } else {
         $object_types = (array) $taxonomy->object_type;
         foreach ($object_types as &$object_type) {
-            if (str_starts_with($object_type, 'attachment:')) {
+            if (is_string($object_type) && str_starts_with($object_type, 'attachment:')) {
                 list($object_type) = explode(':', $object_type);
             }
         }
@@ -3877,7 +3877,7 @@ function update_object_term_cache($object_ids, $object_type)
     }
 
     if (! is_array($object_ids)) {
-        $object_ids = explode(',', $object_ids);
+        $object_ids = explode(',', (string) $object_ids);
     }
 
     $object_ids     = array_map('intval', $object_ids);

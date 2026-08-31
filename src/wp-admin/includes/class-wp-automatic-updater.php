@@ -75,9 +75,21 @@ class WP_Automatic_Updater
      */
     public function is_allowed_dir($dir): bool
     {
-        if (is_string($dir)) {
-            $dir = trim($dir);
+        if (! is_string($dir)) {
+            _doing_it_wrong(
+                __METHOD__,
+                sprintf(
+                    /* translators: %s: The "$dir" argument. */
+                    __('The "%s" argument must be a non-empty string.'),
+                    '$dir'
+                ),
+                '6.2.0'
+            );
+
+            return false;
         }
+
+        $dir = trim($dir);
 
         if ('' === $dir) {
             _doing_it_wrong(

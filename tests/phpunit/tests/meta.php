@@ -394,7 +394,7 @@ class Tests_Meta extends WP_UnitTestCase
         $string_mid = "{$meta_id}.0";
 
         // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual -- intentional implicit casting check
-        $this->assertTrue(floor($string_mid) == $string_mid);
+        $this->assertTrue(floor((float) $string_mid) == $string_mid);
         $this->assertNotFalse(get_metadata_by_mid('user', $string_mid));
         $this->assertNotFalse(update_metadata_by_mid('user', $string_mid, 'meta_new_value_2'));
         $this->assertNotFalse(delete_metadata_by_mid('user', $string_mid));

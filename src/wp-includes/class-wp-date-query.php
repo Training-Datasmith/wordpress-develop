@@ -942,7 +942,7 @@ class WP_Date_Query
                 $dt = date_create($datetime, $wp_timezone);
 
                 if (false === $dt) {
-                    return gmdate('Y-m-d H:i:s', false);
+                    return '';
                 }
 
                 return $dt->setTimezone($wp_timezone)->format('Y-m-d H:i:s');

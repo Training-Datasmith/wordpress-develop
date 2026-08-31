@@ -493,6 +493,9 @@ if (! class_exists('PO', false)) :
                 return true;
             }
             $line          = $use_last_line ? $last_line : fgets($f);
+            if (false === $line) {
+                return false;
+            }
             $line          = ("\r\n" === substr($line, -2)) ? rtrim($line, "\r\n") . "\n" : $line;
             $last_line     = $line;
             $use_last_line = false;

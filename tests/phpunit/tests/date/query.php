@@ -577,7 +577,7 @@ class Tests_Date_Query extends WP_UnitTestCase
 
         // This might be a fragile test if it takes longer than 1 second to run.
         $found    = $q->build_mysql_datetime('foo');
-        $expected = gmdate('Y-m-d H:i:s', false);
+        $expected = '';
         $this->assertSame($expected, $found);
     }
 

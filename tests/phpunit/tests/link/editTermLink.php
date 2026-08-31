@@ -74,7 +74,7 @@ class Tests_Link_EditTermLink extends WP_UnitTestCase
         $term = $this->get_term($taxonomy, $use_id);
 
         // Term IDs are not known by the data provider so need to be replaced.
-        $expected = str_replace('%ID%', $use_id ? $term : $term->term_id, $expected);
+        $expected = str_replace('%ID%', (string) ($use_id ? $term : $term->term_id), $expected);
         $expected = '"' . admin_url($expected) . '"';
 
         $this->assertStringContainsString($expected, edit_term_link('', '', '', $term, false));

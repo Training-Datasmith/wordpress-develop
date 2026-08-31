@@ -5630,7 +5630,7 @@ function wp_unique_post_slug($slug, $post_id, $post_status, $post_type, $post_pa
         ) {
             $suffix = 2;
             do {
-                $alt_post_name   = _truncate_post_slug($slug, 200 - (strlen($suffix) + 1)) . "-$suffix";
+                $alt_post_name   = _truncate_post_slug($slug, 200 - (strlen((string) $suffix) + 1)) . "-$suffix";
                 $post_name_check = $wpdb->get_var($wpdb->prepare($check_sql, $alt_post_name, $post_id));
                 ++$suffix;
             } while ($post_name_check);
@@ -5662,12 +5662,12 @@ function wp_unique_post_slug($slug, $post_id, $post_status, $post_type, $post_pa
 
         if ($post_name_check
             || in_array($slug, $feeds, true) || 'embed' === $slug
-            || preg_match("@^($wp_rewrite->pagination_base)?\d+$@", $slug)
+            || preg_match('@^(' . preg_quote((string) $wp_rewrite->pagination_base, '@') . ')?\d+$@', (string) $slug)
             || $is_bad_hierarchical_slug
         ) {
             $suffix = 2;
             do {
-                $alt_post_name   = _truncate_post_slug($slug, 200 - (strlen($suffix) + 1)) . "-$suffix";
+                $alt_post_name   = _truncate_post_slug($slug, 200 - (strlen((string) $suffix) + 1)) . "-$suffix";
                 $post_name_check = $wpdb->get_var($wpdb->prepare($check_sql, $alt_post_name, $post_type, $post_id, $post_parent));
                 ++$suffix;
             } while ($post_name_check);
@@ -5682,11 +5682,11 @@ function wp_unique_post_slug($slug, $post_id, $post_status, $post_type, $post_pa
 
         // Prevent new post slugs that could result in URLs that conflict with date archives.
         $conflicts_with_date_archive = false;
-        if ('post' === $post_type && (! $post || $post->post_name !== $slug) && preg_match('/^[0-9]+$/', $slug)) {
+        if ('post' === $post_type && (! $post || $post->post_name !== $slug) && preg_match('/^[0-9]+$/', (string) $slug)) {
             $slug_num = (int) $slug;
 
             if ($slug_num) {
-                $permastructs   = array_values(array_filter(explode('/', get_option('permalink_structure'))));
+                $permastructs   = array_values(array_filter(explode('/', (string) get_option('permalink_structure'))));
                 $postname_index = array_search('%postname%', $permastructs, true);
 
                 /*
@@ -5723,7 +5723,7 @@ function wp_unique_post_slug($slug, $post_id, $post_status, $post_type, $post_pa
         ) {
             $suffix = 2;
             do {
-                $alt_post_name   = _truncate_post_slug($slug, 200 - (strlen($suffix) + 1)) . "-$suffix";
+                $alt_post_name   = _truncate_post_slug($slug, 200 - (strlen((string) $suffix) + 1)) . "-$suffix";
                 $post_name_check = $wpdb->get_var($wpdb->prepare($check_sql, $alt_post_name, $post_type, $post_id));
                 ++$suffix;
             } while ($post_name_check);
@@ -5760,6 +5760,8 @@ function wp_unique_post_slug($slug, $post_id, $post_status, $post_type, $post_pa
  */
 function _truncate_post_slug($slug, $length = 200)
 {
+    $slug = (string) $slug;
+
     if (strlen($slug) > $length) {
         $decoded_slug = urldecode($slug);
         if ($decoded_slug === $slug) {
@@ -5842,7 +5844,7 @@ function wp_set_post_terms($post_id = 0, $terms = '', $taxonomy = 'post_tag', $a
         if (',' !== $comma) {
             $terms = str_replace($comma, ',', $terms);
         }
-        $terms = explode(',', trim($terms, " \n\t\r\0\x0B,"));
+        $terms = explode(',', trim((string) $terms, " \n\t\r\0\x0B,"));
     }
 
     /*
@@ -7432,8 +7434,11 @@ function wp_mime_type_icon($mime = 0, $preferred_ext = '.png')
         }
 
         if (! empty($mime)) {
-            $post_mimes[] = substr($mime, 0, strpos($mime, '/'));
-            $post_mimes[] = substr($mime, strpos($mime, '/') + 1);
+            $slash_pos = strpos($mime, '/');
+            if (false !== $slash_pos) {
+                $post_mimes[] = substr($mime, 0, $slash_pos);
+                $post_mimes[] = substr($mime, $slash_pos + 1);
+            }
             $post_mimes[] = str_replace('/', '_', $mime);
         }
 

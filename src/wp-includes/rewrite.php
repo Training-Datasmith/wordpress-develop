@@ -395,7 +395,7 @@ function wp_resolve_numeric_slug_conflicts($query_vars = [])
     }
 
     // Identify the 'postname' position in the permastruct array.
-    $permastructs   = array_values(array_filter(explode('/', get_option('permalink_structure'))));
+    $permastructs   = array_values(array_filter(explode('/', (string) get_option('permalink_structure'))));
     $postname_index = array_search('%postname%', $permastructs, true);
 
     if (false === $postname_index) {

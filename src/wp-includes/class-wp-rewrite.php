@@ -928,7 +928,7 @@ class WP_Rewrite
         }
 
         // Get everything up to the first rewrite tag.
-        $front = substr($permalink_structure, 0, strpos($permalink_structure, '%'));
+        $front = substr($permalink_structure, 0, strpos($permalink_structure, '%') ?: 0);
 
         // Build an array of the tags (note that said array ends up being in $tokens[0]).
         preg_match_all('/%.+?%/', $permalink_structure, $tokens);

@@ -430,7 +430,7 @@ function wp_get_typography_value_and_unit($raw_value, $options = [])
     }
 
     return [
-        'value' => round($value, 3),
+        'value' => round((float) $value, 3),
         'unit'  => $unit,
     ];
 }

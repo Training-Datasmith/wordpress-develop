@@ -1044,7 +1044,7 @@ function wp_read_image_metadata($file)
         }
         if (! empty($exif['ISOSpeedRatings'])) {
             $meta['iso'] = is_array($exif['ISOSpeedRatings']) ? reset($exif['ISOSpeedRatings']) : $exif['ISOSpeedRatings'];
-            $meta['iso'] = trim($meta['iso']);
+            $meta['iso'] = trim((string) $meta['iso']);
         }
         if (! empty($exif['ExposureTime'])) {
             $meta['shutter_speed'] = (string) $exif['ExposureTime'];

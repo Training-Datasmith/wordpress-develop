@@ -113,7 +113,7 @@ abstract class WP_Filesystem_Direct_UnitTestCase extends WP_UnitTestCase
             if ('f' === $entry['type']) {
                 unlink($entry['path']);
             } elseif ('d' === $entry['type']) {
-                rmdir($entry['path']);
+                $this->remove_directory_if_exists($entry['path']);
             }
         }
 
@@ -138,6 +138,33 @@ abstract class WP_Filesystem_Direct_UnitTestCase extends WP_UnitTestCase
         }
 
         mkdir($path);
+    }
+
+    /**
+     * Removes a directory and its contents if it exists.
+     *
+     * @param string $path The path to the directory.
+     */
+    public function remove_directory_if_exists($path)
+    {
+        if (! is_dir($path)) {
+            return;
+        }
+
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($iterator as $file) {
+            if ($file->isDir()) {
+                rmdir($file->getPathname());
+            } else {
+                unlink($file->getPathname());
+            }
+        }
+
+        rmdir($path);
     }
 
     /**

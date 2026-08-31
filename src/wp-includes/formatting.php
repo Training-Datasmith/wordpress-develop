@@ -1626,6 +1626,14 @@ function utf8_uri_encode($utf8_string, $length = 0, $encode_ascii_characters = f
  */
 function remove_accents($text, $locale = '')
 {
+    if (! is_string($text)) {
+        if (! is_scalar($text)) {
+            return '';
+        }
+
+        $text = (string) $text;
+    }
+
     if (! preg_match('/[\x80-\xff]/', $text)) {
         return $text;
     }
@@ -2870,7 +2878,7 @@ function trailingslashit($value)
  */
 function untrailingslashit($value)
 {
-    return rtrim($value, '/\\');
+    return rtrim((string) $value, '/\\');
 }
 
 /**
@@ -2909,7 +2917,12 @@ function stripslashes_from_strings_only($value)
  */
 function urlencode_deep($value)
 {
-    return map_deep($value, 'urlencode');
+    return map_deep(
+        $value,
+        static function ($value) {
+            return urlencode((string) $value);
+        }
+    );
 }
 
 /**
@@ -2922,7 +2935,12 @@ function urlencode_deep($value)
  */
 function rawurlencode_deep($value)
 {
-    return map_deep($value, 'rawurlencode');
+    return map_deep(
+        $value,
+        static function ($value) {
+            return rawurlencode((string) $value);
+        }
+    );
 }
 
 /**
@@ -2935,7 +2953,12 @@ function rawurlencode_deep($value)
  */
 function urldecode_deep($value)
 {
-    return map_deep($value, 'urldecode');
+    return map_deep(
+        $value,
+        static function ($value) {
+            return urldecode((string) $value);
+        }
+    );
 }
 
 /**
@@ -4024,7 +4047,7 @@ function wp_trim_excerpt($text = '', $post = null)
 {
     $raw_excerpt = $text;
 
-    if ('' === trim($text)) {
+    if ('' === trim((string) $text)) {
         $post = get_post($post);
         $text = get_the_content('', false, $post);
 
@@ -4556,6 +4579,14 @@ function esc_url($url, $protocols = null, $_context = 'display')
         return $url;
     }
 
+    if (! is_string($url)) {
+        if (null === $url) {
+            return '';
+        }
+
+        $url = (string) $url;
+    }
+
     $url = str_replace(' ', '%20', ltrim($url));
     $url = preg_replace('|[^a-z0-9-~+_.?#=!&;,/:%@$\|*\'()\[\]\\x80-\\xff]|i', '', $url);
 
@@ -5052,7 +5083,7 @@ function sanitize_option($option, $value)
 
         case 'gmt_offset':
             if (is_numeric($value)) {
-                $value = preg_replace('/[^0-9:.-]/', '', $value); // Strips slashes.
+                $value = preg_replace('/[^0-9:.-]/', '', (string) $value); // Strips slashes.
             } else {
                 $value = '';
             }
@@ -5648,6 +5679,10 @@ function wp_strip_all_tags($text, $remove_breaks = false)
         return '';
     }
 
+    if (! is_string($text)) {
+        $text = (string) $text;
+    }
+
     $text = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $text);
     $text = strip_tags($text);
 
@@ -5783,7 +5818,7 @@ function _sanitize_text_fields($str, $keep_newlines = false)
  */
 function wp_basename($path, $suffix = '')
 {
-    return urldecode(basename(str_replace([ '%2F', '%5C' ], '/', urlencode($path)), $suffix));
+    return urldecode(basename(str_replace([ '%2F', '%5C' ], '/', urlencode((string) $path)), $suffix));
 }
 
 // phpcs:disable WordPress.WP.CapitalPDangit.MisspelledInComment,WordPress.WP.CapitalPDangit.MisspelledInText,WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- 8-)
@@ -6383,7 +6418,7 @@ function sanitize_hex_color($color)
  */
 function sanitize_hex_color_no_hash($color)
 {
-    $color = ltrim($color, '#');
+    $color = ltrim((string) $color, '#');
 
     if ('' === $color) {
         return '';

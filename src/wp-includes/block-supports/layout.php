@@ -729,7 +729,7 @@ function wp_render_layout_support_flag($block_content, $block)
             $column_span_number  = floatval($child_layout['columnSpan']);
             $parent_column_width = $block['parentLayout']['minimumColumnWidth'] ?? '12rem';
             $parent_column_value = floatval($parent_column_width);
-            $parent_column_unit  = explode($parent_column_value, $parent_column_width);
+            $parent_column_unit  = explode((string) $parent_column_value, (string) $parent_column_width);
 
             /*
              * If there is no unit, the width has somehow been mangled so we reset both unit and value

@@ -1219,7 +1219,7 @@ class Tests_Admin_IncludesPost extends WP_UnitTestCase
      */
     public function test_post_exists_should_support_post_type()
     {
-        if (PHP_VERSION_ID >= 80100) {
+        if (PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80400) {
             /*
              * For the time being, ignoring PHP 8.1 "null to non-nullable" deprecations coming in
              * via hooked in filter functions until a more structural solution to the
@@ -1247,7 +1247,7 @@ class Tests_Admin_IncludesPost extends WP_UnitTestCase
      */
     public function test_post_exists_should_not_match_a_page_for_post()
     {
-        if (PHP_VERSION_ID >= 80100) {
+        if (PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80400) {
             /*
              * For the time being, ignoring PHP 8.1 "null to non-nullable" deprecations coming in
              * via hooked in filter functions until a more structural solution to the
@@ -1275,7 +1275,7 @@ class Tests_Admin_IncludesPost extends WP_UnitTestCase
      */
     public function test_post_exists_should_support_post_status()
     {
-        if (PHP_VERSION_ID >= 80100) {
+        if (PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80400) {
             /*
              * For the time being, ignoring PHP 8.1 "null to non-nullable" deprecations coming in
              * via hooked in filter functions until a more structural solution to the
@@ -1305,7 +1305,7 @@ class Tests_Admin_IncludesPost extends WP_UnitTestCase
      */
     public function test_post_exists_should_support_post_type_status_combined()
     {
-        if (PHP_VERSION_ID >= 80100) {
+        if (PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80400) {
             /*
              * For the time being, ignoring PHP 8.1 "null to non-nullable" deprecations coming in
              * via hooked in filter functions until a more structural solution to the
@@ -1335,7 +1335,7 @@ class Tests_Admin_IncludesPost extends WP_UnitTestCase
      */
     public function test_post_exists_should_only_match_correct_post_status()
     {
-        if (PHP_VERSION_ID >= 80100) {
+        if (PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80400) {
             /*
              * For the time being, ignoring PHP 8.1 "null to non-nullable" deprecations coming in
              * via hooked in filter functions until a more structural solution to the
@@ -1365,7 +1365,7 @@ class Tests_Admin_IncludesPost extends WP_UnitTestCase
      */
     public function test_post_exists_should_not_match_invalid_post_type_and_status_combined()
     {
-        if (PHP_VERSION_ID >= 80100) {
+        if (PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80400) {
             /*
              * For the time being, ignoring PHP 8.1 "null to non-nullable" deprecations coming in
              * via hooked in filter functions until a more structural solution to the

@@ -838,13 +838,15 @@ class WP_Query
         $query_vars['monthnum'] = is_scalar($query_vars['monthnum']) ? absint($query_vars['monthnum']) : 0;
         $query_vars['day']      = is_scalar($query_vars['day']) ? absint($query_vars['day']) : 0;
         $query_vars['w']        = is_scalar($query_vars['w']) ? absint($query_vars['w']) : 0;
-        $query_vars['m']        = is_scalar($query_vars['m']) ? preg_replace('|[^0-9]|', '', $query_vars['m']) : '';
+        $query_vars['m']        = is_scalar($query_vars['m']) ? preg_replace('|[^0-9]|', '', (string) $query_vars['m']) : '';
         $query_vars['paged']    = is_scalar($query_vars['paged']) ? absint($query_vars['paged']) : 0;
-        $query_vars['cat']      = preg_replace('|[^0-9,-]|', '', $query_vars['cat']); // Array or comma-separated list of positive or negative integers.
-        $query_vars['author']   = is_scalar($query_vars['author']) ? preg_replace('|[^0-9,-]|', '', $query_vars['author']) : ''; // Comma-separated list of positive or negative integers.
-        $query_vars['pagename'] = is_scalar($query_vars['pagename']) ? trim($query_vars['pagename']) : '';
-        $query_vars['name']     = is_scalar($query_vars['name']) ? trim($query_vars['name']) : '';
-        $query_vars['title']    = is_scalar($query_vars['title']) ? trim($query_vars['title']) : '';
+        if (! is_array($query_vars['cat'])) {
+            $query_vars['cat'] = preg_replace('|[^0-9,-]|', '', (string) $query_vars['cat']); // Array or comma-separated list of positive or negative integers.
+        }
+        $query_vars['author']   = is_scalar($query_vars['author']) ? preg_replace('|[^0-9,-]|', '', (string) $query_vars['author']) : ''; // Comma-separated list of positive or negative integers.
+        $query_vars['pagename'] = is_scalar($query_vars['pagename']) ? trim((string) $query_vars['pagename']) : '';
+        $query_vars['name']     = is_scalar($query_vars['name']) ? trim((string) $query_vars['name']) : '';
+        $query_vars['title']    = is_scalar($query_vars['title']) ? trim((string) $query_vars['title']) : '';
 
         if (is_scalar($query_vars['hour']) && '' !== $query_vars['hour']) {
             $query_vars['hour'] = absint($query_vars['hour']);
@@ -871,7 +873,7 @@ class WP_Query
         }
 
         // Fairly large, potentially too large, upper bound for search string lengths.
-        if (! is_scalar($query_vars['s']) || (! empty($query_vars['s']) && strlen($query_vars['s']) > 1600)) {
+        if (! is_scalar($query_vars['s']) || (! empty($query_vars['s']) && strlen((string) $query_vars['s']) > 1600)) {
             $query_vars['s'] = '';
         }
 
@@ -1034,7 +1036,7 @@ class WP_Query
             $this->is_admin = true;
         }
 
-        if (str_contains($query_vars['feed'], 'comments-')) {
+        if (is_string($query_vars['feed']) && str_contains($query_vars['feed'], 'comments-')) {
             $query_vars['feed']         = str_replace('comments-', '', $query_vars['feed']);
             $query_vars['withcomments'] = 1;
         }
@@ -1204,7 +1206,7 @@ class WP_Query
                 $term = $query_vars[ $t->query_var ];
 
                 if (! is_array($term)) {
-                    $term = explode(',', $term);
+                    $term = explode(',', (string) $term);
                     $term = array_map('trim', $term);
                 }
                 sort($term);
@@ -1243,6 +1245,7 @@ class WP_Query
             $cat_not_in = [];
 
             $cat_array = preg_split('/[,\s]+/', urldecode($query_vars['cat']));
+            $cat_array = array_values(array_filter($cat_array, 'is_numeric'));
             $cat_array = array_map('intval', $cat_array);
             sort($cat_array);
             $query_vars['cat'] = implode(',', $cat_array);
@@ -2064,7 +2067,7 @@ class WP_Query
         }
 
         if (isset($query_vars['page'])) {
-            $query_vars['page'] = is_scalar($query_vars['page']) ? absint(trim($query_vars['page'], '/')) : 0;
+            $query_vars['page'] = is_scalar($query_vars['page']) ? absint(trim((string) $query_vars['page'], '/')) : 0;
         }
 
         // If true, forcibly turns off SQL_CALC_FOUND_ROWS even when limits are present.

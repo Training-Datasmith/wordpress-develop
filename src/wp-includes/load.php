@@ -1732,7 +1732,7 @@ function is_ssl()
  */
 function wp_convert_hr_to_bytes($value)
 {
-    $value = strtolower(trim($value));
+    $value = strtolower(trim((string) $value));
     $bytes = (int) $value;
 
     if (str_contains($value, 'g')) {

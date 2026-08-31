@@ -269,8 +269,12 @@ final class WP_Speculation_Rules implements JsonSerializable
      * @param string $mode Speculation rules mode.
      * @return bool True if valid, false otherwise.
      */
-    public static function is_valid_mode(string $mode): bool
+    public static function is_valid_mode($mode): bool
     {
+        if (! is_string($mode)) {
+            return false;
+        }
+
         return isset(self::$mode_allowlist[ $mode ]);
     }
 
@@ -282,8 +286,12 @@ final class WP_Speculation_Rules implements JsonSerializable
      * @param string $eagerness Speculation rules eagerness.
      * @return bool True if valid, false otherwise.
      */
-    public static function is_valid_eagerness(string $eagerness): bool
+    public static function is_valid_eagerness($eagerness): bool
     {
+        if (! is_string($eagerness)) {
+            return false;
+        }
+
         return isset(self::$eagerness_allowlist[ $eagerness ]);
     }
 
@@ -295,8 +303,12 @@ final class WP_Speculation_Rules implements JsonSerializable
      * @param string $source Speculation rules source.
      * @return bool True if valid, false otherwise.
      */
-    public static function is_valid_source(string $source): bool
+    public static function is_valid_source($source): bool
     {
+        if (! is_string($source)) {
+            return false;
+        }
+
         return isset(self::$source_allowlist[ $source ]);
     }
 }

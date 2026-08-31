@@ -213,7 +213,7 @@ class WP_REST_Font_Faces_Controller extends WP_REST_Posts_Controller
 
         foreach ($srcs as $src) {
             // Check that each src is a non-empty string.
-            $src = ltrim($src);
+            $src = ltrim((string) $src);
             if (empty($src)) {
                 return new WP_Error(
                     'rest_invalid_param',

@@ -142,8 +142,8 @@ class Tests_Filesystem_WpFilesystemDirect_Move extends WP_Filesystem_Direct_Unit
                                 ->setMethods([ 'exists', 'delete', 'is_file', 'copy' ])
                                 ->getMock();
 
-        $filesystem_mock->expects($this->exactly(2))->method('exists')->willReturn([ true, true ]);
-        $filesystem_mock->expects($this->exactly(2))->method('delete')->willReturn([ true, false ]);
+        $filesystem_mock->expects($this->exactly(2))->method('exists')->willReturnOnConsecutiveCalls(true, true);
+        $filesystem_mock->expects($this->exactly(2))->method('delete')->willReturnOnConsecutiveCalls(true, false);
         $filesystem_mock->expects($this->once())->method('is_file')->willReturn(true);
         $filesystem_mock->expects($this->once())->method('copy')->willReturn(true);
 

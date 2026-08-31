@@ -1050,7 +1050,7 @@ if (! function_exists('wp_parse_auth_cookie')) :
             $cookie = $_COOKIE[ $cookie_name ];
         }
 
-        $cookie_elements = explode('|', $cookie);
+        $cookie_elements = explode('|', (string) $cookie);
         if (count($cookie_elements) !== 4) {
             return false;
         }
@@ -1392,7 +1392,7 @@ if (! function_exists('check_admin_referer')) :
         }
 
         $adminurl = strtolower(admin_url());
-        $referer  = strtolower(wp_get_referer());
+        $referer  = strtolower((string) wp_get_referer());
         $result   = isset($_REQUEST[ $query_arg ]) ? wp_verify_nonce($_REQUEST[ $query_arg ], $action) : false;
 
         /**

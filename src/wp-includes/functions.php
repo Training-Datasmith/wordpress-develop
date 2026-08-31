@@ -2353,10 +2353,10 @@ function win_is_writable($path)
 {
     if ('/' === $path[ strlen($path) - 1 ]) {
         // If it looks like a directory, check a random file within the directory.
-        return win_is_writable($path . uniqid(mt_rand()) . '.tmp');
+        return win_is_writable($path . uniqid((string) mt_rand()) . '.tmp');
     } elseif (is_dir($path)) {
         // If it's a directory (and not a file), check a random file within the directory.
-        return win_is_writable($path . '/' . uniqid(mt_rand()) . '.tmp');
+        return win_is_writable($path . '/' . uniqid((string) mt_rand()) . '.tmp');
     }
 
     // Check tmp file for read/write capabilities.

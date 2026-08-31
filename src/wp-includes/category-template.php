@@ -1022,7 +1022,7 @@ function wp_generate_tag_cloud($tags, $args = '')
             esc_url($tag_data['url']),
             $tag_data['role'],
             esc_attr($class),
-            esc_attr(str_replace(',', '.', $tag_data['font_size']) . $args['unit']),
+            esc_attr(str_replace(',', '.', (string) $tag_data['font_size']) . $args['unit']),
             $tag_data['aria_label'],
             esc_html($tag_data['name']),
             $tag_data['show_count']

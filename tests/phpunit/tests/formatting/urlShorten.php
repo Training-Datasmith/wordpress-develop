@@ -24,6 +24,6 @@ class Tests_Formatting_UrlShorten extends WP_UnitTestCase
         }
 
         // Shorten to 31 if > 34 after cleaning.
-        $this->assertSame('wordpress.org/about/philosophy/#&hellip;', url_shorten('http://wordpress.org/about/philosophy/#decisions'), 31);
+        $this->assertSame('wordpress.org/about/philosophy/#&hellip;', url_shorten('http://wordpress.org/about/philosophy/#decisions'), '31');
     }
 }

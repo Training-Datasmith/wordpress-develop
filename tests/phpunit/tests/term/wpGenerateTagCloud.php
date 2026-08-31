@@ -281,7 +281,7 @@ class Tests_WP_Generate_Tag_Cloud extends WP_UnitTestCase
      */
     public function test_should_include_tag_link_position_class()
     {
-        if (PHP_VERSION_ID >= 80100) {
+        if (PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80400) {
             /*
              * For the time being, ignoring PHP 8.1 "null to non-nullable" deprecations coming in
              * via hooked in filter functions until a more structural solution to the

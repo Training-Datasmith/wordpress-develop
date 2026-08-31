@@ -439,9 +439,9 @@ class Tests_File extends WP_UnitTestCase
         add_filter('wp_trusted_keys', [ $this, 'filter_trust_plus85Tq_key' ]);
 
         // Measure how long the call takes.
-        $timer_start = microtime(1);
+        $timer_start = microtime(true);
         $verify      = verify_file_signature($file, $expected_signature, 'WordPress');
-        $timer_end   = microtime(1);
+        $timer_end   = microtime(true);
         $time_taken  = ($timer_end - $timer_start);
 
         unlink($file);

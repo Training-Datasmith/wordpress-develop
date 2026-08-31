@@ -823,16 +823,35 @@ function metadata_exists($meta_type, $object_id, $meta_key)
  *     @type string $user_id    Optional. The object ID when the meta type is 'user'.
  * }
  */
+function _wp_normalize_meta_id($meta_id)
+{
+    if (! is_scalar($meta_id)) {
+        return false;
+    }
+
+    $meta_id_string = (string) $meta_id;
+
+    if (false !== filter_var($meta_id_string, FILTER_VALIDATE_INT)) {
+        $meta_id = (int) $meta_id_string;
+    } elseif (preg_match('/^\d+\.0+$/', $meta_id_string)) {
+        $meta_id = (int) $meta_id_string;
+    } else {
+        return false;
+    }
+
+    return $meta_id > 0 ? $meta_id : false;
+}
+
 function get_metadata_by_mid($meta_type, $meta_id)
 {
     global $wpdb;
 
-    if (! $meta_type || filter_var($meta_id, FILTER_VALIDATE_INT) === false) {
+    if (! $meta_type) {
         return false;
     }
 
-    $meta_id = (int) $meta_id;
-    if ($meta_id <= 0) {
+    $meta_id = _wp_normalize_meta_id($meta_id);
+    if (false === $meta_id) {
         return false;
     }
 
@@ -900,12 +919,12 @@ function update_metadata_by_mid($meta_type, $meta_id, $meta_value, $meta_key = f
     global $wpdb;
 
     // Make sure everything is valid.
-    if (! $meta_type || filter_var($meta_id, FILTER_VALIDATE_INT) === false) {
+    if (! $meta_type) {
         return false;
     }
 
-    $meta_id = (int) $meta_id;
-    if ($meta_id <= 0) {
+    $meta_id = _wp_normalize_meta_id($meta_id);
+    if (false === $meta_id) {
         return false;
     }
 
@@ -1026,12 +1045,12 @@ function delete_metadata_by_mid($meta_type, $meta_id)
     global $wpdb;
 
     // Make sure everything is valid.
-    if (! $meta_type || filter_var($meta_id, FILTER_VALIDATE_INT) === false) {
+    if (! $meta_type) {
         return false;
     }
 
-    $meta_id = (int) $meta_id;
-    if ($meta_id <= 0) {
+    $meta_id = _wp_normalize_meta_id($meta_id);
+    if (false === $meta_id) {
         return false;
     }
 
@@ -1162,7 +1181,7 @@ function update_meta_cache($meta_type, $object_ids)
     $column = sanitize_key($meta_type . '_id');
 
     if (! is_array($object_ids)) {
-        $object_ids = preg_replace('|[^0-9,]|', '', $object_ids);
+        $object_ids = preg_replace('|[^0-9,]|', '', (string) $object_ids);
         $object_ids = explode(',', $object_ids);
     }
 

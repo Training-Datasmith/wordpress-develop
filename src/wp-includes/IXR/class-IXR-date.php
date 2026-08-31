@@ -52,6 +52,10 @@ class IXR_Date
 
     public function parseIso($iso): void
     {
+        if (! is_string($iso)) {
+            return;
+        }
+
         $this->year = substr($iso, 0, 4);
         $this->month = substr($iso, 4, 2);
         $this->day = substr($iso, 6, 2);
@@ -73,6 +77,6 @@ class IXR_Date
 
     public function getTimestamp()
     {
-        return mktime($this->hour, $this->minute, $this->second, $this->month, $this->day, $this->year);
+        return mktime((int) $this->hour, (int) $this->minute, (int) $this->second, (int) $this->month, (int) $this->day, (int) $this->year);
     }
 }

@@ -769,7 +769,10 @@ function get_feed_build_date($format)
 
     if (false === $datetime) {
         // Fall back to last time any post was modified or published.
-        $datetime = date_create_immutable_from_format('Y-m-d H:i:s', get_lastpostmodified('GMT'), $utc);
+        $last_modified = get_lastpostmodified('GMT');
+        if (false !== $last_modified) {
+            $datetime = date_create_immutable_from_format('Y-m-d H:i:s', $last_modified, $utc);
+        }
     }
 
     if (false !== $datetime) {

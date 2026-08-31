@@ -159,6 +159,10 @@ function _mb_substr($str, $start, $length = null, $encoding = null)
         return '';
     }
 
+    if (! is_string($str)) {
+        $str = (string) $str;
+    }
+
     // The solution below works only for UTF-8; treat all other encodings as byte streams.
     if (! _is_utf8_charset($encoding ?? get_option('blog_charset'))) {
         return is_null($length) ? substr($str, $start) : substr($str, $start, $length);

@@ -557,6 +557,7 @@ class getid3_matroska extends getid3_handler
     {
         // http://www.matroska.org/technical/specs/index.html#EBMLBasics
         $this->current_offset = $info['avdataoffset'];
+        $top_element          = [];
 
         while ($this->getEBMLelement($top_element, $info['avdataend'])) {
             switch ($top_element['id']) {
@@ -564,6 +565,8 @@ class getid3_matroska extends getid3_handler
                 case EBML_ID_EBML:
                     $info['matroska']['header']['offset'] = $top_element['offset'];
                     $info['matroska']['header']['length'] = $top_element['length'];
+
+                    $element_data = [];
 
                     while ($this->getEBMLelement($element_data, $top_element['end'], true)) {
                         switch ($element_data['id']) {
@@ -1374,7 +1377,7 @@ class getid3_matroska extends getid3_handler
      * @param array|bool $get_data
      *
      */
-    private function getEBMLelement(array &$element, $parent_end, $get_data = false): bool
+    private function getEBMLelement(array|null &$element, $parent_end, $get_data = false): bool
     {
         if ($this->current_offset >= $parent_end) {
             return false;

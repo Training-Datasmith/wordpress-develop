@@ -83,7 +83,7 @@ final class WP_Block_Bindings_Registry
      * }
      * @return WP_Block_Bindings_Source|false Source when the registration was successful, or `false` on failure.
      */
-    public function register(string $source_name, array $source_properties)
+    public function register($source_name, array $source_properties)
     {
         if (! is_string($source_name)) {
             _doing_it_wrong(

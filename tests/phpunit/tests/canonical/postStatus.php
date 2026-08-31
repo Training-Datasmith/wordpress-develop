@@ -245,8 +245,8 @@ class Tests_Canonical_PostStatus extends WP_Canonical_UnitTestCase
          * The dataProvider runs before the fixures are set up, therefore the
          * post object IDs are placeholders that needs to be replaced.
          */
-        $requested = str_replace('%ID%', $post->ID, $requested);
-        $expected  = str_replace('%ID%', $post->ID, $expected);
+        $requested = str_replace('%ID%', (string) $post->ID, $requested);
+        $expected  = str_replace('%ID%', (string) $post->ID, $expected);
 
         $this->assertCanonical($requested, $expected);
     }
@@ -873,8 +873,8 @@ class Tests_Canonical_PostStatus extends WP_Canonical_UnitTestCase
          * The dataProvider runs before the fixures are set up, therefore the
          * post object IDs are placeholders that needs to be replaced.
          */
-        $requested = str_replace('%ID%', $post->ID, $requested);
-        $expected  = str_replace('%ID%', $post->ID, $expected);
+        $requested = str_replace('%ID%', (string) $post->ID, $requested);
+        $expected  = str_replace('%ID%', (string) $post->ID, $expected);
 
         $this->assertCanonical($requested, $expected);
     }

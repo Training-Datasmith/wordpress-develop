@@ -831,7 +831,7 @@ class Tests_Blocks_Register extends WP_UnitTestCase
         $this->assertSame('test-style-handle', $result);
 
         $result = register_block_style_handle($metadata, 'style', 1);
-        $this->assertSame('test-style-handle-2', $result, 1);
+        $this->assertSame('test-style-handle-2', $result);
     }
 
     /**

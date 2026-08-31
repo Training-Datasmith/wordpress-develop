@@ -200,6 +200,10 @@ function register_block_script_module_id($metadata, $field_name, $index = 0)
         wp_interactivity()->add_client_navigation_support_to_script_module($module_id);
     }
 
+    if (! is_string($module_uri)) {
+        $module_uri = '';
+    }
+
     wp_register_script_module(
         $module_id,
         $module_uri,

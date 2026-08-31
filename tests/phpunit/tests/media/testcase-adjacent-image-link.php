@@ -63,7 +63,7 @@ abstract class WP_Test_Adjacent_Image_Link_TestCase extends WP_UnitTestCase
 
         // Replace the attachment ID placeholder.
         if (isset(self::$attachments[ $expected_attachment_index ])) {
-            $expected = str_replace('%%ID%%', self::$attachments[ $expected_attachment_index ], $expected);
+            $expected = str_replace('%%ID%%', (string) self::$attachments[ $expected_attachment_index ], $expected);
         }
 
         // Go to the current attachment to set the state for the tests.

@@ -635,7 +635,7 @@ class getid3_lib
         $H = (int) floor($seconds                            / 3600);
         $M = (int) floor(($seconds - (3600 * $H)) /   60);
         $S = (int) round($seconds - (3600 * $H) - (60 * $M));
-        return $sign.($H ? $H.':' : '').($H ? str_pad($M, 2, '0', STR_PAD_LEFT) : intval($M)).':'.str_pad($S, 2, 0, STR_PAD_LEFT);
+        return $sign.($H ? $H.':' : '').($H ? str_pad((string) $M, 2, '0', STR_PAD_LEFT) : intval($M)).':'.str_pad((string) $S, 2, '0', STR_PAD_LEFT);
     }
 
     /**

@@ -28,7 +28,7 @@ class Tests_Nav_Menu_Theme_Change extends WP_UnitTestCase
     private function register_nav_menu_locations($locations)
     {
         foreach ($locations as $location) {
-            register_nav_menu($location, ucfirst($location));
+            register_nav_menu($location, ucfirst((string) $location));
         }
     }
 

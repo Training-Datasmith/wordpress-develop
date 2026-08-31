@@ -2919,7 +2919,7 @@ class WP_HTML_Tag_Processor
      */
     public function get_tag(): ?string
     {
-        if (null === $this->tag_name_starts_at) {
+        if (null === $this->tag_name_starts_at || ! is_int($this->tag_name_starts_at) || ! is_int($this->tag_name_length)) {
             return null;
         }
 
@@ -4409,7 +4409,7 @@ class WP_HTML_Tag_Processor
             $escaped_new_value = in_array($comparable_name, wp_kses_uri_attributes(), true)
                 ? esc_url($value)
                 : strtr(
-                    $value,
+                    (string) $value,
                     [
                         '<' => '&lt;',
                         '>' => '&gt;',

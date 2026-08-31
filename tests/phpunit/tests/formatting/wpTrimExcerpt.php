@@ -80,7 +80,7 @@ class Tests_Formatting_wpTrimExcerpt extends WP_UnitTestCase
      */
     public function test_should_generate_excerpt_for_empty_values()
     {
-        if (PHP_VERSION_ID >= 80100) {
+        if (PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80400) {
             /*
              * For the time being, ignoring PHP 8.1 "null to non-nullable" deprecations coming in
              * via hooked in filter functions until a more structural solution to the

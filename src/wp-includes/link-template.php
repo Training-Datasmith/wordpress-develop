@@ -512,7 +512,7 @@ function get_attachment_link($post = null, $leavename = false)
             $parentlink = get_permalink($post->post_parent);
         }
 
-        if (is_numeric($post->post_name) || str_contains(get_option('permalink_structure'), '%category%')) {
+        if (is_numeric($post->post_name) || str_contains((string) get_option('permalink_structure'), '%category%')) {
             $name = 'attachment/' . $post->post_name; // <permalink>/<int>/ is paged so we use the explicit attachment marker.
         } else {
             $name = $post->post_name;
@@ -522,7 +522,7 @@ function get_attachment_link($post = null, $leavename = false)
             $link = user_trailingslashit(trailingslashit($parentlink) . '%postname%');
         }
 
-        if (! $leavename) {
+        if (! $leavename && is_string($link)) {
             $link = str_replace('%postname%', $name, $link);
         }
     } elseif ($wp_rewrite->using_permalinks() && ! $leavename) {
@@ -564,7 +564,7 @@ function get_year_link($year)
     }
     $yearlink = $wp_rewrite->get_year_permastruct();
     if (! empty($yearlink)) {
-        $yearlink = str_replace('%year%', $year, $yearlink);
+        $yearlink = str_replace('%year%', (string) $year, $yearlink);
         $yearlink = home_url(user_trailingslashit($yearlink, 'year'));
     } else {
         $yearlink = home_url('?m=' . $year);
@@ -603,7 +603,7 @@ function get_month_link($year, $month)
     }
     $monthlink = $wp_rewrite->get_month_permastruct();
     if (! empty($monthlink)) {
-        $monthlink = str_replace('%year%', $year, $monthlink);
+        $monthlink = str_replace('%year%', (string) $year, $monthlink);
         $monthlink = str_replace('%monthnum%', zeroise((int) $month, 2), $monthlink);
         $monthlink = home_url(user_trailingslashit($monthlink, 'month'));
     } else {
@@ -649,7 +649,7 @@ function get_day_link($year, $month, $day)
 
     $daylink = $wp_rewrite->get_day_permastruct();
     if (! empty($daylink)) {
-        $daylink = str_replace('%year%', $year, $daylink);
+        $daylink = str_replace('%year%', (string) $year, $daylink);
         $daylink = str_replace('%monthnum%', zeroise((int) $month, 2), $daylink);
         $daylink = str_replace('%day%', zeroise((int) $day, 2), $daylink);
         $daylink = home_url(user_trailingslashit($daylink, 'day'));
@@ -1888,7 +1888,7 @@ function get_adjacent_post($in_same_term = false, $excluded_terms = '', $previou
 
     if (! empty($excluded_terms) && ! is_array($excluded_terms)) {
         // Back-compat, $excluded_terms used to be $excluded_categories with IDs separated by " and ".
-        if (str_contains($excluded_terms, ' and ')) {
+        if (str_contains((string) $excluded_terms, ' and ')) {
             _deprecated_argument(
                 __FUNCTION__,
                 '3.3.0',
@@ -1900,7 +1900,7 @@ function get_adjacent_post($in_same_term = false, $excluded_terms = '', $previou
             );
             $excluded_terms = explode(' and ', $excluded_terms);
         } else {
-            $excluded_terms = explode(',', $excluded_terms);
+            $excluded_terms = explode(',', (string) $excluded_terms);
         }
 
         $excluded_terms = array_map('intval', $excluded_terms);

@@ -3992,7 +3992,7 @@ EOF;
          * The dataProvider runs before the fixures are set up, therefore the
          * post object IDs are placeholders that needs to be replaced.
          */
-        $expected_url = home_url(str_replace('%ID%', $post->ID, $expected_url));
+        $expected_url = home_url(str_replace('%ID%', (string) $post->ID, $expected_url));
 
         $this->go_to(get_permalink($post));
         $this->assertSame($expected_url, get_permalink($post));

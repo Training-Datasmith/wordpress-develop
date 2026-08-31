@@ -20,13 +20,13 @@ class WP_Filesystem_MockFS extends WP_Filesystem_Base
     {
     }
 
-    public function connect()
+    public function connect(): bool
     {
         return true;
     }
 
     // Copy of core's function, but accepts a path.
-    public function abspath($path = false)
+    public function abspath($path = false): string|false
     {
         if (! $path) {
             $path = ABSPATH;
@@ -103,7 +103,7 @@ class WP_Filesystem_MockFS extends WP_Filesystem_Base
 
     // Here starteth the WP_Filesystem functions.
 
-    public function mkdir($path, /* Optional args are ignored */ $chmod = false, $chown = false, $chgrp = false)
+    public function mkdir($path, /* Optional args are ignored */ $chmod = false, $chown = false, $chgrp = false): bool
     {
         $path = trailingslashit($path);
 
@@ -125,7 +125,7 @@ class WP_Filesystem_MockFS extends WP_Filesystem_Base
         return true;
     }
 
-    public function put_contents($path, $contents = '', $mode = null)
+    public function put_contents($path, $contents = '', $mode = null): bool
     {
         if (! $this->is_dir(dirname($path))) {
             $this->mkdir(dirname($path));
@@ -136,9 +136,11 @@ class WP_Filesystem_MockFS extends WP_Filesystem_Base
 
         $parent->children[ $new_file->name ] = $new_file;
         $this->fs_map[ $path ]               = $new_file;
+
+        return true;
     }
 
-    public function get_contents($file)
+    public function get_contents($file): string|false
     {
         if (! $this->is_file($file)) {
             return false;
@@ -146,12 +148,12 @@ class WP_Filesystem_MockFS extends WP_Filesystem_Base
         return $this->fs_map[ $file ]->contents;
     }
 
-    public function cwd()
+    public function cwd(): string|false
     {
         return $this->cwd->path;
     }
 
-    public function chdir($path)
+    public function chdir($path): bool
     {
         if (! isset($this->fs_map[ $path ])) {
             return false;
@@ -161,24 +163,24 @@ class WP_Filesystem_MockFS extends WP_Filesystem_Base
         return true;
     }
 
-    public function exists($path)
+    public function exists($path): bool
     {
         return isset($this->fs_map[ $path ]) || isset($this->fs_map[ trailingslashit($path) ]);
     }
 
-    public function is_file($file)
+    public function is_file($file): bool
     {
         return isset($this->fs_map[ $file ]) && $this->fs_map[ $file ]->is_file();
     }
 
-    public function is_dir($path)
+    public function is_dir($path): bool
     {
         $path = trailingslashit($path);
 
         return isset($this->fs_map[ $path ]) && $this->fs_map[ $path ]->is_dir();
     }
 
-    public function dirlist($path = '.', $include_hidden = true, $recursive = false)
+    public function dirlist($path = '.', $include_hidden = true, $recursive = false): array|false
     {
 
         if (empty($path) || '.' === $path) {

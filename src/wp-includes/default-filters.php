@@ -318,7 +318,9 @@ add_filter('option_category_base', '_wp_filter_taxonomy_base');
 add_filter('the_posts', '_close_comments_for_old_posts', 10, 2);
 add_filter('comments_open', '_close_comments_for_old_post', 10, 2);
 add_filter('pings_open', '_close_comments_for_old_post', 10, 2);
-add_filter('editable_slug', 'urldecode');
+add_filter('editable_slug', static function ($slug) {
+    return urldecode((string) $slug);
+});
 add_filter('editable_slug', 'esc_textarea');
 add_filter('pingback_ping_source_uri', 'pingback_ping_source_uri');
 add_filter('xmlrpc_pingback_error', 'xmlrpc_pingback_error');
